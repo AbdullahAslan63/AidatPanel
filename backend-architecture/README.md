@@ -1,0 +1,1 @@
+Abdullah'ın oluşturduğu API mimarisini commit edeceği branchtir.
