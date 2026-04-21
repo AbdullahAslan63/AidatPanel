@@ -1,0 +1,1 @@
+Seyyid'in oluşturduğu tasarımları commit edeceği branchtir.
