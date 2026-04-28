@@ -6,13 +6,32 @@ import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../domain/entities/building_entity.dart';
 
-class ManagerDashboardScreen extends ConsumerWidget {
+class ManagerDashboardScreen extends ConsumerStatefulWidget {
   const ManagerDashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final buildings = _getDummyBuildings();
+  ConsumerState<ManagerDashboardScreen> createState() => _ManagerDashboardScreenState();
+}
 
+class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  int _bottomNavIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Yönetici Paneli'),
@@ -26,26 +45,14 @@ class ManagerDashboardScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.spacingL),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Hoş Geldiniz, Furkan Kaya',
-              style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
-            ),
-            const SizedBox(height: AppSizes.spacingL),
-            _buildStatsRow(context),
-            const SizedBox(height: AppSizes.spacingL),
-            Text(
-              'Yönetilen Binalar',
-              style: AppTypography.h3.copyWith(color: AppColors.textPrimary),
-            ),
-            const SizedBox(height: AppSizes.spacingM),
-            ..._buildBuildingCards(buildings),
-          ],
-        ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildHomeTab(),
+          _buildBuildingsTab(),
+          _buildDuesTab(),
+          _buildSettingsTab(),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
@@ -66,10 +73,65 @@ class ManagerDashboardScreen extends ConsumerWidget {
             label: 'Ayarlar',
           ),
         ],
-        currentIndex: 0,
+        currentIndex: _tabController.index,
         onTap: (index) {
-          // Navigation will be implemented later
+          setState(() {
+            _bottomNavIndex = index;
+            _tabController.animateTo(index);
+          });
         },
+      ),
+    );
+  }
+
+  Widget _buildHomeTab() {
+    final buildings = _getDummyBuildings();
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppSizes.spacingL),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Hoş Geldiniz, Furkan Kaya',
+            style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
+          ),
+          const SizedBox(height: AppSizes.spacingL),
+          _buildStatsRow(context),
+          const SizedBox(height: AppSizes.spacingL),
+          Text(
+            'Yönetilen Binalar',
+            style: AppTypography.h3.copyWith(color: AppColors.textPrimary),
+          ),
+          const SizedBox(height: AppSizes.spacingM),
+          ..._buildBuildingCards(buildings),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBuildingsTab() {
+    return Center(
+      child: Text(
+        'Binalar Sekmesi',
+        style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
+      ),
+    );
+  }
+
+  Widget _buildDuesTab() {
+    return Center(
+      child: Text(
+        'Aidatlar Sekmesi',
+        style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
+      ),
+    );
+  }
+
+  Widget _buildSettingsTab() {
+    return Center(
+      child: Text(
+        'Ayarlar Sekmesi',
+        style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
       ),
     );
   }
