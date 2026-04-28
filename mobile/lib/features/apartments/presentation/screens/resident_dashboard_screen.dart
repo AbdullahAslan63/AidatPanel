@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../apartments/domain/entities/apartment_entity.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 
 class ResidentDashboardScreen extends ConsumerStatefulWidget {
   const ResidentDashboardScreen({super.key});
@@ -39,8 +40,11 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
-              context.go('/login');
+            onPressed: () async {
+              await ref.read(authStateProvider.notifier).logout();
+              if (mounted) {
+                context.go('/');
+              }
             },
           ),
         ],

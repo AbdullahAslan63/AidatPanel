@@ -47,7 +47,7 @@ class AuthState {
   }) {
     return AuthState(
       isLoading: isLoading ?? this.isLoading,
-      user: user ?? this.user,
+      user: user,
       error: error,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
     );
@@ -125,7 +125,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout() async {
-    await _authRepository.logout();
-    state = AuthState();
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      await _authRepository.logout();
+      await Future.delayed(const Duration(milliseconds: 500));
+      state = AuthState();
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
+    }
   }
 }
