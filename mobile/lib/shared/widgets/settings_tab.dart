@@ -6,6 +6,7 @@ import '../../core/theme/app_sizes.dart';
 import '../../core/theme/app_typography.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../features/auth/domain/entities/user_entity.dart';
+import 'toast_overlay.dart';
 
 class SettingsTab extends ConsumerWidget {
   const SettingsTab({super.key});
@@ -30,20 +31,20 @@ class SettingsTab extends ConsumerWidget {
               _SettingsTile(
                 icon: Icons.lock_outline,
                 title: 'Şifre Değiştir',
-                onTap: () => _showComingSoon(context),
+                onTap: () => _showComingSoon(ref),
               ),
               const _Divider(),
               _SettingsTile(
                 icon: Icons.language,
                 title: 'Dil',
                 trailing: 'Türkçe',
-                onTap: () => _showLanguageDialog(context),
+                onTap: () => _showLanguageDialog(context, ref),
               ),
               const _Divider(),
               _SettingsTile(
                 icon: Icons.notifications_outlined,
                 title: 'Bildirimler',
-                onTap: () => _showComingSoon(context),
+                onTap: () => _showComingSoon(ref),
               ),
             ],
           ),
@@ -56,25 +57,25 @@ class SettingsTab extends ConsumerWidget {
               _SettingsTile(
                 icon: Icons.privacy_tip_outlined,
                 title: 'Gizlilik Politikası',
-                onTap: () => _showComingSoon(context),
+                onTap: () => _showComingSoon(ref),
               ),
               const _Divider(),
               _SettingsTile(
                 icon: Icons.shield_outlined,
                 title: 'KVKK',
-                onTap: () => _showComingSoon(context),
+                onTap: () => _showComingSoon(ref),
               ),
               const _Divider(),
               _SettingsTile(
                 icon: Icons.help_outline,
                 title: 'Yardım & Destek',
-                onTap: () => _showComingSoon(context),
+                onTap: () => _showComingSoon(ref),
               ),
               const _Divider(),
               _SettingsTile(
                 icon: Icons.info_outline,
                 title: 'Hakkında',
-                trailing: 'v0.0.5',
+                trailing: 'v0.0.6',
                 onTap: () => _showAboutDialog(context),
               ),
             ],
@@ -88,16 +89,13 @@ class SettingsTab extends ConsumerWidget {
     );
   }
 
-  void _showComingSoon(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Bu özellik yakında eklenecek'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+  void _showComingSoon(WidgetRef ref) {
+    ref
+        .read(toastProvider.notifier)
+        .show('Bu özellik yakında eklenecek', type: ToastType.info);
   }
 
-  void _showLanguageDialog(BuildContext context) {
+  void _showLanguageDialog(BuildContext context, WidgetRef ref) {
     showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(
@@ -121,11 +119,12 @@ class SettingsTab extends ConsumerWidget {
               title: const Text('English', style: AppTypography.body1),
               onTap: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Çoklu dil desteği yakında eklenecek'),
-                  ),
-                );
+                ref
+                    .read(toastProvider.notifier)
+                    .show(
+                      'Çoklu dil desteği yakında eklenecek',
+                      type: ToastType.info,
+                    );
               },
             ),
           ],
