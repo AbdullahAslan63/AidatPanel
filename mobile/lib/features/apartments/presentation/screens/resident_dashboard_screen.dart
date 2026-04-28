@@ -6,13 +6,32 @@ import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../apartments/domain/entities/apartment_entity.dart';
 
-class ResidentDashboardScreen extends ConsumerWidget {
+class ResidentDashboardScreen extends ConsumerStatefulWidget {
   const ResidentDashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final apartment = _getDummyApartment();
+  ConsumerState<ResidentDashboardScreen> createState() => _ResidentDashboardScreenState();
+}
 
+class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  int _bottomNavIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sakin Paneli'),
@@ -26,33 +45,14 @@ class ResidentDashboardScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.spacingL),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Hoş Geldiniz, ${apartment.residentName}',
-              style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
-            ),
-            const SizedBox(height: AppSizes.spacingXS),
-            Text(
-              'Daire ${apartment.apartmentNumber}',
-              style: AppTypography.body2.copyWith(color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: AppSizes.spacingL),
-            _buildPaymentStatusCard(apartment),
-            const SizedBox(height: AppSizes.spacingL),
-            _buildQuickActionsRow(),
-            const SizedBox(height: AppSizes.spacingL),
-            Text(
-              'Son İşlemler',
-              style: AppTypography.h3.copyWith(color: AppColors.textPrimary),
-            ),
-            const SizedBox(height: AppSizes.spacingM),
-            _buildTransactionHistory(),
-          ],
-        ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildHomeTab(),
+          _buildDuesTab(),
+          _buildIssuesTab(),
+          _buildSettingsTab(),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
@@ -73,10 +73,72 @@ class ResidentDashboardScreen extends ConsumerWidget {
             label: 'Ayarlar',
           ),
         ],
-        currentIndex: 0,
+        currentIndex: _tabController.index,
         onTap: (index) {
-          // Navigation will be implemented later
+          setState(() {
+            _bottomNavIndex = index;
+            _tabController.animateTo(index);
+          });
         },
+      ),
+    );
+  }
+
+  Widget _buildHomeTab() {
+    final apartment = _getDummyApartment();
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppSizes.spacingL),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Hoş Geldiniz, ${apartment.residentName}',
+            style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
+          ),
+          const SizedBox(height: AppSizes.spacingXS),
+          Text(
+            'Daire ${apartment.apartmentNumber}',
+            style: AppTypography.body2.copyWith(color: AppColors.textSecondary),
+          ),
+          const SizedBox(height: AppSizes.spacingL),
+          _buildPaymentStatusCard(apartment),
+          const SizedBox(height: AppSizes.spacingL),
+          _buildQuickActionsRow(),
+          const SizedBox(height: AppSizes.spacingL),
+          Text(
+            'Son İşlemler',
+            style: AppTypography.h3.copyWith(color: AppColors.textPrimary),
+          ),
+          const SizedBox(height: AppSizes.spacingM),
+          _buildTransactionHistory(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDuesTab() {
+    return Center(
+      child: Text(
+        'Aidatlar Sekmesi',
+        style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
+      ),
+    );
+  }
+
+  Widget _buildIssuesTab() {
+    return Center(
+      child: Text(
+        'Arızalar Sekmesi',
+        style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
+      ),
+    );
+  }
+
+  Widget _buildSettingsTab() {
+    return Center(
+      child: Text(
+        'Ayarlar Sekmesi',
+        style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
       ),
     );
   }
