@@ -118,7 +118,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 enabled: !authState.isLoading,
                 decoration: InputDecoration(
                   labelText: 'Ad Soyad',
-                  hintText: 'Örn: Ahmet Yılmaz',
+                  hintText: 'Örn: Furkan Kaya',
                   prefixIcon: const Icon(Icons.person_outline),
                 ),
               ),
