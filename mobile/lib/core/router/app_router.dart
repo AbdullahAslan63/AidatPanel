@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/auth/presentation/screens/join_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/',
     routes: [
       GoRoute(
         path: '/',
         name: 'splash',
         builder: (context, state) {
-          return const Scaffold(body: SizedBox());
+          return const SplashScreen();
         },
       ),
       GoRoute(
@@ -32,7 +34,7 @@ class AppRouter {
         path: '/join',
         name: 'join',
         builder: (context, state) {
-          return const Scaffold(body: SizedBox());
+          return const JoinScreen();
         },
       ),
       GoRoute(

@@ -4,10 +4,13 @@ import '../models/login_request.dart';
 import '../models/login_response.dart';
 import '../models/register_request.dart';
 import '../models/register_response.dart';
+import '../models/join_request.dart';
+import '../models/join_response.dart';
 
 abstract class AuthRemoteDataSource {
   Future<LoginResponse> login(LoginRequest request);
   Future<RegisterResponse> register(RegisterRequest request);
+  Future<JoinResponse> join(JoinRequest request);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -31,5 +34,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: request.toJson(),
     );
     return RegisterResponse.fromJson(response.data);
+  }
+
+  @override
+  Future<JoinResponse> join(JoinRequest request) async {
+    final response = await _dioClient.post(
+      ApiConstants.join,
+      data: request.toJson(),
+    );
+    return JoinResponse.fromJson(response.data);
   }
 }

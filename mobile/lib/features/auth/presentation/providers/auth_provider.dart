@@ -93,6 +93,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> join(String inviteCode, String password, String name, String? phone) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final user = await _authRepository.join(inviteCode, password, name, phone);
+      state = state.copyWith(
+        isLoading: false,
+        user: user,
+        isAuthenticated: true,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
+    }
+  }
+
   Future<void> logout() async {
     await _authRepository.logout();
     state = AuthState();
