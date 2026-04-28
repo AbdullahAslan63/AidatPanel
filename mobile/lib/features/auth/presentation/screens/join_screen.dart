@@ -102,7 +102,7 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/login'),
+          onPressed: () => context.pop(),
         ),
       ),
       body: SafeArea(
@@ -220,7 +220,7 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
                   TextButton(
                     onPressed: authState.isLoading
                         ? null
-                        : () => context.go('/register'),
+                        : () => context.push('/register'),
                     child: const Text('Kaydol'),
                   ),
                 ],

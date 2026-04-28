@@ -115,7 +115,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   prefixIcon: const Icon(Icons.lock_outlined),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                     ),
                     onPressed: () {
                       setState(() => _obscurePassword = !_obscurePassword);
@@ -145,7 +147,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: authState.isLoading ? null : () => context.go('/register'),
+                    onPressed: authState.isLoading
+                        ? null
+                        : () => context.push('/register'),
                     child: const Text('Kaydol'),
                   ),
                 ],
@@ -161,7 +165,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: authState.isLoading ? null : () => context.go('/join'),
+                    onPressed: authState.isLoading
+                        ? null
+                        : () => context.push('/join'),
                     child: const Text('Katıl'),
                   ),
                 ],

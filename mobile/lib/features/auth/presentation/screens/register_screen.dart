@@ -100,7 +100,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/login'),
+          onPressed: () => context.pop(),
         ),
       ),
       body: SafeArea(
@@ -216,9 +216,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: authState.isLoading
-                        ? null
-                        : () => context.go('/login'),
+                    onPressed: authState.isLoading ? null : () => context.pop(),
                     child: const Text('Giriş Yap'),
                   ),
                 ],
