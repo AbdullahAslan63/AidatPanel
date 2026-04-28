@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/register_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -24,7 +25,7 @@ class AppRouter {
         path: '/register',
         name: 'register',
         builder: (context, state) {
-          return const Scaffold(body: SizedBox());
+          return const RegisterScreen();
         },
       ),
       GoRoute(

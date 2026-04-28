@@ -33,8 +33,6 @@ dependencies:
   firebase_core: ^3.0.0
   firebase_messaging: ^15.0.0
 
-  # In-App Purchase (RevenueCat)
-  purchases_flutter: ^7.0.0
 
   # UI
   cached_network_image: ^3.3.0
