@@ -11,13 +11,13 @@ class ManagerDashboardScreen extends ConsumerStatefulWidget {
   const ManagerDashboardScreen({super.key});
 
   @override
-  ConsumerState<ManagerDashboardScreen> createState() => _ManagerDashboardScreenState();
+  ConsumerState<ManagerDashboardScreen> createState() =>
+      _ManagerDashboardScreenState();
 }
 
 class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  int _bottomNavIndex = 0;
 
   @override
   void initState() {
@@ -42,9 +42,8 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await ref.read(authStateProvider.notifier).logout();
-              if (mounted) {
-                context.go('/');
-              }
+              if (!context.mounted) return;
+              context.go('/');
             },
           ),
         ],
@@ -60,27 +59,17 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Ana Sayfa',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Ana Sayfa'),
           BottomNavigationBarItem(
             icon: Icon(Icons.apartment),
             label: 'Binalar',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt),
-            label: 'Aidatlar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Ayarlar',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Aidatlar'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Ayarlar'),
         ],
         currentIndex: _tabController.index,
         onTap: (index) {
           setState(() {
-            _bottomNavIndex = index;
             _tabController.animateTo(index);
           });
         },
@@ -215,14 +204,16 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
                         children: [
                           Text(
                             building.name,
-                            style: AppTypography.h3
-                                .copyWith(color: AppColors.textPrimary),
+                            style: AppTypography.h3.copyWith(
+                              color: AppColors.textPrimary,
+                            ),
                           ),
                           const SizedBox(height: AppSizes.spacingXS),
                           Text(
                             building.address,
-                            style: AppTypography.body2
-                                .copyWith(color: AppColors.textSecondary),
+                            style: AppTypography.body2.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -243,7 +234,8 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
                   children: [
                     _buildBuildingInfo(
                       label: 'Daireler',
-                      value: '${building.occupiedApartments}/${building.totalApartments}',
+                      value:
+                          '${building.occupiedApartments}/${building.totalApartments}',
                     ),
                     _buildBuildingInfo(
                       label: 'Aidat Tahsilatı',
@@ -262,17 +254,11 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
         .toList();
   }
 
-  Widget _buildBuildingInfo({
-    required String label,
-    required String value,
-  }) {
+  Widget _buildBuildingInfo({required String label, required String value}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          value,
-          style: AppTypography.h4.copyWith(color: AppColors.primary),
-        ),
+        Text(value, style: AppTypography.h4.copyWith(color: AppColors.primary)),
         const SizedBox(height: AppSizes.spacingXS),
         Text(
           label,

@@ -11,13 +11,14 @@ class ResidentDashboardScreen extends ConsumerStatefulWidget {
   const ResidentDashboardScreen({super.key});
 
   @override
-  ConsumerState<ResidentDashboardScreen> createState() => _ResidentDashboardScreenState();
+  ConsumerState<ResidentDashboardScreen> createState() =>
+      _ResidentDashboardScreenState();
 }
 
-class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScreen>
+class _ResidentDashboardScreenState
+    extends ConsumerState<ResidentDashboardScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  int _bottomNavIndex = 0;
 
   @override
   void initState() {
@@ -42,9 +43,8 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await ref.read(authStateProvider.notifier).logout();
-              if (mounted) {
-                context.go('/');
-              }
+              if (!context.mounted) return;
+              context.go('/');
             },
           ),
         ],
@@ -60,27 +60,17 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Ana Sayfa',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt),
-            label: 'Aidatlar',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Ana Sayfa'),
+          BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Aidatlar'),
           BottomNavigationBarItem(
             icon: Icon(Icons.warning_outlined),
             label: 'Arızalar',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Ayarlar',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Ayarlar'),
         ],
         currentIndex: _tabController.index,
         onTap: (index) {
           setState(() {
-            _bottomNavIndex = index;
             _tabController.animateTo(index);
           });
         },
@@ -151,14 +141,14 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
     final statusColor = apartment.paymentStatus == PaymentStatus.paid
         ? AppColors.success
         : apartment.paymentStatus == PaymentStatus.pending
-            ? AppColors.warning
-            : AppColors.error;
+        ? AppColors.warning
+        : AppColors.error;
 
     final statusText = apartment.paymentStatus == PaymentStatus.paid
         ? 'Ödendi'
         : apartment.paymentStatus == PaymentStatus.pending
-            ? 'Beklemede'
-            : 'Gecikmiş';
+        ? 'Beklemede'
+        : 'Gecikmiş';
 
     return Container(
       padding: const EdgeInsets.all(AppSizes.spacingM),
@@ -175,7 +165,9 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
             children: [
               Text(
                 'Aylık Aidat',
-                style: AppTypography.body2.copyWith(color: AppColors.textSecondary),
+                style: AppTypography.body2.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -183,7 +175,7 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
                   vertical: AppSizes.spacingXS,
                 ),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -205,14 +197,18 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
                   ? 'Bakiye: ₺${apartment.balance.toStringAsFixed(2)}'
                   : 'Ödenmesi Gereken: ₺${(-apartment.balance).toStringAsFixed(2)}',
               style: AppTypography.body2.copyWith(
-                color: apartment.balance > 0 ? AppColors.success : AppColors.error,
+                color: apartment.balance > 0
+                    ? AppColors.success
+                    : AppColors.error,
               ),
             ),
           if (apartment.lastPaymentDate != null) ...[
             const SizedBox(height: AppSizes.spacingS),
             Text(
               'Son Ödeme: ${apartment.lastPaymentDate!.day}/${apartment.lastPaymentDate!.month}/${apartment.lastPaymentDate!.year}',
-              style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ],
@@ -260,7 +256,7 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
       child: Container(
         padding: const EdgeInsets.all(AppSizes.spacingM),
         decoration: BoxDecoration(
-          color: AppColors.primaryLight.withOpacity(0.1),
+          color: AppColors.primaryLight.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -270,7 +266,9 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
             Text(
               label,
               textAlign: TextAlign.center,
-              style: AppTypography.caption.copyWith(color: AppColors.textPrimary),
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textPrimary,
+              ),
             ),
           ],
         ),
@@ -280,9 +278,24 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
 
   Widget _buildTransactionHistory() {
     final transactions = [
-      {'date': '15 Nisan 2024', 'amount': '₺5,000', 'type': 'Ödeme', 'status': 'Başarılı'},
-      {'date': '15 Mart 2024', 'amount': '₺5,000', 'type': 'Ödeme', 'status': 'Başarılı'},
-      {'date': '15 Şubat 2024', 'amount': '₺5,000', 'type': 'Ödeme', 'status': 'Başarılı'},
+      {
+        'date': '15 Nisan 2024',
+        'amount': '₺5,000',
+        'type': 'Ödeme',
+        'status': 'Başarılı',
+      },
+      {
+        'date': '15 Mart 2024',
+        'amount': '₺5,000',
+        'type': 'Ödeme',
+        'status': 'Başarılı',
+      },
+      {
+        'date': '15 Şubat 2024',
+        'amount': '₺5,000',
+        'type': 'Ödeme',
+        'status': 'Başarılı',
+      },
     ];
 
     return Column(
@@ -304,12 +317,16 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
                     children: [
                       Text(
                         tx['type']!,
-                        style: AppTypography.h4.copyWith(color: AppColors.textPrimary),
+                        style: AppTypography.h4.copyWith(
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                       const SizedBox(height: AppSizes.spacingXS),
                       Text(
                         tx['date']!,
-                        style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                     ],
                   ),
@@ -318,12 +335,16 @@ class _ResidentDashboardScreenState extends ConsumerState<ResidentDashboardScree
                     children: [
                       Text(
                         tx['amount']!,
-                        style: AppTypography.h4.copyWith(color: AppColors.success),
+                        style: AppTypography.h4.copyWith(
+                          color: AppColors.success,
+                        ),
                       ),
                       const SizedBox(height: AppSizes.spacingXS),
                       Text(
                         tx['status']!,
-                        style: AppTypography.caption.copyWith(color: AppColors.success),
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.success,
+                        ),
                       ),
                     ],
                   ),
