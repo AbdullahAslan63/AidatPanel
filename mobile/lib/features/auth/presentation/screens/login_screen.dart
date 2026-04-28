@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../shared/widgets/toast_overlay.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -37,9 +38,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email ve şifre boş bırakılamaz')),
-      );
+      ref
+          .read(toastProvider.notifier)
+          .show('Email ve şifre boş bırakılamaz', type: ToastType.error);
       return;
     }
 
@@ -58,9 +59,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           context.go('/resident-dashboard');
         }
       } else if (next.error != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.error ?? 'Bir hata oluştu')),
-        );
+        ref
+            .read(toastProvider.notifier)
+            .show(next.error ?? 'Bir hata oluştu', type: ToastType.error);
       }
     });
 

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../shared/widgets/toast_overlay.dart';
 import '../providers/auth_provider.dart';
 
 class JoinScreen extends ConsumerStatefulWidget {
@@ -51,25 +52,26 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
     final confirmPassword = _confirmPasswordController.text;
 
     if (inviteCode.isEmpty || name.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Davet kodu, ad ve şifre boş bırakılamaz'),
-        ),
-      );
+      ref
+          .read(toastProvider.notifier)
+          .show(
+            'Davet kodu, ad ve şifre boş bırakılamaz',
+            type: ToastType.error,
+          );
       return;
     }
 
     if (password != confirmPassword) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Şifreler eşleşmiyor')));
+      ref
+          .read(toastProvider.notifier)
+          .show('Şifreler eşleşmiyor', type: ToastType.error);
       return;
     }
 
     if (password.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Şifre en az 6 karakter olmalı')),
-      );
+      ref
+          .read(toastProvider.notifier)
+          .show('Şifre en az 6 karakter olmalı', type: ToastType.error);
       return;
     }
 
@@ -90,9 +92,9 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
           context.go('/resident-dashboard');
         }
       } else if (next.error != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.error ?? 'Bir hata oluştu')),
-        );
+        ref
+            .read(toastProvider.notifier)
+            .show(next.error ?? 'Bir hata oluştu', type: ToastType.error);
       }
     });
 
