@@ -62,10 +62,24 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> login(String email, String password) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      final user = await _authRepository.login(email, password);
+      // TODO: Remove this dummy data when backend is ready
+      await Future.delayed(const Duration(seconds: 2));
+      
+      // Determine role based on email for demo purposes
+      final role = email.contains('manager') ? UserRole.manager : UserRole.resident;
+      
+      final dummyUser = UserEntity(
+        id: '1',
+        email: email,
+        name: 'Furkan Kaya',
+        phone: '+905551234567',
+        role: role,
+        language: 'en',
+      );
+      
       state = state.copyWith(
         isLoading: false,
-        user: user,
+        user: dummyUser,
         isAuthenticated: true,
       );
     } catch (e) {

@@ -4,6 +4,8 @@ import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/join_screen.dart';
+import '../../features/buildings/presentation/screens/manager_dashboard_screen.dart';
+import '../../features/apartments/presentation/screens/resident_dashboard_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -41,14 +43,14 @@ class AppRouter {
         path: '/manager-dashboard',
         name: 'manager_dashboard',
         builder: (context, state) {
-          return const Scaffold(body: SizedBox());
+          return const ManagerDashboardScreen();
         },
       ),
       GoRoute(
         path: '/resident-dashboard',
         name: 'resident_dashboard',
         builder: (context, state) {
-          return const Scaffold(body: SizedBox());
+          return const ResidentDashboardScreen();
         },
       ),
     ],

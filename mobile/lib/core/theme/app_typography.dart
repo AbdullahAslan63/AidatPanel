@@ -25,6 +25,13 @@ class AppTypography {
     fontFamily: fontFamily,
   );
 
+  static const TextStyle h4 = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    height: 1.4,
+    fontFamily: fontFamily,
+  );
+
   // Gövde metni
   static const TextStyle body1 = TextStyle(
     fontSize: 16,
