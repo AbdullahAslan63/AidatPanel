@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../shared/widgets/settings_tab.dart';
 import '../../domain/entities/building_entity.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
 
 class ManagerDashboardScreen extends ConsumerStatefulWidget {
   const ManagerDashboardScreen({super.key});
@@ -34,20 +33,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Yönetici Paneli'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await ref.read(authStateProvider.notifier).logout();
-              if (!context.mounted) return;
-              context.go('/');
-            },
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Yönetici Paneli'), centerTitle: true),
       body: TabBarView(
         controller: _tabController,
         children: [
@@ -121,12 +107,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   Widget _buildSettingsTab() {
-    return Center(
-      child: Text(
-        'Ayarlar Sekmesi',
-        style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
-      ),
-    );
+    return const SettingsTab();
   }
 
   Widget _buildStatsRow(BuildContext context) {
