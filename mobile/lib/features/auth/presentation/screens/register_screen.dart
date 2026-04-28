@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -136,12 +137,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               TextField(
                 controller: _phoneController,
                 enabled: !authState.isLoading,
-                keyboardType: TextInputType.phone,
+                keyboardType: TextInputType.number,
+                maxLength: 10,
                 decoration: InputDecoration(
                   labelText: 'Telefon (Opsiyonel)',
-                  hintText: '+90 5XX XXX XXXX',
+                  hintText: '5XX XXX XXXX',
+                  prefixText: '+90 ',
                   prefixIcon: const Icon(Icons.phone_outlined),
+                  counterText: '',
                 ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
               ),
               const SizedBox(height: AppSizes.spacingM),
               TextField(
