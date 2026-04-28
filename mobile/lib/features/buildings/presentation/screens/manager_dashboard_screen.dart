@@ -149,16 +149,13 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.primary, size: 28),
+          Icon(icon, color: Colors.white, size: 28),
           const SizedBox(height: AppSizes.spacingS),
-          Text(
-            value,
-            style: AppTypography.h2.copyWith(color: AppColors.primary),
-          ),
+          Text(value, style: AppTypography.h2.copyWith(color: Colors.white)),
           const SizedBox(height: AppSizes.spacingXS),
           Text(
             title,
-            style: AppTypography.body2.copyWith(color: AppColors.textSecondary),
+            style: AppTypography.body2.copyWith(color: Colors.white70),
           ),
         ],
       ),
