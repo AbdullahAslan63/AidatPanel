@@ -40,16 +40,25 @@ class InviteCodeHelpers {
     return '${d.inMinutes} dk';
   }
 
-  /// Yeni davet kodu üretir. Format: "G1-1A-X7K9"
+  /// Yeni davet kodu üretir.
+  /// Format: "AP{binaKodu}-{daireNo}-{rastgele4}"  (örn: "AP425-1A-X7K9")
+  /// - AP: Sabit "Apartman" prefix (plan'a uygun)
+  /// - binaKodu: Bina ID'sinden türetilmiş 3 haneli stabil numara
+  /// - daireNo: Daire numarası (1A, 2B, vb.)
+  /// - rastgele4: Güvenlik için 4 karakter alfanumerik
   static String generateCode(BuildingEntity b, ApartmentEntity a) {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     final rnd = Random.secure();
     String pick(int n) =>
         List.generate(n, (_) => chars[rnd.nextInt(chars.length)]).join();
-    final prefix = b.name.isNotEmpty
-        ? b.name.substring(0, 1).toUpperCase()
-        : 'A';
-    return '$prefix${b.id}-${a.apartmentNumber.toUpperCase()}-${pick(4)}';
+
+    // Bina ID'sinden stabil 3 haneli numara (0-999 arası)
+    final shortBuildingId = (b.id.hashCode.abs() % 1000).toString().padLeft(
+      3,
+      '0',
+    );
+
+    return 'AP$shortBuildingId-${a.apartmentNumber.toUpperCase()}-${pick(4)}';
   }
 
   /// Paylaşılacak mesajı oluşturur.
