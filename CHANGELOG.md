@@ -4,18 +4,22 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
-## Hot Fixes (f0.0.7 sonrası)
-**Tarih:** 2025-04-29
+## Hot Fixes (0.0.7 sonrası)
+**Tarih:** 2026-04-30
 
 ### 🐛 Düzeltmeler
+- Uygulama versiyonu 0.0.7 yapıldı (pubspec.yaml, appConstants, settings)
+- LFS kaldırıldı, APK'ler GitHub'dan silindi
+- APK yedekleme script'i oluşturuldu (D:\AidatPanel\build_apk_backup.bat)
+- Versiyon referansları dinamik hale getirildi (login, register, join ekranları)
 - Login ekranı layout iyileştirmesi: MainAxisAlignment.center eklendi
 - Dinamik height sabit AppSizes.spacingL ile değiştirildi
 - Responsive layout daha tutarlı hale getirildi
-- Login ekranına copyright metni eklendi (© Vefa Yazılım f0.0.7)
+- Copyright metni dinamik versiyon referansı kullanıyor
 
 ---
 
-## f0.0.7 - Davet Kodu Sistemi ve Bina Yönetimi
+## 0.0.7 - Davet Kodu Sistemi ve Bina Yönetimi
 **Tarih:** 2025-04-29
 
 ### 🚀 Yeni Özellikler
@@ -44,7 +48,7 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
-## f0.0.6 - Toast Sistemi ve Ayarlar Sekmesi
+## 0.0.6 - Toast Sistemi ve Ayarlar Sekmesi
 **Tarih:** Önceki checkpoint
 
 ### 🚀 Yeni Özellikler
@@ -64,7 +68,7 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
-## f0.0.5 - Bina Sekmesi ve Dashboard Temelleri
+## 0.0.5 - Bina Sekmesi ve Dashboard Temelleri
 **Tarih:** Önceki dönem
 
 ### 🚀 Yeni Özellikler
@@ -84,7 +88,7 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
-## f0.0.4 - Dashboard ve Kimlik Doğrulama
+## 0.0.4 - Dashboard ve Kimlik Doğrulama
 **Tarih:** Önceki dönem
 
 ### 🚀 Yeni Özellikler
@@ -98,7 +102,7 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
-## f0.0.3 - Splash ve Katılım Ekranları
+## 0.0.3 - Splash ve Katılım Ekranları
 **Tarih:** Önceki dönem
 
 ### 🚀 Yeni Özellikler
@@ -112,7 +116,7 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
-## f0.0.2 - Giriş ve Kayıt Ekranları
+## 0.0.2 - Giriş ve Kayıt Ekranları
 **Tarih:** Önceki dönem
 
 ### 🚀 Yeni Özellikler
@@ -127,7 +131,7 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
-## f0.0.1 - Flutter Projesi Başlangıcı
+## 0.0.1 - Flutter Projesi Başlangıcı
 **Tarih:** Önceki dönem
 
 ### 🚀 Yeni Özellikler
