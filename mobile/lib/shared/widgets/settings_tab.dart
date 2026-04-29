@@ -75,7 +75,7 @@ class SettingsTab extends ConsumerWidget {
               _SettingsTile(
                 icon: Icons.info_outline,
                 title: 'Hakkında',
-                trailing: 'v0.0.6',
+                trailing: 'v0.0.7',
                 onTap: () => _showAboutDialog(context),
               ),
             ],
@@ -143,7 +143,7 @@ class SettingsTab extends ConsumerWidget {
     showAboutDialog(
       context: context,
       applicationName: 'AidatPanel',
-      applicationVersion: 'v0.0.5',
+      applicationVersion: 'v0.0.7',
       applicationLegalese: '© 2026 AidatPanel\nTüm hakları saklıdır.',
       children: [
         const SizedBox(height: AppSizes.spacingM),

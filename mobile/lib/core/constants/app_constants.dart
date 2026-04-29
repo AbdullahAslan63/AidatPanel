@@ -1,7 +1,7 @@
 class AppConstants {
   // App info
   static const String appName = 'AidatPanel';
-  static const String appVersion = '1.0.0';
+  static const String appVersion = '0.0.7';
 
   // Storage keys
   static const String tokenKey = 'access_token';
