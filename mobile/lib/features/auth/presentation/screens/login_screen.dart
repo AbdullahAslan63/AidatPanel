@@ -86,9 +86,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSizes.spacingL),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.1),
               Text(
                 'AidatPanel',
                 textAlign: TextAlign.center,
@@ -105,7 +105,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   color: AppColors.textSecondary,
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.08),
+              const SizedBox(height: AppSizes.spacingL),
               Text(
                 'Giriş Yap',
                 style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
@@ -232,6 +232,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 title: 'Davet kodu ile katılın',
                 onTap: authState.isLoading ? null : () => context.push('/join'),
                 isEnabled: !authState.isLoading,
+              ),
+              const SizedBox(height: AppSizes.spacingXL),
+              Text(
+                '© Vefa Yazılım  f0.0.7',
+                textAlign: TextAlign.center,
+                style: AppTypography.caption.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),
