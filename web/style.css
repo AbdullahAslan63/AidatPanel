@@ -58,23 +58,37 @@ header {
     color: var(--accent); 
 }
 
+/* Genel Buton Yapısı (Tüm butonlar için ortak) */
 .btn {
-    display: inline-block;
-    padding: 16px 32px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    min-height: 48px;
-    text-align: center;
-    border: 2px solid transparent;
+    display: inline-flex;    /* İkon ve yazıyı yan yana getirmek için Flexbox */
+    align-items: center;     /* Dikeyde tam orta */
+    justify-content: center; /* Yatayda tam orta */
+    padding: 12px 24px;      /* Tıklama alanını büyütür (50+ yaş kuralı) */
+    border-radius: 10px;     /* Köşeleri yumuşatır */
+    text-decoration: none;   /* Alt çizgiyi kaldırır */
+    font-weight: 700;        /* Yazıyı kalınlaştırır */
+    font-size: 18px;         /* Okunabilirlik için büyük font (Min 16px) */
+    min-height: 56px;        /* Dokunma alanı min 48px olmalı, biz 56px yapıyoruz */
+    transition: 0.3s;        /* Geçiş efekti */
 }
 
-.btn-primary { 
-    background: var(--primary); 
-    color: var(--white);
+.btn-icon {
+    width: 28px;
+    height: 28px;
+    margin-right: 12px;
+    /* Eğer ikonların şeffaf arka planı yoksa bu satırı silmelisin */
+    /* filter: brightness(0) invert(1); */ 
+    object-fit: contain; /* İkonun kutu içinde yamulmasını engeller */
 }
 
+.btn-primary {
+    background-color: var(--primary); /* Lacivert rengimiz */
+    color: white !important;
+    display: inline-flex;    /* İkon ve yazıyı yan yana dizmek için */
+    align-items: center;     /* Dikeyde ortalamak için */
+    justify-content: center; /* Yatayda ortalamak için */
+    min-width: 220px;
+}
 .btn-primary:hover {
     background: #153052;
     transform: translateY(-2px);
@@ -99,6 +113,41 @@ header {
 
 .btn i {
     margin-right: 8px;
+}
+
+/* Mağaza Butonları Konteynırı */
+.store-buttons {
+    display: flex;
+    gap: 20px;               /* Butonlar arası boşluk */
+    justify-content: center; /* Ortala */
+    flex-wrap: wrap;         /* Mobilde alt alta geçsin */
+    margin-top: 30px;
+}
+
+/* Rozet Link Yapısı */
+.store-link {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;        /* Taşan kısımları kes */
+    line-height: 0;          /* Alt boşluğu sıfırla */
+}
+
+.store-link:hover {
+    transform: translateY(-5px); /* Üzerine gelince hafif kalksın */
+}
+
+/* Rozet Resim Boyutu */
+.store-img {
+    height: 60px;            /* 50+ yaş için büyük ve tıklanabilir boyut (Min 48px) */
+    width: auto;             /* Oranı bozma */
+    display: block;
+}
+
+.store-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* Hero */
