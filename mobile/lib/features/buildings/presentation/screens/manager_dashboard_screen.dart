@@ -8,6 +8,7 @@ import '../../../../shared/widgets/toast_overlay.dart';
 import '../../../apartments/domain/entities/apartment_entity.dart';
 import '../../domain/entities/building_entity.dart';
 import 'building_residents_screen.dart';
+import 'invite_code_screen.dart';
 
 class ManagerDashboardScreen extends ConsumerStatefulWidget {
   const ManagerDashboardScreen({super.key});
@@ -324,9 +325,15 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   void _onCreateInviteCodePressed() {
-    ref
-        .read(toastProvider.notifier)
-        .show('Davet kodu özelliği yakında', type: ToastType.info);
+    Navigator.push<void>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => InviteCodeScreen(
+          buildings: _getDummyBuildings(),
+          apartmentsLoader: _getDummyApartments,
+        ),
+      ),
+    );
   }
 
   void _onBuildingTapped(BuildingEntity building) {
