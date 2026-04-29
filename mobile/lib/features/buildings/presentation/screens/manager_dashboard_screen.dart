@@ -4,9 +4,11 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/settings_tab.dart';
-import '../../../../shared/widgets/toast_overlay.dart';
+import '../../../apartments/data/apartments_store.dart';
 import '../../../apartments/domain/entities/apartment_entity.dart';
+import '../../data/buildings_store.dart';
 import '../../domain/entities/building_entity.dart';
+import 'add_building_screen.dart';
 import 'building_residents_screen.dart';
 import 'invite_code_screen.dart';
 
@@ -71,7 +73,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   Widget _buildHomeTab() {
-    final buildings = _getDummyBuildings();
+    final buildings = ref.watch(buildingsStoreProvider);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSizes.spacingL),
       child: Column(
@@ -96,7 +98,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   Widget _buildBuildingsTab() {
-    final buildings = _getDummyBuildings();
+    final buildings = ref.watch(buildingsStoreProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSizes.spacingL),
@@ -319,9 +321,10 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   void _onAddBuildingPressed() {
-    ref
-        .read(toastProvider.notifier)
-        .show('Bina ekleme özelliği yakında', type: ToastType.info);
+    Navigator.push<void>(
+      context,
+      MaterialPageRoute(builder: (_) => const AddBuildingScreen()),
+    );
   }
 
   void _onCreateInviteCodePressed() {
@@ -329,7 +332,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
       context,
       MaterialPageRoute(
         builder: (_) => InviteCodeScreen(
-          buildings: _getDummyBuildings(),
+          buildings: ref.read(buildingsStoreProvider),
           apartmentsLoader: _getDummyApartments,
         ),
       ),
@@ -349,114 +352,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   List<ApartmentEntity> _getDummyApartments(String buildingId) {
-    final all = <String, List<ApartmentEntity>>{
-      '1': [
-        ApartmentEntity(
-          id: '1-1',
-          buildingId: '1',
-          apartmentNumber: '1A',
-          residentName: 'Ahmet Yılmaz',
-          phone: '+905551112233',
-          monthlyDues: 1000,
-          paymentStatus: PaymentStatus.paid,
-          balance: 0,
-        ),
-        ApartmentEntity(
-          id: '1-2',
-          buildingId: '1',
-          apartmentNumber: '1B',
-          residentName: 'Mehmet Demir',
-          phone: '+905552223344',
-          monthlyDues: 1000,
-          paymentStatus: PaymentStatus.pending,
-          balance: 1000,
-        ),
-        ApartmentEntity(
-          id: '1-3',
-          buildingId: '1',
-          apartmentNumber: '2A',
-          residentName: 'Ayşe Kaya',
-          phone: '+905553334455',
-          monthlyDues: 1000,
-          paymentStatus: PaymentStatus.paid,
-          balance: 0,
-        ),
-        ApartmentEntity(
-          id: '1-4',
-          buildingId: '1',
-          apartmentNumber: '2B',
-          residentName: 'Fatma Şahin',
-          phone: '+905554445566',
-          monthlyDues: 1000,
-          paymentStatus: PaymentStatus.overdue,
-          balance: 3000,
-        ),
-        ApartmentEntity(
-          id: '1-5',
-          buildingId: '1',
-          apartmentNumber: '3A',
-          residentName: 'Boş Daire',
-          monthlyDues: 1000,
-          paymentStatus: PaymentStatus.pending,
-          balance: 0,
-        ),
-      ],
-      '2': [
-        ApartmentEntity(
-          id: '2-1',
-          buildingId: '2',
-          apartmentNumber: '1A',
-          residentName: 'Ali Veli',
-          phone: '+905556667788',
-          monthlyDues: 1500,
-          paymentStatus: PaymentStatus.paid,
-          balance: 0,
-        ),
-        ApartmentEntity(
-          id: '2-2',
-          buildingId: '2',
-          apartmentNumber: '1B',
-          residentName: 'Zeynep Aydın',
-          phone: '+905557778899',
-          monthlyDues: 1500,
-          paymentStatus: PaymentStatus.paid,
-          balance: 0,
-        ),
-        ApartmentEntity(
-          id: '2-3',
-          buildingId: '2',
-          apartmentNumber: '2A',
-          residentName: 'Hasan Çelik',
-          phone: '+905558889900',
-          monthlyDues: 1500,
-          paymentStatus: PaymentStatus.pending,
-          balance: 1500,
-        ),
-      ],
-      '3': [
-        ApartmentEntity(
-          id: '3-1',
-          buildingId: '3',
-          apartmentNumber: '1A',
-          residentName: 'Emre Öztürk',
-          phone: '+905559990011',
-          monthlyDues: 1200,
-          paymentStatus: PaymentStatus.paid,
-          balance: 0,
-        ),
-        ApartmentEntity(
-          id: '3-2',
-          buildingId: '3',
-          apartmentNumber: '1B',
-          residentName: 'Selin Arslan',
-          phone: '+905550001122',
-          monthlyDues: 1200,
-          paymentStatus: PaymentStatus.overdue,
-          balance: 3600,
-        ),
-      ],
-    };
-    return all[buildingId] ?? const [];
+    return ref.read(apartmentsStoreProvider.notifier).apartmentsFor(buildingId);
   }
 
   Widget _buildDuesTab() {
@@ -606,37 +502,5 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
         ),
       ],
     );
-  }
-
-  List<BuildingEntity> _getDummyBuildings() {
-    return [
-      BuildingEntity(
-        id: '1',
-        name: 'Güneş Apartmanı',
-        address: 'Atatürk Cad. No: 45, Beşiktaş, İstanbul',
-        totalApartments: 12,
-        occupiedApartments: 11,
-        totalMonthlyDues: 12000,
-        collectedDues: 10500,
-      ),
-      BuildingEntity(
-        id: '2',
-        name: 'Mavi Gözler Sitesi',
-        address: 'Cumhuriyet Cad. No: 78, Taksim, İstanbul',
-        totalApartments: 24,
-        occupiedApartments: 22,
-        totalMonthlyDues: 24000,
-        collectedDues: 21600,
-      ),
-      BuildingEntity(
-        id: '3',
-        name: 'Yeşil Vadi Konutları',
-        address: 'Bağdat Cad. No: 123, Kadıköy, İstanbul',
-        totalApartments: 18,
-        occupiedApartments: 16,
-        totalMonthlyDues: 18000,
-        collectedDues: 16200,
-      ),
-    ];
   }
 }
