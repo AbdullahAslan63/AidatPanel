@@ -4,7 +4,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/settings_tab.dart';
-import '../../../../shared/widgets/toast_overlay.dart';
 import '../../domain/entities/building_entity.dart';
 
 class ManagerDashboardScreen extends ConsumerStatefulWidget {
@@ -93,114 +92,10 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   Widget _buildBuildingsTab() {
-    final buildings = _getDummyBuildings();
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSizes.spacingL),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    ref
-                        .read(toastProvider.notifier)
-                        .show(
-                          'Bina ekleme özelliği yakında',
-                          type: ToastType.info,
-                        );
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Bina Ekle'),
-                ),
-              ),
-              const SizedBox(width: AppSizes.spacingM),
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    _showInviteCodeDialog();
-                  },
-                  icon: const Icon(Icons.card_giftcard),
-                  label: const Text('Davet Kodu'),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSizes.spacingL),
-          Text(
-            'Binalar',
-            style: AppTypography.h3.copyWith(color: AppColors.textPrimary),
-          ),
-          const SizedBox(height: AppSizes.spacingM),
-          ...buildings.map((building) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: AppSizes.spacingM),
-              padding: const EdgeInsets.all(AppSizes.spacingM),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.borderColor),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    building.name,
-                    style: AppTypography.h4.copyWith(
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: AppSizes.spacingS),
-                  Text(
-                    building.address,
-                    style: AppTypography.body2.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: AppSizes.spacingM),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${building.totalApartments} Daire',
-                        style: AppTypography.body2.copyWith(
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      Text(
-                        '%${building.collectionRate.toStringAsFixed(0)} Tahsilat',
-                        style: AppTypography.body2.copyWith(
-                          color: AppColors.success,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-        ],
-      ),
-    );
-  }
-
-  void _showInviteCodeDialog() {
-    showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Davet Kodu Oluştur'),
-        content: const Text('Davet kodu özelliği yakında eklenecek'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Kapat'),
-          ),
-        ],
+    return Center(
+      child: Text(
+        'Binalar Sekmesi',
+        style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
       ),
     );
   }
