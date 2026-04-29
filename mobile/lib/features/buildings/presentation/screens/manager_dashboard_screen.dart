@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/settings_tab.dart';
+import '../../../../shared/widgets/toast_overlay.dart';
 import '../../domain/entities/building_entity.dart';
 
 class ManagerDashboardScreen extends ConsumerStatefulWidget {
@@ -92,12 +93,227 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   Widget _buildBuildingsTab() {
-    return Center(
-      child: Text(
-        'Binalar Sekmesi',
-        style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
+    final buildings = _getDummyBuildings();
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppSizes.spacingL),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Üst buton satırı
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: AppSizes.buttonHeightPrimary,
+                  child: ElevatedButton.icon(
+                    onPressed: _onAddBuildingPressed,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.add_business),
+                    label: const Text('Bina Ekle'),
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSizes.spacingM),
+              Expanded(
+                child: SizedBox(
+                  height: AppSizes.buttonHeightPrimary,
+                  child: ElevatedButton.icon(
+                    onPressed: _onCreateInviteCodePressed,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.accent,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.qr_code_2),
+                    label: const Text('Davet Kodu'),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSizes.spacingL),
+
+          // Başlık
+          Text(
+            'Binalarım',
+            style: AppTypography.h3.copyWith(color: AppColors.textPrimary),
+          ),
+          const SizedBox(height: AppSizes.spacingM),
+
+          // Bina listesi - her satırda bir bina, geniş detaylı
+          ...buildings.map((building) => _buildDetailedBuildingCard(building)),
+        ],
       ),
     );
+  }
+
+  Widget _buildDetailedBuildingCard(BuildingEntity building) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSizes.spacingM),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Üst kısım: ikon + ad + adres
+          Padding(
+            padding: const EdgeInsets.all(AppSizes.spacingM),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.apartment,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: AppSizes.spacingM),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        building.name,
+                        style: AppTypography.h4.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: AppSizes.spacingXS),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.location_on_outlined,
+                            size: 16,
+                            color: AppColors.textSecondary,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              building.address,
+                              style: AppTypography.body2.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Ayraç
+          Container(height: 1, color: AppColors.borderColor),
+
+          // Alt kısım: detaylı istatistikler
+          Padding(
+            padding: const EdgeInsets.all(AppSizes.spacingM),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _buildStatItem(
+                    icon: Icons.door_front_door_outlined,
+                    label: 'Daire',
+                    value:
+                        '${building.occupiedApartments}/${building.totalApartments}',
+                    color: AppColors.primary,
+                  ),
+                ),
+                Container(width: 1, height: 40, color: AppColors.borderColor),
+                Expanded(
+                  child: _buildStatItem(
+                    icon: Icons.trending_up,
+                    label: 'Tahsilat',
+                    value: '%${building.collectionRate.toStringAsFixed(0)}',
+                    color: AppColors.success,
+                  ),
+                ),
+                Container(width: 1, height: 40, color: AppColors.borderColor),
+                Expanded(
+                  child: _buildStatItem(
+                    icon: Icons.payments_outlined,
+                    label: 'Aylık Aidat',
+                    value: '₺${building.totalMonthlyDues.toStringAsFixed(0)}',
+                    color: AppColors.accent,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: color, size: 22),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: AppTypography.body1.copyWith(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+        ),
+      ],
+    );
+  }
+
+  void _onAddBuildingPressed() {
+    ref
+        .read(toastProvider.notifier)
+        .show('Bina ekleme özelliği yakında', type: ToastType.info);
+  }
+
+  void _onCreateInviteCodePressed() {
+    ref
+        .read(toastProvider.notifier)
+        .show('Davet kodu özelliği yakında', type: ToastType.info);
   }
 
   Widget _buildDuesTab() {
