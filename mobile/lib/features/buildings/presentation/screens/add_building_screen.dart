@@ -21,7 +21,8 @@ class _AddBuildingScreenState extends ConsumerState<AddBuildingScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
-  final _apartmentCountController = TextEditingController();
+  final _floorsController = TextEditingController();
+  final _apartmentsPerFloorController = TextEditingController();
   final _monthlyDuesController = TextEditingController();
 
   String? _selectedCity;
@@ -31,7 +32,8 @@ class _AddBuildingScreenState extends ConsumerState<AddBuildingScreen> {
   void dispose() {
     _nameController.dispose();
     _addressController.dispose();
-    _apartmentCountController.dispose();
+    _floorsController.dispose();
+    _apartmentsPerFloorController.dispose();
     _monthlyDuesController.dispose();
     super.dispose();
   }
@@ -81,15 +83,35 @@ class _AddBuildingScreenState extends ConsumerState<AddBuildingScreen> {
               ),
               const SizedBox(height: AppSizes.spacingL),
 
-              _buildSectionTitle('Detaylar (opsiyonel)', Icons.tune),
+              _buildSectionTitle('Detaylar', Icons.tune),
               const SizedBox(height: AppSizes.spacingM),
-              _buildTextField(
-                controller: _apartmentCountController,
-                label: 'Daire Sayısı',
-                hint: 'Örn: 12',
-                icon: Icons.door_front_door_outlined,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _buildTextField(
+                      controller: _floorsController,
+                      label: 'Kat Sayısı',
+                      hint: 'Örn: 4',
+                      icon: Icons.stairs_outlined,
+                      required: true,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    ),
+                  ),
+                  const SizedBox(width: AppSizes.spacingM),
+                  Expanded(
+                    child: _buildTextField(
+                      controller: _apartmentsPerFloorController,
+                      label: 'Kattaki Daire',
+                      hint: 'Örn: 2',
+                      icon: Icons.door_front_door_outlined,
+                      required: true,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: AppSizes.spacingM),
               _buildTextField(
@@ -97,6 +119,7 @@ class _AddBuildingScreenState extends ConsumerState<AddBuildingScreen> {
                 label: 'Aylık Aidat (₺)',
                 hint: 'Örn: 1000',
                 icon: Icons.payments_outlined,
+                required: true,
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
@@ -344,30 +367,41 @@ class _AddBuildingScreenState extends ConsumerState<AddBuildingScreen> {
 
     final fullAddress =
         '${_addressController.text.trim()}, $_selectedDistrict, $_selectedCity';
-    final apartmentCount =
-        int.tryParse(_apartmentCountController.text.trim()) ?? 0;
+    final floors = int.tryParse(_floorsController.text.trim()) ?? 0;
+    final apartmentsPerFloor =
+        int.tryParse(_apartmentsPerFloorController.text.trim()) ?? 0;
+    final totalApartments = floors * apartmentsPerFloor;
     final monthlyDues =
         double.tryParse(_monthlyDuesController.text.trim()) ?? 0;
+
+    if (floors <= 0 || apartmentsPerFloor <= 0) {
+      ref
+          .read(toastProvider.notifier)
+          .show(
+            'Kat sayısı ve daire sayısı 0\'dan büyük olmalı',
+            type: ToastType.error,
+          );
+      return;
+    }
 
     final newBuildingId = ref
         .read(buildingsStoreProvider.notifier)
         .addBuilding(
           name: _nameController.text.trim(),
           address: fullAddress,
-          totalApartments: apartmentCount,
+          totalApartments: totalApartments,
           monthlyDuesPerApartment: monthlyDues,
         );
 
-    // Daire sayısı verilmişse otomatik olarak boş daireleri oluştur
-    if (apartmentCount > 0) {
-      ref
-          .read(apartmentsStoreProvider.notifier)
-          .generateApartmentsForBuilding(
-            buildingId: newBuildingId,
-            totalApartments: apartmentCount,
-            monthlyDues: monthlyDues,
-          );
-    }
+    // Daireleri otomatik üret (kat × daire/kat)
+    ref
+        .read(apartmentsStoreProvider.notifier)
+        .generateApartmentsForBuilding(
+          buildingId: newBuildingId,
+          floors: floors,
+          apartmentsPerFloor: apartmentsPerFloor,
+          monthlyDues: monthlyDues,
+        );
 
     ref
         .read(toastProvider.notifier)

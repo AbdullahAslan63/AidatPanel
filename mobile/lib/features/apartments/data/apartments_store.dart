@@ -113,33 +113,39 @@ class ApartmentsStore
   }
 
   /// Yeni bina için otomatik daire üret.
-  /// Her katta 4 daire (A, B, C, D) varsayımı ile.
+  /// [floors] = kat sayısı, [apartmentsPerFloor] = her kattaki daire sayısı.
+  /// Daireler A, B, C, ... harflerle isimlendirilir (örn: 1A, 1B, 2A, 2B).
   void generateApartmentsForBuilding({
     required String buildingId,
-    required int totalApartments,
+    required int floors,
+    required int apartmentsPerFloor,
     required double monthlyDues,
   }) {
-    if (totalApartments <= 0) {
+    if (floors <= 0 || apartmentsPerFloor <= 0) {
       state = {...state, buildingId: const []};
       return;
     }
-    const lettersPerFloor = ['A', 'B', 'C', 'D'];
+    const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     final apartments = <ApartmentEntity>[];
-    for (int i = 0; i < totalApartments; i++) {
-      final floor = (i ~/ lettersPerFloor.length) + 1;
-      final letterIndex = i % lettersPerFloor.length;
-      final letter = lettersPerFloor[letterIndex];
-      apartments.add(
-        ApartmentEntity(
-          id: '$buildingId-${i + 1}',
-          buildingId: buildingId,
-          apartmentNumber: '$floor$letter',
-          residentName: 'Boş Daire',
-          monthlyDues: monthlyDues,
-          paymentStatus: PaymentStatus.pending,
-          balance: 0,
-        ),
-      );
+    int counter = 1;
+    for (int floor = 1; floor <= floors; floor++) {
+      for (int i = 0; i < apartmentsPerFloor; i++) {
+        final letter = i < allLetters.length
+            ? allLetters[i]
+            : '${i + 1}'; // 26'dan fazla daire varsa sayıya geç
+        apartments.add(
+          ApartmentEntity(
+            id: '$buildingId-$counter',
+            buildingId: buildingId,
+            apartmentNumber: '$floor$letter',
+            residentName: 'Boş Daire',
+            monthlyDues: monthlyDues,
+            paymentStatus: PaymentStatus.pending,
+            balance: 0,
+          ),
+        );
+        counter++;
+      }
     }
     state = {...state, buildingId: apartments};
   }
