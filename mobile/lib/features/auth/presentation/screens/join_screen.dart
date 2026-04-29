@@ -26,6 +26,8 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
   late TextEditingController _confirmPasswordController;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  String? _inviteCodeError;
+  String? _phoneError;
 
   @override
   void initState() {
@@ -153,7 +155,19 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
                       labelText: 'Davet Kodu',
                       hintText: 'AP3-B12-X7K9',
                       prefixIcon: const Icon(Icons.vpn_key_outlined),
+                      errorText: _inviteCodeError,
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        if (value.isNotEmpty &&
+                            !AuthValidators.isValidInviteCode(value)) {
+                          _inviteCodeError =
+                              'Geçersiz davet kodu formatı (Örn: AP3-B12-X7K9)';
+                        } else {
+                          _inviteCodeError = null;
+                        }
+                      });
+                    },
                   ),
                   const SizedBox(height: AppSizes.spacingM),
                   TextField(
@@ -177,8 +191,19 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
                       prefixText: '+90 ',
                       prefixIcon: const Icon(Icons.phone_outlined),
                       counterText: '',
+                      errorText: _phoneError,
                     ),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onChanged: (value) {
+                      setState(() {
+                        if (value.isNotEmpty &&
+                            !AuthValidators.isValidPhone(value)) {
+                          _phoneError = 'Geçerli bir telefon numarası giriniz';
+                        } else {
+                          _phoneError = null;
+                        }
+                      });
+                    },
                   ),
                   const SizedBox(height: AppSizes.spacingM),
                   PasswordField(

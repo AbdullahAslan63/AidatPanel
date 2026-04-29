@@ -26,6 +26,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   late TextEditingController _confirmPasswordController;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  String? _emailError;
+  String? _phoneError;
 
   @override
   void initState() {
@@ -157,7 +159,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       labelText: 'Email',
                       hintText: 'ornek@email.com',
                       prefixIcon: const Icon(Icons.email_outlined),
+                      errorText: _emailError,
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        if (value.isNotEmpty &&
+                            !AuthValidators.isValidEmail(value)) {
+                          _emailError = 'Geçerli bir email adresi giriniz';
+                        } else {
+                          _emailError = null;
+                        }
+                      });
+                    },
                   ),
                   const SizedBox(height: AppSizes.spacingM),
                   TextField(
@@ -171,8 +184,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       prefixText: '+90 ',
                       prefixIcon: const Icon(Icons.phone_outlined),
                       counterText: '',
+                      errorText: _phoneError,
                     ),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    onChanged: (value) {
+                      setState(() {
+                        if (value.isNotEmpty &&
+                            !AuthValidators.isValidPhone(value)) {
+                          _phoneError = 'Geçerli bir telefon numarası giriniz';
+                        } else {
+                          _phoneError = null;
+                        }
+                      });
+                    },
                   ),
                   const SizedBox(height: AppSizes.spacingM),
                   PasswordField(
