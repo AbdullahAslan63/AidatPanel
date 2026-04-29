@@ -51,3 +51,80 @@ Tüm versiyon değişikliklerinin kaydı.
 - Splash: Yukarı kayan animasyon
 - Register/Join: Back button eklendi
 
+---
+
+## f0.0.5 - Bina Sekmesi ve Dashboard Temelleri
+**Tarih:** Önceki dönem
+
+### 🚀 Yeni Özellikler
+- **Bina Sekmesi**: Bina listesi görünümü ve detaylı kartlar
+- **Yönetici Dashboard**: Dummy verili yönetici ana ekranı
+- **Sakin Dashboard**: Dummy verili sakin ana ekranı
+- **Tab Navigasyonu**: Yönetici ve sakin için alt menü navigasyonu
+
+### ✨ İyileştirmeler
+- Telefon girişi: +90 prefix ve max 10 haneli validasyon
+- İsim ipucu metni: "Furkan Kaya" placeholder
+
+### 🔧 Teknik Değişiklikler
+- Clean Architecture iskelet klasör yapısı oluşturuldu
+- Lint hataları düzeltildi (unused fields, deprecated APIs)
+- Async safety iyileştirmeleri
+
+---
+
+## f0.0.4 - Dashboard ve Kimlik Doğrulama
+**Tarih:** Önceki dönem
+
+### 🚀 Yeni Özellikler
+- **Yönetici Dashboard**: Bina ve sakin yönetimi için ana ekran
+- **Sakin Dashboard**: Aidat ve bildirim görünümü için ana ekran
+- **Çıkış Akışı**: Auth state temizleme ve splash yönlendirmesi
+
+### 🔧 Teknik Değişiklikler
+- Merge: Backend API endpoints entegrasyonu
+- Kimlik doğrulama flow'u tamamlandı
+
+---
+
+## f0.0.3 - Splash ve Katılım Ekranları
+**Tarih:** Önceki dönem
+
+### 🚀 Yeni Özellikler
+- **Splash Ekranı**: Logo ve marka sunumu
+- **Katılım Ekranları**: Yeni kullanıcı kayıt ve davet kodu ile katılım
+- **Kimlik Doğrulama Akışı**: Login → Dashboard yönlendirmesi
+
+### ✨ İyileştirmeler
+- Splash animasyonu: Yukarıdan kayan geçiş efekti
+- Geri butonları: Tüm auth ekranlarına eklendi
+
+---
+
+## f0.0.2 - Giriş ve Kayıt Ekranları
+**Tarih:** Önceki dönem
+
+### 🚀 Yeni Özellikler
+- **Giriş Ekranı**: Auth providers ve repository'ler ile login
+- **Kayıt Ekranı**: Validasyonlu kullanıcı kaydı
+- **Telefon Girişi**: +90 ön ekli, max 10 haneli format
+
+### 🔧 Teknik Değişiklikler
+- Riverpod state management entegrasyonu
+- GoRouter navigasyon yapılandırması
+- Repository pattern uygulandı
+
+---
+
+## f0.0.1 - Flutter Projesi Başlangıcı
+**Tarih:** Önceki dönem
+
+### 🚀 Yeni Özellikler
+- Flutter projesi başlatıldı
+- Clean Architecture klasör yapısı oluşturuldu
+- Temel bağımlılıklar eklendi (Riverpod, GoRouter, vs.)
+
+### 🔧 Teknik Değişiklikler
+- Proje iskeleti kuruldu
+- Geliştirme ortamı hazırlandı
+
