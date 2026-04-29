@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -15,36 +16,50 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  late TextEditingController _emailController;
+  late TextEditingController _identifierController;
   late TextEditingController _passwordController;
   bool _obscurePassword = true;
+  bool _usePhoneLogin = false;
 
   @override
   void initState() {
     super.initState();
-    _emailController = TextEditingController();
+    _identifierController = TextEditingController();
     _passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _identifierController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  void _toggleLoginMode() {
+    setState(() {
+      _usePhoneLogin = !_usePhoneLogin;
+      _identifierController.clear();
+    });
+  }
+
   void _handleLogin() {
-    final email = _emailController.text.trim();
+    final raw = _identifierController.text.trim();
     final password = _passwordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
+    if (raw.isEmpty || password.isEmpty) {
       ref
           .read(toastProvider.notifier)
-          .show('Email ve şifre boş bırakılamaz', type: ToastType.error);
+          .show(
+            _usePhoneLogin
+                ? 'Telefon ve şifre boş bırakılamaz'
+                : 'Email ve şifre boş bırakılamaz',
+            type: ToastType.error,
+          );
       return;
     }
 
-    ref.read(authStateProvider.notifier).login(email, password);
+    final identifier = _usePhoneLogin ? '+90$raw' : raw;
+    ref.read(authStateProvider.notifier).login(identifier, password);
   }
 
   @override
@@ -96,13 +111,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               const SizedBox(height: AppSizes.spacingL),
               TextField(
-                controller: _emailController,
+                controller: _identifierController,
                 enabled: !authState.isLoading,
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: _usePhoneLogin
+                    ? TextInputType.phone
+                    : TextInputType.emailAddress,
+                maxLength: _usePhoneLogin ? 10 : null,
+                inputFormatters: _usePhoneLogin
+                    ? [FilteringTextInputFormatter.digitsOnly]
+                    : null,
                 decoration: InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'ornek@email.com',
-                  prefixIcon: const Icon(Icons.email_outlined),
+                  labelText: _usePhoneLogin ? 'Telefon' : 'Email',
+                  hintText: _usePhoneLogin
+                      ? '5XX XXX XX XX'
+                      : 'ornek@email.com',
+                  prefixText: _usePhoneLogin ? '+90 ' : null,
+                  prefixIcon: Icon(
+                    _usePhoneLogin
+                        ? Icons.phone_outlined
+                        : Icons.email_outlined,
+                  ),
+                  counterText: '',
                 ),
               ),
               const SizedBox(height: AppSizes.spacingM),
@@ -136,6 +165,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Text('Giriş Yap'),
+              ),
+              const SizedBox(height: AppSizes.spacingM),
+              OutlinedButton.icon(
+                onPressed: authState.isLoading ? null : _toggleLoginMode,
+                icon: Icon(
+                  _usePhoneLogin
+                      ? Icons.email_outlined
+                      : Icons.phone_iphone_outlined,
+                  size: 20,
+                ),
+                label: Text(
+                  _usePhoneLogin
+                      ? 'Email ile Giriş Yap'
+                      : 'Telefon ile Giriş Yap',
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  side: BorderSide(color: AppColors.primary, width: 1.5),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppSizes.spacingM,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+                  ),
+                  textStyle: AppTypography.body1.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
               const SizedBox(height: AppSizes.spacingM),
               Row(
