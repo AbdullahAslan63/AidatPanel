@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../shared/widgets/alt_action_button.dart';
 import '../../../../shared/widgets/toast_overlay.dart';
 import '../providers/auth_provider.dart';
 
@@ -99,136 +100,149 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Davet Koduyla Katıl'),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-      ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSizes.spacingL),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Apartmana Katıl',
-                style: AppTypography.h2.copyWith(color: AppColors.textPrimary),
-              ),
-              const SizedBox(height: AppSizes.spacingL),
-              TextField(
-                controller: _inviteCodeController,
-                enabled: !authState.isLoading,
-                textCapitalization: TextCapitalization.characters,
-                decoration: InputDecoration(
-                  labelText: 'Davet Kodu',
-                  hintText: 'AP3-B12-X7K9',
-                  prefixIcon: const Icon(Icons.vpn_key_outlined),
-                ),
-              ),
-              const SizedBox(height: AppSizes.spacingM),
-              TextField(
-                controller: _nameController,
-                enabled: !authState.isLoading,
-                decoration: InputDecoration(
-                  labelText: 'Ad Soyad',
-                  hintText: 'Örn: Furkan Kaya',
-                  prefixIcon: const Icon(Icons.person_outline),
-                ),
-              ),
-              const SizedBox(height: AppSizes.spacingM),
-              TextField(
-                controller: _phoneController,
-                enabled: !authState.isLoading,
-                keyboardType: TextInputType.number,
-                maxLength: 10,
-                decoration: InputDecoration(
-                  labelText: 'Telefon (Opsiyonel)',
-                  hintText: '5XX XXX XXXX',
-                  prefixText: '+90 ',
-                  prefixIcon: const Icon(Icons.phone_outlined),
-                  counterText: '',
-                ),
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              ),
-              const SizedBox(height: AppSizes.spacingM),
-              TextField(
-                controller: _passwordController,
-                enabled: !authState.isLoading,
-                obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  labelText: 'Şifre',
-                  hintText: '••••••••',
-                  prefixIcon: const Icon(Icons.lock_outlined),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() => _obscurePassword = !_obscurePassword);
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSizes.spacingM),
-              TextField(
-                controller: _confirmPasswordController,
-                enabled: !authState.isLoading,
-                obscureText: _obscureConfirmPassword,
-                decoration: InputDecoration(
-                  labelText: 'Şifre Tekrar',
-                  hintText: '••••••••',
-                  prefixIcon: const Icon(Icons.lock_outlined),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureConfirmPassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(
-                        () =>
-                            _obscureConfirmPassword = !_obscureConfirmPassword,
-                      );
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSizes.spacingL),
-              ElevatedButton(
-                onPressed: authState.isLoading ? null : _handleJoin,
-                child: authState.isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Katıl'),
-              ),
-              const SizedBox(height: AppSizes.spacingM),
-              Row(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSizes.spacingL),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Yönetici misiniz? ',
-                    style: AppTypography.body1.copyWith(
+                    'AidatPanel',
+                    textAlign: TextAlign.center,
+                    style: AppTypography.h1.copyWith(color: AppColors.primary),
+                  ),
+                  const SizedBox(height: AppSizes.spacingL),
+                  Text(
+                    'Apartmana Katıl',
+                    textAlign: TextAlign.center,
+                    style: AppTypography.h2.copyWith(
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.spacingL),
+                  TextField(
+                    controller: _inviteCodeController,
+                    enabled: !authState.isLoading,
+                    textCapitalization: TextCapitalization.characters,
+                    decoration: InputDecoration(
+                      labelText: 'Davet Kodu',
+                      hintText: 'AP3-B12-X7K9',
+                      prefixIcon: const Icon(Icons.vpn_key_outlined),
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.spacingM),
+                  TextField(
+                    controller: _nameController,
+                    enabled: !authState.isLoading,
+                    decoration: InputDecoration(
+                      labelText: 'Ad Soyad',
+                      hintText: 'Örn: Furkan Kaya',
+                      prefixIcon: const Icon(Icons.person_outline),
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.spacingM),
+                  TextField(
+                    controller: _phoneController,
+                    enabled: !authState.isLoading,
+                    keyboardType: TextInputType.number,
+                    maxLength: 10,
+                    decoration: InputDecoration(
+                      labelText: 'Telefon (Opsiyonel)',
+                      hintText: '5XX XXX XXXX',
+                      prefixText: '+90 ',
+                      prefixIcon: const Icon(Icons.phone_outlined),
+                      counterText: '',
+                    ),
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  ),
+                  const SizedBox(height: AppSizes.spacingM),
+                  TextField(
+                    controller: _passwordController,
+                    enabled: !authState.isLoading,
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      labelText: 'Şifre',
+                      hintText: '••••••••',
+                      prefixIcon: const Icon(Icons.lock_outlined),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() => _obscurePassword = !_obscurePassword);
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.spacingM),
+                  TextField(
+                    controller: _confirmPasswordController,
+                    enabled: !authState.isLoading,
+                    obscureText: _obscureConfirmPassword,
+                    decoration: InputDecoration(
+                      labelText: 'Şifre Tekrar',
+                      hintText: '••••••••',
+                      prefixIcon: const Icon(Icons.lock_outlined),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(
+                            () => _obscureConfirmPassword =
+                                !_obscureConfirmPassword,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.spacingL),
+                  ElevatedButton(
+                    onPressed: authState.isLoading ? null : _handleJoin,
+                    child: authState.isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Katıl'),
+                  ),
+                  const SizedBox(height: AppSizes.spacingM),
+                  AltActionButton(
+                    icon: Icons.person_add_outlined,
+                    title: 'Yönetici misiniz? Kaydolun',
+                    onTap: authState.isLoading
+                        ? null
+                        : () => context.push('/register'),
+                    isEnabled: !authState.isLoading,
+                  ),
+                  const SizedBox(height: AppSizes.spacingXL),
+                  Text(
+                    '© Vefa Yazılım  f0.0.7',
+                    textAlign: TextAlign.center,
+                    style: AppTypography.caption.copyWith(
                       color: AppColors.textSecondary,
                     ),
                   ),
-                  TextButton(
-                    onPressed: authState.isLoading
-                        ? null
-                        : () => context.push('/register'),
-                    child: const Text('Kaydol'),
-                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+            Positioned(
+              top: AppSizes.spacingM,
+              left: AppSizes.spacingM,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => context.pop(),
+              ),
+            ),
+          ],
         ),
       ),
     );
