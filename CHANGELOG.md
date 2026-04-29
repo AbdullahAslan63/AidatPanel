@@ -4,6 +4,17 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
+## Hot Fixes (f0.0.7 sonrası)
+**Tarih:** 2025-04-29
+
+### 🐛 Düzeltmeler
+- Login ekranı layout iyileştirmesi: MainAxisAlignment.center eklendi
+- Dinamik height sabit AppSizes.spacingL ile değiştirildi
+- Responsive layout daha tutarlı hale getirildi
+- Login ekranına copyright metni eklendi (© Vefa Yazılım f0.0.7)
+
+---
+
 ## f0.0.7 - Davet Kodu Sistemi ve Bina Yönetimi
 **Tarih:** 2025-04-29
 
@@ -30,17 +41,6 @@ Tüm versiyon değişikliklerinin kaydı.
   - `invite_code_result_view.dart` (sonuç görünümü)
 - Buildings ve Apartments state management (Riverpod)
 - Davet kodu formatı: `AP425-1A-X7K9` (planning'e uygun)
-
----
-
-## Hot Fixes (f0.0.7 sonrası)
-**Tarih:** 2025-04-29
-
-### 🐛 Düzeltmeler
-- Login ekranı layout iyileştirmesi: MainAxisAlignment.center eklendi
-- Dinamik height sabit AppSizes.spacingL ile değiştirildi
-- Responsive layout daha tutarlı hale getirildi
-- Login ekranına copyright metni eklendi (© Vefa Yazılım f0.0.7)
 
 ---
 
