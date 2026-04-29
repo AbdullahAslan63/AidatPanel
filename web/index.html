@@ -12,7 +12,13 @@
     <header>
         <nav class="container nav-bar">
             <div class="logo">Aidat<span>Panel</span></div>
-            <a href="#indir" class="btn btn-accent btn-sm">Hemen İndir</a>
+            
+            <div class="nav-right">
+                <a href="#indir" class="btn btn-accent btn-sm">Hemen İndir</a>
+                <button id="theme-toggle" class="theme-btn" title="Gece/Gündüz Modu">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
         </nav>
     </header>
 
@@ -22,13 +28,13 @@
                 <h1>Apartman yönetimi artık çok daha sade.</h1>
                 <p>Aidatları takip etmek, giderleri raporlamak ve sakinlerle iletişim kurmak hiç bu kadar kolay olmamıştı.</p>
                 <div class="store-buttons">
-                <a href="#" class="store-link">
-                <img src="assets/apple-icon.png" alt="App Store'dan İndirin" class="store-img">
-            </a>
-                <a href="#" class="store-link">
-                <img src="assets/google-icon.png" alt="Google Play'den Alın" class="store-img">
-                </a>
-        </div>
+                    <a href="#" class="store-link">
+                        <img src="assets/apple-icon.png" alt="App Store'dan İndirin" class="store-img">
+                    </a>
+                    <a href="#" class="store-link">
+                        <img src="assets/google-icon.png" alt="Google Play'den Alın" class="store-img">
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -47,7 +53,7 @@
             </div>
         </section>
 
-        <section class="pricing container">
+        <section class="pricing container" id="indir">
             <h2>Size Uygun Planı Seçin</h2>
             <div class="pricing-grid">
                 <div class="price-card">
@@ -70,5 +76,23 @@
             <p>&copy; 2026 AidatPanel. Tüm hakları saklıdır. | <a href="#">KVKK</a> | <a href="#">Gizlilik Politikası</a></p>
         </div>
     </footer>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const icon = themeToggle.querySelector('i');
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+                icon.style.color = '#F59E0B'; // Sarımsı güneş
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+                icon.style.color = ''; // Orijinal renk
+            }
+        });
+    </script>
 </body>
 </html>
