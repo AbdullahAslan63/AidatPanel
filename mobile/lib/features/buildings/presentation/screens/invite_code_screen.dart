@@ -3,12 +3,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/toast_overlay.dart';
 import '../../../apartments/domain/entities/apartment_entity.dart';
+import '../../data/invite_code_store.dart';
 import '../../domain/entities/building_entity.dart';
 
 class InviteCodeScreen extends ConsumerStatefulWidget {
@@ -30,6 +32,7 @@ class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
   BuildingEntity? _selectedBuilding;
   ApartmentEntity? _selectedApartment;
   String? _generatedCode;
+  DateTime? _activeExpiresAt;
 
   @override
   Widget build(BuildContext context) {
@@ -204,28 +207,38 @@ class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
         else
           ...apartments.map((apt) {
             final isOccupied = apt.phone != null;
+            final activeCode = ref.watch(inviteCodeStoreProvider)[apt.id];
+            final hasActiveCode = activeCode != null && !activeCode.isExpired;
             return _buildSelectableTile(
-              icon: Icons.door_front_door_outlined,
-              iconColor: isOccupied
-                  ? AppColors.textSecondary
-                  : AppColors.success,
+              icon: hasActiveCode
+                  ? Icons.qr_code_2
+                  : Icons.door_front_door_outlined,
+              iconColor: hasActiveCode
+                  ? AppColors.accent
+                  : (isOccupied ? AppColors.textSecondary : AppColors.success),
               title: _formatApartmentLabel(apt.apartmentNumber),
-              subtitle: isOccupied ? 'Sakin: ${apt.residentName}' : 'Boş daire',
+              subtitle: hasActiveCode
+                  ? 'Aktif kod: ${activeCode.code} • ${_remainingText(activeCode.remaining)}'
+                  : (isOccupied ? 'Sakin: ${apt.residentName}' : 'Boş daire'),
               trailing: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: isOccupied
-                      ? AppColors.warning.withValues(alpha: 0.12)
-                      : AppColors.success.withValues(alpha: 0.12),
+                  color: hasActiveCode
+                      ? AppColors.accent.withValues(alpha: 0.12)
+                      : (isOccupied
+                            ? AppColors.warning.withValues(alpha: 0.12)
+                            : AppColors.success.withValues(alpha: 0.12)),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  isOccupied ? 'Dolu' : 'Boş',
+                  hasActiveCode ? 'Aktif Kod' : (isOccupied ? 'Dolu' : 'Boş'),
                   style: AppTypography.caption.copyWith(
-                    color: isOccupied ? AppColors.warning : AppColors.success,
+                    color: hasActiveCode
+                        ? AppColors.accent
+                        : (isOccupied ? AppColors.warning : AppColors.success),
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -264,11 +277,27 @@ class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
   }
 
   void _onApartmentSelected(ApartmentEntity apt) {
+    // Önce aktif kod var mı kontrol et
+    final active = ref.read(inviteCodeStoreProvider.notifier).activeFor(apt.id);
+    if (active != null) {
+      _showActiveCode(apt, active);
+      return;
+    }
     if (apt.phone != null) {
       _showOccupiedConfirm(apt);
     } else {
       _generateAndShow(apt);
     }
+  }
+
+  /// Daire için zaten aktif kod varsa o kodu göster (yenisi üretilmesin).
+  void _showActiveCode(ApartmentEntity apt, ActiveInviteCode active) {
+    setState(() {
+      _selectedApartment = apt;
+      _generatedCode = active.code;
+      _activeExpiresAt = active.expiresAt;
+      _step = 2;
+    });
   }
 
   void _showOccupiedConfirm(ApartmentEntity apt) {
@@ -374,9 +403,20 @@ class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
   }
 
   void _generateAndShow(ApartmentEntity apt) {
+    final code = _generateCode(_selectedBuilding!, apt);
+    final now = DateTime.now();
+    final expires = now.add(const Duration(days: 7));
+    // Store'a kaydet (aktif kod havuzu)
+    ref
+        .read(inviteCodeStoreProvider.notifier)
+        .save(
+          apt.id,
+          ActiveInviteCode(code: code, createdAt: now, expiresAt: expires),
+        );
     setState(() {
       _selectedApartment = apt;
-      _generatedCode = _generateCode(_selectedBuilding!, apt);
+      _generatedCode = code;
+      _activeExpiresAt = expires;
       _step = 2;
     });
   }
@@ -490,13 +530,25 @@ class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
                 ),
               ),
               const SizedBox(height: AppSizes.spacingS),
-              Text(
-                'Son kullanma: ${_formatDate(_expiryDate())}',
-                style: AppTypography.caption.copyWith(
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w600,
+              if (_activeExpiresAt != null) ...[
+                Text(
+                  'Son kullanma: ${_formatDate(_activeExpiresAt!)}',
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-              ),
+                const SizedBox(height: 2),
+                Text(
+                  'Kalan: ${_remainingText(_activeExpiresAt!.difference(DateTime.now()))}',
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ],
           ),
         ),
@@ -544,16 +596,187 @@ class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
         ),
         const SizedBox(height: AppSizes.spacingM),
 
-        // Yeni kod üret butonu
+        // Bilgilendirme: aynı daireye yeniden üretmek için iptal et
+        Container(
+          padding: const EdgeInsets.all(AppSizes.spacingM),
+          decoration: BoxDecoration(
+            color: AppColors.info.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.info.withValues(alpha: 0.25)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.info_outline, size: 18, color: AppColors.info),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Bu kod aktifken aynı daireye yeni kod üretilemez. Yeni kod için önce mevcut kodu iptal etmelisin.',
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSizes.spacingM),
+
+        // Aksiyonlar: Başa dön + Kodu iptal et
+        Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: AppSizes.buttonHeightSecondary,
+                child: OutlinedButton.icon(
+                  onPressed: _resetFlow,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.textPrimary,
+                    side: BorderSide(color: AppColors.borderColor, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  icon: const Icon(Icons.list_alt),
+                  label: const Text('Başka Daire'),
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSizes.spacingS),
+            Expanded(
+              child: SizedBox(
+                height: AppSizes.buttonHeightSecondary,
+                child: OutlinedButton.icon(
+                  onPressed: () => _confirmRevoke(apt),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.error,
+                    side: BorderSide(color: AppColors.error, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  icon: const Icon(Icons.cancel_outlined),
+                  label: const Text('Kodu İptal Et'),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSizes.spacingL),
+
+        // Ana menüye dön
         SizedBox(
-          height: AppSizes.buttonHeightSecondary,
-          child: TextButton.icon(
-            onPressed: _resetFlow,
-            icon: const Icon(Icons.refresh),
-            label: const Text('Başka bir kod üret'),
+          height: AppSizes.buttonHeightPrimary,
+          child: ElevatedButton.icon(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            icon: const Icon(Icons.home),
+            label: const Text(
+              'Ana Menüye Dön',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  void _confirmRevoke(ApartmentEntity apt) {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(Icons.cancel_outlined, color: AppColors.error),
+            const SizedBox(width: 8),
+            const Text('Kodu İptal Et'),
+          ],
+        ),
+        content: RichText(
+          text: TextSpan(
+            style: AppTypography.body2.copyWith(color: AppColors.textSecondary),
+            children: [
+              const TextSpan(text: 'Mevcut kod '),
+              TextSpan(
+                text: 'geçersiz hale gelir',
+                style: AppTypography.body2.copyWith(
+                  color: AppColors.error,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const TextSpan(text: '. Emin misiniz?'),
+            ],
+          ),
+        ),
+        actionsPadding: const EdgeInsets.fromLTRB(
+          AppSizes.spacingM,
+          0,
+          AppSizes.spacingM,
+          AppSizes.spacingM,
+        ),
+        actions: [
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: AppSizes.buttonHeightSecondary,
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textPrimary,
+                      side: BorderSide(
+                        color: AppColors.borderColor,
+                        width: 1.5,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Vazgeç',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSizes.spacingS),
+              Expanded(
+                child: SizedBox(
+                  height: AppSizes.buttonHeightSecondary,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.error,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      ref.read(inviteCodeStoreProvider.notifier).revoke(apt.id);
+                      ref
+                          .read(toastProvider.notifier)
+                          .show('Kod iptal edildi', type: ToastType.success);
+                      _resetFlow();
+                    },
+                    child: const Text(
+                      'İptal Et',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -643,14 +866,24 @@ class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
     return '$floor. Kat';
   }
 
-  DateTime _expiryDate() {
-    return DateTime.now().add(const Duration(days: 7));
-  }
-
   String _formatDate(DateTime date) {
     final d = date.day.toString().padLeft(2, '0');
     final m = date.month.toString().padLeft(2, '0');
     return '$d.$m.${date.year}';
+  }
+
+  /// Süre formatı: "5 gün 3 saat", "12 saat 30 dk", "45 dk"
+  String _remainingText(Duration d) {
+    if (d.isNegative) return 'Süresi doldu';
+    if (d.inDays > 0) {
+      final hours = d.inHours - d.inDays * 24;
+      return hours > 0 ? '${d.inDays} gün $hours saat' : '${d.inDays} gün';
+    }
+    if (d.inHours > 0) {
+      final mins = d.inMinutes - d.inHours * 60;
+      return mins > 0 ? '${d.inHours} saat $mins dk' : '${d.inHours} saat';
+    }
+    return '${d.inMinutes} dk';
   }
 
   String _generateCode(BuildingEntity b, ApartmentEntity a) {
@@ -671,14 +904,42 @@ class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
         .show('Kod kopyalandı: $code', type: ToastType.success);
   }
 
-  void _shareCode(String code, BuildingEntity b, ApartmentEntity a) {
-    final expiry = _formatDate(_expiryDate());
+  Future<void> _shareCode(
+    String code,
+    BuildingEntity b,
+    ApartmentEntity a,
+  ) async {
+    final expiry = _activeExpiresAt != null
+        ? _formatDate(_activeExpiresAt!)
+        : _formatDate(DateTime.now().add(const Duration(days: 7)));
     final message =
-        'AidatPanel davet kodu\n\nBina: ${b.name}\nDaire: ${_formatApartmentLabel(a.apartmentNumber)}\nKod: $code\n\nSon kullanma: $expiry (7 gün geçerli)';
-    Clipboard.setData(ClipboardData(text: message));
-    ref
-        .read(toastProvider.notifier)
-        .show('Mesaj panoya kopyalandı', type: ToastType.success);
+        'AidatPanel davet kodu\n\n'
+        'Bina: ${b.name}\n'
+        'Daire: ${_formatApartmentLabel(a.apartmentNumber)}\n'
+        'Kod: $code\n\n'
+        'Son kullanma: $expiry (7 gün geçerli)\n\n'
+        'AidatPanel uygulamasını indirip kayıt olurken bu kodu kullanabilirsiniz.';
+
+    try {
+      final box = context.findRenderObject() as RenderBox?;
+      await SharePlus.instance.share(
+        ShareParams(
+          text: message,
+          subject: 'AidatPanel Davet Kodu',
+          sharePositionOrigin: box != null
+              ? box.localToGlobal(Offset.zero) & box.size
+              : null,
+        ),
+      );
+    } catch (_) {
+      // Paylaşım başarısız olursa panoya kopyalama yedek
+      Clipboard.setData(ClipboardData(text: message));
+      if (mounted) {
+        ref
+            .read(toastProvider.notifier)
+            .show('Mesaj panoya kopyalandı', type: ToastType.info);
+      }
+    }
   }
 
   void _resetFlow() {
@@ -687,6 +948,7 @@ class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
       _selectedBuilding = null;
       _selectedApartment = null;
       _generatedCode = null;
+      _activeExpiresAt = null;
     });
   }
 
