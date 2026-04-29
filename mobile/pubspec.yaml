@@ -2,7 +2,7 @@ name: aidatpanel
 description: "AidatPanel - Türk apartman ve site yöneticileri için mobil aidat yönetim platformu."
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 0.0.7+1
 
 environment:
   sdk: ^3.11.5
