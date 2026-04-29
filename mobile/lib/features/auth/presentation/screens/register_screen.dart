@@ -24,10 +24,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   late TextEditingController _phoneController;
   late TextEditingController _passwordController;
   late TextEditingController _confirmPasswordController;
+  final FocusNode _passwordFocusNode = FocusNode();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   String? _emailError;
   String? _phoneError;
+  bool _hasMinLength = false;
+  bool _hasLetter = false;
+  bool _hasNumber = false;
+  bool _isPasswordValid = false;
+  bool _passwordsMatch = false;
 
   @override
   void initState() {
@@ -37,6 +43,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _phoneController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
+    _passwordFocusNode.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -46,7 +55,31 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
+  }
+
+  Widget _buildCriterion(String text, bool isMet) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Row(
+        children: [
+          Icon(
+            isMet ? Icons.check_circle : Icons.cancel,
+            color: isMet ? Colors.green : Colors.red,
+            size: 16,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: TextStyle(
+              color: isMet ? Colors.green : Colors.red,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _handleRegister() {
@@ -87,10 +120,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       return;
     }
 
-    if (password.length < 6) {
+    if (!AuthValidators.isStrongPassword(password)) {
       ref
           .read(toastProvider.notifier)
-          .show('Şifre en az 6 karakter olmalı', type: ToastType.error);
+          .show(
+            'Şifre en az 6 karakter, en az 1 harf ve en az 1 sayı içermelidir',
+            type: ToastType.error,
+          );
       return;
     }
 
@@ -211,6 +247,29 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         setState(() => _obscurePassword = !_obscurePassword);
                       },
                       enabled: !authState.isLoading,
+                      onChanged: (value) {
+                        setState(() {
+                          _hasMinLength = value.length >= 6;
+                          _hasLetter = RegExp(r'[A-Za-z]').hasMatch(value);
+                          _hasNumber = RegExp(r'\d').hasMatch(value);
+                          _isPasswordValid =
+                              _hasMinLength && _hasLetter && _hasNumber;
+                        });
+                      },
+                      focusNode: _passwordFocusNode,
+                      passwordCriteria: _passwordFocusNode.hasFocus
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildCriterion(
+                                  'En az 6 karakter',
+                                  _hasMinLength,
+                                ),
+                                _buildCriterion('En az 1 harf', _hasLetter),
+                                _buildCriterion('En az 1 rakam', _hasNumber),
+                              ],
+                            )
+                          : null,
                     ),
                     const SizedBox(height: AppSizes.spacingM),
                     PasswordField(
@@ -224,6 +283,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       },
                       labelText: 'Şifre Tekrar',
                       enabled: !authState.isLoading,
+                      onChanged: (value) {
+                        setState(() {
+                          _passwordsMatch = value == _passwordController.text;
+                        });
+                      },
+                      helperText: _confirmPasswordController.text.isEmpty
+                          ? null
+                          : _passwordsMatch
+                          ? null
+                          : 'Şifreler eşleşmiyor',
                     ),
                     const SizedBox(height: AppSizes.spacingL),
                     ElevatedButton(
