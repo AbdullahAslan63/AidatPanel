@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -323,7 +324,7 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
                     ),
                     const SizedBox(height: AppSizes.spacingXL),
                     Text(
-                      '© Vefa Yazılım  f0.0.7',
+                      '© Vefa Yazılım  v${AppConstants.appVersion}',
                       textAlign: TextAlign.center,
                       style: AppTypography.caption.copyWith(
                         color: AppColors.textSecondary,
