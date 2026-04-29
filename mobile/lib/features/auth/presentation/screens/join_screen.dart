@@ -123,150 +123,156 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
       }
     });
 
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSizes.spacingL),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'AidatPanel',
-                    textAlign: TextAlign.center,
-                    style: AppTypography.h1.copyWith(color: AppColors.primary),
-                  ),
-                  const SizedBox(height: AppSizes.spacingL),
-                  Text(
-                    'Apartmana Katıl',
-                    textAlign: TextAlign.center,
-                    style: AppTypography.h2.copyWith(
-                      color: AppColors.textPrimary,
+    return PopScope(
+      canPop: !authState.isLoading,
+      child: Scaffold(
+        body: SafeArea(
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSizes.spacingL),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'AidatPanel',
+                      textAlign: TextAlign.center,
+                      style: AppTypography.h1.copyWith(
+                        color: AppColors.primary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSizes.spacingL),
-                  TextField(
-                    controller: _inviteCodeController,
-                    enabled: !authState.isLoading,
-                    textCapitalization: TextCapitalization.characters,
-                    decoration: InputDecoration(
-                      labelText: 'Davet Kodu',
-                      hintText: 'AP3-B12-X7K9',
-                      prefixIcon: const Icon(Icons.vpn_key_outlined),
-                      errorText: _inviteCodeError,
+                    const SizedBox(height: AppSizes.spacingL),
+                    Text(
+                      'Apartmana Katıl',
+                      textAlign: TextAlign.center,
+                      style: AppTypography.h2.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
                     ),
-                    onChanged: (value) {
-                      setState(() {
-                        if (value.isNotEmpty &&
-                            !AuthValidators.isValidInviteCode(value)) {
-                          _inviteCodeError =
-                              'Geçersiz davet kodu formatı (Örn: AP3-B12-X7K9)';
-                        } else {
-                          _inviteCodeError = null;
-                        }
-                      });
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.spacingM),
-                  TextField(
-                    controller: _nameController,
-                    enabled: !authState.isLoading,
-                    decoration: InputDecoration(
-                      labelText: 'Ad Soyad',
-                      hintText: 'Örn: Furkan Kaya',
-                      prefixIcon: const Icon(Icons.person_outline),
+                    const SizedBox(height: AppSizes.spacingL),
+                    TextField(
+                      controller: _inviteCodeController,
+                      enabled: !authState.isLoading,
+                      textCapitalization: TextCapitalization.characters,
+                      decoration: InputDecoration(
+                        labelText: 'Davet Kodu',
+                        hintText: 'AP3-B12-X7K9',
+                        prefixIcon: const Icon(Icons.vpn_key_outlined),
+                        errorText: _inviteCodeError,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value.isNotEmpty &&
+                              !AuthValidators.isValidInviteCode(value)) {
+                            _inviteCodeError =
+                                'Geçersiz davet kodu formatı (Örn: AP3-B12-X7K9)';
+                          } else {
+                            _inviteCodeError = null;
+                          }
+                        });
+                      },
                     ),
-                  ),
-                  const SizedBox(height: AppSizes.spacingM),
-                  TextField(
-                    controller: _phoneController,
-                    enabled: !authState.isLoading,
-                    keyboardType: TextInputType.number,
-                    maxLength: 10,
-                    decoration: InputDecoration(
-                      labelText: 'Telefon (Opsiyonel)',
-                      hintText: '5XX XXX XXXX',
-                      prefixText: '+90 ',
-                      prefixIcon: const Icon(Icons.phone_outlined),
-                      counterText: '',
-                      errorText: _phoneError,
+                    const SizedBox(height: AppSizes.spacingM),
+                    TextField(
+                      controller: _nameController,
+                      enabled: !authState.isLoading,
+                      decoration: InputDecoration(
+                        labelText: 'Ad Soyad',
+                        hintText: 'Örn: Furkan Kaya',
+                        prefixIcon: const Icon(Icons.person_outline),
+                      ),
                     ),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    onChanged: (value) {
-                      setState(() {
-                        if (value.isNotEmpty &&
-                            !AuthValidators.isValidPhone(value)) {
-                          _phoneError = 'Geçerli bir telefon numarası giriniz';
-                        } else {
-                          _phoneError = null;
-                        }
-                      });
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.spacingM),
-                  PasswordField(
-                    controller: _passwordController,
-                    obscureText: _obscurePassword,
-                    onToggleVisibility: () {
-                      setState(() => _obscurePassword = !_obscurePassword);
-                    },
-                    enabled: !authState.isLoading,
-                  ),
-                  const SizedBox(height: AppSizes.spacingM),
-                  PasswordField(
-                    controller: _confirmPasswordController,
-                    obscureText: _obscureConfirmPassword,
-                    onToggleVisibility: () {
-                      setState(
-                        () =>
-                            _obscureConfirmPassword = !_obscureConfirmPassword,
-                      );
-                    },
-                    labelText: 'Şifre Tekrar',
-                    enabled: !authState.isLoading,
-                  ),
-                  const SizedBox(height: AppSizes.spacingL),
-                  ElevatedButton(
-                    onPressed: authState.isLoading ? null : _handleJoin,
-                    child: authState.isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Katıl'),
-                  ),
-                  const SizedBox(height: AppSizes.spacingM),
-                  AltActionButton(
-                    icon: Icons.person_add_outlined,
-                    title: 'Yönetici misiniz? Kaydolun',
-                    onTap: authState.isLoading
-                        ? null
-                        : () => context.push('/register'),
-                    isEnabled: !authState.isLoading,
-                  ),
-                  const SizedBox(height: AppSizes.spacingXL),
-                  Text(
-                    '© Vefa Yazılım  f0.0.7',
-                    textAlign: TextAlign.center,
-                    style: AppTypography.caption.copyWith(
-                      color: AppColors.textSecondary,
+                    const SizedBox(height: AppSizes.spacingM),
+                    TextField(
+                      controller: _phoneController,
+                      enabled: !authState.isLoading,
+                      keyboardType: TextInputType.number,
+                      maxLength: 10,
+                      decoration: InputDecoration(
+                        labelText: 'Telefon (Opsiyonel)',
+                        hintText: '5XX XXX XXXX',
+                        prefixText: '+90 ',
+                        prefixIcon: const Icon(Icons.phone_outlined),
+                        counterText: '',
+                        errorText: _phoneError,
+                      ),
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged: (value) {
+                        setState(() {
+                          if (value.isNotEmpty &&
+                              !AuthValidators.isValidPhone(value)) {
+                            _phoneError =
+                                'Geçerli bir telefon numarası giriniz';
+                          } else {
+                            _phoneError = null;
+                          }
+                        });
+                      },
                     ),
-                  ),
-                ],
+                    const SizedBox(height: AppSizes.spacingM),
+                    PasswordField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      onToggleVisibility: () {
+                        setState(() => _obscurePassword = !_obscurePassword);
+                      },
+                      enabled: !authState.isLoading,
+                    ),
+                    const SizedBox(height: AppSizes.spacingM),
+                    PasswordField(
+                      controller: _confirmPasswordController,
+                      obscureText: _obscureConfirmPassword,
+                      onToggleVisibility: () {
+                        setState(
+                          () => _obscureConfirmPassword =
+                              !_obscureConfirmPassword,
+                        );
+                      },
+                      labelText: 'Şifre Tekrar',
+                      enabled: !authState.isLoading,
+                    ),
+                    const SizedBox(height: AppSizes.spacingL),
+                    ElevatedButton(
+                      onPressed: authState.isLoading ? null : _handleJoin,
+                      child: authState.isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('Katıl'),
+                    ),
+                    const SizedBox(height: AppSizes.spacingM),
+                    AltActionButton(
+                      icon: Icons.person_add_outlined,
+                      title: 'Yönetici misiniz? Kaydolun',
+                      onTap: authState.isLoading
+                          ? null
+                          : () => context.push('/register'),
+                      isEnabled: !authState.isLoading,
+                    ),
+                    const SizedBox(height: AppSizes.spacingXL),
+                    Text(
+                      '© Vefa Yazılım  f0.0.7',
+                      textAlign: TextAlign.center,
+                      style: AppTypography.caption.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Positioned(
-              top: AppSizes.spacingM,
-              left: AppSizes.spacingM,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.pop(),
+              Positioned(
+                top: AppSizes.spacingM,
+                left: AppSizes.spacingM,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: authState.isLoading ? null : () => context.pop(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

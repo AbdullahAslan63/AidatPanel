@@ -117,149 +117,155 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       }
     });
 
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSizes.spacingL),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'AidatPanel',
-                    textAlign: TextAlign.center,
-                    style: AppTypography.h1.copyWith(color: AppColors.primary),
-                  ),
-                  const SizedBox(height: AppSizes.spacingL),
-                  Text(
-                    'Yeni Hesap Oluştur',
-                    textAlign: TextAlign.center,
-                    style: AppTypography.h2.copyWith(
-                      color: AppColors.textPrimary,
+    return PopScope(
+      canPop: !authState.isLoading,
+      child: Scaffold(
+        body: SafeArea(
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSizes.spacingL),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'AidatPanel',
+                      textAlign: TextAlign.center,
+                      style: AppTypography.h1.copyWith(
+                        color: AppColors.primary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSizes.spacingL),
-                  TextField(
-                    controller: _nameController,
-                    enabled: !authState.isLoading,
-                    decoration: InputDecoration(
-                      labelText: 'Ad Soyad',
-                      hintText: 'Örn: Furkan Kaya',
-                      prefixIcon: const Icon(Icons.person_outline),
+                    const SizedBox(height: AppSizes.spacingL),
+                    Text(
+                      'Yeni Hesap Oluştur',
+                      textAlign: TextAlign.center,
+                      style: AppTypography.h2.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSizes.spacingM),
-                  TextField(
-                    controller: _emailController,
-                    enabled: !authState.isLoading,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      hintText: 'ornek@email.com',
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      errorText: _emailError,
+                    const SizedBox(height: AppSizes.spacingL),
+                    TextField(
+                      controller: _nameController,
+                      enabled: !authState.isLoading,
+                      decoration: InputDecoration(
+                        labelText: 'Ad Soyad',
+                        hintText: 'Örn: Furkan Kaya',
+                        prefixIcon: const Icon(Icons.person_outline),
+                      ),
                     ),
-                    onChanged: (value) {
-                      setState(() {
-                        if (value.isNotEmpty &&
-                            !AuthValidators.isValidEmail(value)) {
-                          _emailError = 'Geçerli bir email adresi giriniz';
-                        } else {
-                          _emailError = null;
-                        }
-                      });
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.spacingM),
-                  TextField(
-                    controller: _phoneController,
-                    enabled: !authState.isLoading,
-                    keyboardType: TextInputType.number,
-                    maxLength: 10,
-                    decoration: InputDecoration(
-                      labelText: 'Telefon (Opsiyonel)',
-                      hintText: '5XX XXX XXXX',
-                      prefixText: '+90 ',
-                      prefixIcon: const Icon(Icons.phone_outlined),
-                      counterText: '',
-                      errorText: _phoneError,
+                    const SizedBox(height: AppSizes.spacingM),
+                    TextField(
+                      controller: _emailController,
+                      enabled: !authState.isLoading,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        hintText: 'ornek@email.com',
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        errorText: _emailError,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value.isNotEmpty &&
+                              !AuthValidators.isValidEmail(value)) {
+                            _emailError = 'Geçerli bir email adresi giriniz';
+                          } else {
+                            _emailError = null;
+                          }
+                        });
+                      },
                     ),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    onChanged: (value) {
-                      setState(() {
-                        if (value.isNotEmpty &&
-                            !AuthValidators.isValidPhone(value)) {
-                          _phoneError = 'Geçerli bir telefon numarası giriniz';
-                        } else {
-                          _phoneError = null;
-                        }
-                      });
-                    },
-                  ),
-                  const SizedBox(height: AppSizes.spacingM),
-                  PasswordField(
-                    controller: _passwordController,
-                    obscureText: _obscurePassword,
-                    onToggleVisibility: () {
-                      setState(() => _obscurePassword = !_obscurePassword);
-                    },
-                    enabled: !authState.isLoading,
-                  ),
-                  const SizedBox(height: AppSizes.spacingM),
-                  PasswordField(
-                    controller: _confirmPasswordController,
-                    obscureText: _obscureConfirmPassword,
-                    onToggleVisibility: () {
-                      setState(
-                        () =>
-                            _obscureConfirmPassword = !_obscureConfirmPassword,
-                      );
-                    },
-                    labelText: 'Şifre Tekrar',
-                    enabled: !authState.isLoading,
-                  ),
-                  const SizedBox(height: AppSizes.spacingL),
-                  ElevatedButton(
-                    onPressed: authState.isLoading ? null : _handleRegister,
-                    child: authState.isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Kaydol'),
-                  ),
-                  const SizedBox(height: AppSizes.spacingM),
-                  AltActionButton(
-                    icon: Icons.login_outlined,
-                    title: 'Zaten hesabınız var mı? Giriş yapın',
-                    onTap: authState.isLoading
-                        ? null
-                        : () => context.go('/login'),
-                    isEnabled: !authState.isLoading,
-                  ),
-                  const SizedBox(height: AppSizes.spacingXL),
-                  Text(
-                    '© Vefa Yazılım  f0.0.7',
-                    textAlign: TextAlign.center,
-                    style: AppTypography.caption.copyWith(
-                      color: AppColors.textSecondary,
+                    const SizedBox(height: AppSizes.spacingM),
+                    TextField(
+                      controller: _phoneController,
+                      enabled: !authState.isLoading,
+                      keyboardType: TextInputType.number,
+                      maxLength: 10,
+                      decoration: InputDecoration(
+                        labelText: 'Telefon (Opsiyonel)',
+                        hintText: '5XX XXX XXXX',
+                        prefixText: '+90 ',
+                        prefixIcon: const Icon(Icons.phone_outlined),
+                        counterText: '',
+                        errorText: _phoneError,
+                      ),
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onChanged: (value) {
+                        setState(() {
+                          if (value.isNotEmpty &&
+                              !AuthValidators.isValidPhone(value)) {
+                            _phoneError =
+                                'Geçerli bir telefon numarası giriniz';
+                          } else {
+                            _phoneError = null;
+                          }
+                        });
+                      },
                     ),
-                  ),
-                ],
+                    const SizedBox(height: AppSizes.spacingM),
+                    PasswordField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      onToggleVisibility: () {
+                        setState(() => _obscurePassword = !_obscurePassword);
+                      },
+                      enabled: !authState.isLoading,
+                    ),
+                    const SizedBox(height: AppSizes.spacingM),
+                    PasswordField(
+                      controller: _confirmPasswordController,
+                      obscureText: _obscureConfirmPassword,
+                      onToggleVisibility: () {
+                        setState(
+                          () => _obscureConfirmPassword =
+                              !_obscureConfirmPassword,
+                        );
+                      },
+                      labelText: 'Şifre Tekrar',
+                      enabled: !authState.isLoading,
+                    ),
+                    const SizedBox(height: AppSizes.spacingL),
+                    ElevatedButton(
+                      onPressed: authState.isLoading ? null : _handleRegister,
+                      child: authState.isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('Kaydol'),
+                    ),
+                    const SizedBox(height: AppSizes.spacingM),
+                    AltActionButton(
+                      icon: Icons.login_outlined,
+                      title: 'Zaten hesabınız var mı? Giriş yapın',
+                      onTap: authState.isLoading
+                          ? null
+                          : () => context.go('/login'),
+                      isEnabled: !authState.isLoading,
+                    ),
+                    const SizedBox(height: AppSizes.spacingXL),
+                    Text(
+                      '© Vefa Yazılım  f0.0.7',
+                      textAlign: TextAlign.center,
+                      style: AppTypography.caption.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Positioned(
-              top: AppSizes.spacingM,
-              left: AppSizes.spacingM,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () => context.pop(),
+              Positioned(
+                top: AppSizes.spacingM,
+                left: AppSizes.spacingM,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: authState.isLoading ? null : () => context.pop(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
