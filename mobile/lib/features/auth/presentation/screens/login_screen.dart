@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../shared/widgets/alt_action_button.dart';
 import '../../../../shared/widgets/toast_overlay.dart';
 import '../providers/auth_provider.dart';
 
@@ -194,41 +195,43 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: AppSizes.spacingM),
+              const SizedBox(height: AppSizes.spacingL),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Hesabınız yok mu? ',
-                    style: AppTypography.body1.copyWith(
-                      color: AppColors.textSecondary,
+                  Expanded(
+                    child: Divider(color: AppColors.border, thickness: 1),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSizes.spacingM,
+                    ),
+                    child: Text(
+                      'veya',
+                      style: AppTypography.caption.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ),
-                  TextButton(
-                    onPressed: authState.isLoading
-                        ? null
-                        : () => context.push('/register'),
-                    child: const Text('Kaydol'),
+                  Expanded(
+                    child: Divider(color: AppColors.border, thickness: 1),
                   ),
                 ],
               ),
+              const SizedBox(height: AppSizes.spacingL),
+              AltActionButton(
+                icon: Icons.person_add_outlined,
+                title: 'Hesabınız yok mu? Kaydolun',
+                onTap: authState.isLoading
+                    ? null
+                    : () => context.push('/register'),
+                isEnabled: !authState.isLoading,
+              ),
               const SizedBox(height: AppSizes.spacingM),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Davet koduyla katılmak mı istiyorsunuz? ',
-                    style: AppTypography.body1.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: authState.isLoading
-                        ? null
-                        : () => context.push('/join'),
-                    child: const Text('Katıl'),
-                  ),
-                ],
+              AltActionButton(
+                icon: Icons.vpn_key_outlined,
+                title: 'Davet kodu ile katılın',
+                onTap: authState.isLoading ? null : () => context.push('/join'),
+                isEnabled: !authState.isLoading,
               ),
             ],
           ),
