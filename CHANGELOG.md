@@ -33,6 +33,17 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
+## Hot Fixes (f0.0.7 sonrası)
+**Tarih:** 2025-04-29
+
+### 🐛 Düzeltmeler
+- Login ekranı layout iyileştirmesi: MainAxisAlignment.center eklendi
+- Dinamik height sabit AppSizes.spacingL ile değiştirildi
+- Responsive layout daha tutarlı hale getirildi
+- Login ekranına copyright metni eklendi (© Vefa Yazılım f0.0.7)
+
+---
+
 ## f0.0.6 - Toast Sistemi ve Ayarlar Sekmesi
 **Tarih:** Önceki checkpoint
 
