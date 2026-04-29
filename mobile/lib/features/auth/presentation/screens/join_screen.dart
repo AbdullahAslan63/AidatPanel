@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../shared/utils/auth_validators.dart';
 import '../../../../shared/widgets/alt_action_button.dart';
+import '../../../../shared/widgets/password_field.dart';
 import '../../../../shared/widgets/toast_overlay.dart';
 import '../providers/auth_provider.dart';
 
@@ -57,6 +59,26 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
           .read(toastProvider.notifier)
           .show(
             'Davet kodu, ad ve şifre boş bırakılamaz',
+            type: ToastType.error,
+          );
+      return;
+    }
+
+    if (!AuthValidators.isValidInviteCode(inviteCode)) {
+      ref
+          .read(toastProvider.notifier)
+          .show(
+            'Geçersiz davet kodu formatı (Örn: AP3-B12-X7K9)',
+            type: ToastType.error,
+          );
+      return;
+    }
+
+    if (phone.isNotEmpty && !AuthValidators.isValidPhone(phone)) {
+      ref
+          .read(toastProvider.notifier)
+          .show(
+            'Geçerli bir telefon numarası giriniz (5XX XXX XX XX)',
             type: ToastType.error,
           );
       return;
@@ -159,49 +181,26 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                   const SizedBox(height: AppSizes.spacingM),
-                  TextField(
+                  PasswordField(
                     controller: _passwordController,
-                    enabled: !authState.isLoading,
                     obscureText: _obscurePassword,
-                    decoration: InputDecoration(
-                      labelText: 'Şifre',
-                      hintText: '••••••••',
-                      prefixIcon: const Icon(Icons.lock_outlined),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
-                        onPressed: () {
-                          setState(() => _obscurePassword = !_obscurePassword);
-                        },
-                      ),
-                    ),
+                    onToggleVisibility: () {
+                      setState(() => _obscurePassword = !_obscurePassword);
+                    },
+                    enabled: !authState.isLoading,
                   ),
                   const SizedBox(height: AppSizes.spacingM),
-                  TextField(
+                  PasswordField(
                     controller: _confirmPasswordController,
-                    enabled: !authState.isLoading,
                     obscureText: _obscureConfirmPassword,
-                    decoration: InputDecoration(
-                      labelText: 'Şifre Tekrar',
-                      hintText: '••••••••',
-                      prefixIcon: const Icon(Icons.lock_outlined),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureConfirmPassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
-                        onPressed: () {
-                          setState(
-                            () => _obscureConfirmPassword =
-                                !_obscureConfirmPassword,
-                          );
-                        },
-                      ),
-                    ),
+                    onToggleVisibility: () {
+                      setState(
+                        () =>
+                            _obscureConfirmPassword = !_obscureConfirmPassword,
+                      );
+                    },
+                    labelText: 'Şifre Tekrar',
+                    enabled: !authState.isLoading,
                   ),
                   const SizedBox(height: AppSizes.spacingL),
                   ElevatedButton(
