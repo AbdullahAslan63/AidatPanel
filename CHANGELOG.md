@@ -5,6 +5,17 @@ Tüm versiyon değişikliklerinin kaydı.
 ---
 
 ## Hot Fixes (0.0.7 sonrası)
+**Tarih:** 2026-04-30 04:20
+
+### 🔧 Teknik Değişiklikler
+- UserData sınıfı duplicate'ı kaldırıldı (3 dosyadan tek dosyaya)
+- features/auth/data/models/user_data.dart oluşturuldu
+- login_response.dart, register_response.dart, join_response.dart'dan duplicate UserData silindi
+- Kod tekrarı azaltıldı, bakım kolaylaştırıldı
+
+---
+
+## Hot Fixes (0.0.7 sonrası)
 **Tarih:** 2026-04-30 03:30
 
 ### 🐛 Düzeltmeler
