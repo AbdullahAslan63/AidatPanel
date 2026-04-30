@@ -16,7 +16,6 @@ Tüm versiyon değişikliklerinin kaydı.
 - Dinamik height sabit AppSizes.spacingL ile değiştirildi
 - Responsive layout daha tutarlı hale getirildi
 - Copyright metni dinamik versiyon referansı kullanıyor
-- Deneme: Terminal push testi
 
 ---
 
