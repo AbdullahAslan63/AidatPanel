@@ -5,7 +5,7 @@ Tüm versiyon değişikliklerinin kaydı.
 ---
 
 ## Hot Fixes (0.0.7 sonrası)
-**Tarih:** 2026-04-30
+**Tarih:** 2026-04-30 03:30
 
 ### 🐛 Düzeltmeler
 - Uygulama versiyonu 0.0.7 yapıldı (pubspec.yaml, appConstants, settings)
@@ -16,6 +16,7 @@ Tüm versiyon değişikliklerinin kaydı.
 - Dinamik height sabit AppSizes.spacingL ile değiştirildi
 - Responsive layout daha tutarlı hale getirildi
 - Copyright metni dinamik versiyon referansı kullanıyor
+- Deneme: Terminal push testi
 
 ---
 
