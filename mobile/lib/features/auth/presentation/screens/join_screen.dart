@@ -33,7 +33,6 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
   bool _hasMinLength = false;
   bool _hasLetter = false;
   bool _hasNumber = false;
-  bool _isPasswordValid = false;
   bool _passwordsMatch = false;
 
   @override
@@ -260,8 +259,6 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
                           _hasMinLength = value.length >= 6;
                           _hasLetter = RegExp(r'[A-Za-z]').hasMatch(value);
                           _hasNumber = RegExp(r'\d').hasMatch(value);
-                          _isPasswordValid =
-                              _hasMinLength && _hasLetter && _hasNumber;
                         });
                       },
                       focusNode: _passwordFocusNode,
