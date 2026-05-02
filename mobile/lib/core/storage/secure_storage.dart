@@ -44,6 +44,25 @@ class SecureStorage {
     return await _storage.read(key: AppConstants.fcmTokenKey);
   }
 
+  Future<void> saveTokenExpiry(DateTime expiry) async {
+    await _storage.write(
+      key: AppConstants.tokenExpiryKey,
+      value: expiry.millisecondsSinceEpoch.toString(),
+    );
+  }
+
+  Future<DateTime?> getTokenExpiry() async {
+    final value = await _storage.read(key: AppConstants.tokenExpiryKey);
+    if (value == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(int.parse(value));
+  }
+
+  Future<bool> isTokenExpired() async {
+    final expiry = await getTokenExpiry();
+    if (expiry == null) return true;
+    return DateTime.now().isAfter(expiry);
+  }
+
   Future<void> clearAll() async {
     await _storage.deleteAll();
   }

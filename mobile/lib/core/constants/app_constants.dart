@@ -6,6 +6,7 @@ class AppConstants {
   // Storage keys
   static const String tokenKey = 'access_token';
   static const String refreshTokenKey = 'refresh_token';
+  static const String tokenExpiryKey = 'token_expiry';
   static const String userKey = 'user';
   static const String languageKey = 'language';
   static const String fcmTokenKey = 'fcm_token';

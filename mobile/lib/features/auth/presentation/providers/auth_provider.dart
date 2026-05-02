@@ -24,7 +24,10 @@ final authRepositoryProvider = Provider((ref) {
 });
 
 final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier(ref.watch(authRepositoryProvider));
+  return AuthNotifier(
+    ref.watch(authRepositoryProvider),
+    ref.watch(secureStorageProvider),
+  );
 });
 
 class AuthState {
@@ -57,9 +60,10 @@ class AuthState {
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _authRepository;
+  final SecureStorage _secureStorage;
   final _random = Random();
 
-  AuthNotifier(this._authRepository) : super(AuthState());
+  AuthNotifier(this._authRepository, this._secureStorage) : super(AuthState());
 
   /// Random test kullanıcı ismi üretir
   String _generateRandomName() {
@@ -109,6 +113,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
         phone: _generateRandomPhone(),
         role: role,
         language: 'tr',
+      );
+
+      // Save mock token and expiry for session management
+      await _secureStorage.saveToken('mock_token_${mockUser.id}');
+      // Token expiry: 30 days
+      await _secureStorage.saveTokenExpiry(
+        DateTime.now().add(const Duration(days: 30)),
       );
 
       state = state.copyWith(

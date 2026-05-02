@@ -9,7 +9,7 @@ class DioClient {
   final SecureStorage _secureStorage;
 
   DioClient({required SecureStorage secureStorage})
-      : _secureStorage = secureStorage {
+    : _secureStorage = secureStorage {
     _initializeDio();
   }
 
@@ -36,6 +36,19 @@ class DioClient {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // Check if token is expired before making request
+    final isExpired = await _secureStorage.isTokenExpired();
+    if (isExpired) {
+      // Token expired - reject request to trigger logout flow
+      return handler.reject(
+        DioException(
+          requestOptions: options,
+          error: 'Oturum süreniz doldu. Lütfen tekrar giriş yapın.',
+          type: DioExceptionType.cancel,
+        ),
+      );
+    }
+
     final token = await _secureStorage.getToken();
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
@@ -69,10 +82,7 @@ class DioClient {
           opts.headers['Authorization'] = 'Bearer $newToken';
           final retryResponse = await _dio.request<dynamic>(
             opts.path,
-            options: Options(
-              method: opts.method,
-              headers: opts.headers,
-            ),
+            options: Options(method: opts.method, headers: opts.headers),
             data: opts.data,
             queryParameters: opts.queryParameters,
           );
@@ -194,10 +204,7 @@ class DioClient {
         case 500:
           return ServerException(message: message);
         default:
-          return ApiException(
-            message: message,
-            statusCode: statusCode,
-          );
+          return ApiException(message: message, statusCode: statusCode);
       }
     }
 

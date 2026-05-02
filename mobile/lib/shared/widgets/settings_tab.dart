@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/storage/secure_storage.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_sizes.dart';
 import '../../core/theme/app_typography.dart';
@@ -81,6 +82,10 @@ class SettingsTab extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: AppSizes.spacingXL),
+
+          // Token expiry test button (DEBUG ONLY - remove after test)
+          _TokenTestButton(),
+          const SizedBox(height: AppSizes.spacingM),
 
           _LogoutButton(),
           const SizedBox(height: AppSizes.spacingL),
@@ -404,5 +409,55 @@ class _LogoutButton extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+class _TokenTestButton extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ElevatedButton.icon(
+      onPressed: () => _checkTokenExpiry(context, ref),
+      icon: const Icon(Icons.timer_outlined, size: AppSizes.iconSize),
+      label: const Text('Token Süresi Kontrol (Test)'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.warning,
+        foregroundColor: Colors.white,
+        minimumSize: const Size(double.infinity, AppSizes.buttonHeightPrimary),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
+        ),
+        textStyle: AppTypography.button,
+        elevation: 0,
+      ),
+    );
+  }
+
+  Future<void> _checkTokenExpiry(BuildContext context, WidgetRef ref) async {
+    final secureStorage = ref.read(secureStorageProvider);
+    final isExpired = await secureStorage.isTokenExpired();
+    final expiry = await secureStorage.getTokenExpiry();
+
+    if (!context.mounted) return;
+
+    if (isExpired) {
+      ref
+          .read(toastProvider.notifier)
+          .show(
+            'Token süresi DOLMUŞ! Login ekranına atılıyorsunuz.',
+            type: ToastType.error,
+          );
+      await Future.delayed(const Duration(seconds: 2));
+      if (context.mounted) {
+        context.go('/login');
+      }
+    } else {
+      final remaining = expiry?.difference(DateTime.now()) ?? Duration.zero;
+      ref
+          .read(toastProvider.notifier)
+          .show(
+            'Token aktif! Kalan süre: ${remaining.inSeconds} saniye',
+            type: ToastType.success,
+          );
+    }
   }
 }

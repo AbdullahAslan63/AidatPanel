@@ -4,6 +4,28 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
+## Hot Fixes (0.0.8+1 sonrası)
+**Tarih:** 2026-05-02 03:20
+
+### 🔐 Güvenlik İyileştirmeleri
+- Token expiry (süre dolma) kontrolü eklendi
+- `secure_storage.dart`: `saveTokenExpiry()`, `getTokenExpiry()`, `isTokenExpired()` metodları eklendi
+- `dio_client.dart`: API çağrısı öncesi token süresi kontrolü
+- `auth_provider.dart`: Mock login'de token ve expiry kaydetme
+- `auth_repository_impl.dart`: Login/Register/Join işlemlerinde expiry kaydetme (3 yer)
+
+### 🧪 Test Özellikleri
+- Ayarlar sekmesine "Token Süresi Kontrol (Test)" butonu eklendi
+- Debug modda token süresi manuel kontrol edilebilir
+- Süre dolunca otomatik login ekranına yönlendirme
+
+### 🔧 Teknik Değişiklikler
+- `app_constants.dart`: `tokenExpiryKey` eklendi
+- 6 dosya güncellendi, token yönetimi altyapısı hazırlandı
+- Backend entegrasyonuna hazır (süre backend'den ayarlanacak)
+
+---
+
 ## 0.0.8 - Türkçe prompt_data
 **Tarih:** 2026-05-02
 

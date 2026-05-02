@@ -8,8 +8,18 @@ import '../models/join_request.dart';
 
 abstract class AuthRepository {
   Future<UserEntity> login(String email, String password);
-  Future<UserEntity> register(String email, String password, String name, String? phone);
-  Future<UserEntity> join(String inviteCode, String password, String name, String? phone);
+  Future<UserEntity> register(
+    String email,
+    String password,
+    String name,
+    String? phone,
+  );
+  Future<UserEntity> join(
+    String inviteCode,
+    String password,
+    String name,
+    String? phone,
+  );
   Future<void> logout();
   Future<UserEntity?> getStoredUser();
 }
@@ -21,8 +31,8 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({
     required AuthRemoteDataSource remoteDataSource,
     required SecureStorage secureStorage,
-  })  : _remoteDataSource = remoteDataSource,
-        _secureStorage = secureStorage;
+  }) : _remoteDataSource = remoteDataSource,
+       _secureStorage = secureStorage;
 
   @override
   Future<UserEntity> login(String email, String password) async {
@@ -33,6 +43,10 @@ class AuthRepositoryImpl implements AuthRepository {
       await _secureStorage.saveToken(response.accessToken);
       await _secureStorage.saveRefreshToken(response.refreshToken);
       await _secureStorage.saveUser(response.user.id);
+      // Token expiry: 30 days (change to Duration(seconds: 5) for testing)
+      await _secureStorage.saveTokenExpiry(
+        DateTime.now().add(const Duration(days: 30)),
+      );
 
       return response.user.toEntity();
     } on ApiException {
@@ -43,7 +57,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<UserEntity> register(String email, String password, String name, String? phone) async {
+  Future<UserEntity> register(
+    String email,
+    String password,
+    String name,
+    String? phone,
+  ) async {
     try {
       final request = RegisterRequest(
         email: email,
@@ -56,6 +75,10 @@ class AuthRepositoryImpl implements AuthRepository {
       await _secureStorage.saveToken(response.accessToken);
       await _secureStorage.saveRefreshToken(response.refreshToken);
       await _secureStorage.saveUser(response.user.id);
+      // Token expiry: 30 days (change to Duration(seconds: 5) for testing)
+      await _secureStorage.saveTokenExpiry(
+        DateTime.now().add(const Duration(days: 30)),
+      );
 
       return response.user.toEntity();
     } on ApiException {
@@ -66,7 +89,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<UserEntity> join(String inviteCode, String password, String name, String? phone) async {
+  Future<UserEntity> join(
+    String inviteCode,
+    String password,
+    String name,
+    String? phone,
+  ) async {
     try {
       final request = JoinRequest(
         inviteCode: inviteCode,
@@ -79,6 +107,10 @@ class AuthRepositoryImpl implements AuthRepository {
       await _secureStorage.saveToken(response.accessToken);
       await _secureStorage.saveRefreshToken(response.refreshToken);
       await _secureStorage.saveUser(response.user.id);
+      // Token expiry: 30 days (change to Duration(seconds: 5) for testing)
+      await _secureStorage.saveTokenExpiry(
+        DateTime.now().add(const Duration(days: 30)),
+      );
 
       return response.user.toEntity();
     } on ApiException {
@@ -96,6 +128,8 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<UserEntity?> getStoredUser() async {
     final userId = await _secureStorage.getUser();
-    return userId != null ? UserEntity(id: userId, email: '', name: '', role: UserRole.resident) : null;
+    return userId != null
+        ? UserEntity(id: userId, email: '', name: '', role: UserRole.resident)
+        : null;
   }
 }
