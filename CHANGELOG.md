@@ -4,6 +4,21 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
+## Hot Fixes (0.0.8 sonrası)
+**Tarih:** 2026-05-02 04:38
+
+### ✨ İyileştirmeler
+- Dashboard TabController optimizasyonu - `setState` yerine Riverpod provider kullanımı
+- `manager_dashboard_screen.dart`: Tab index state Riverpod'a taşındı
+- `resident_dashboard_screen.dart`: Tab index state Riverpod'a taşındı
+- `navigation_provider.dart`: Yeni oluşturuldu - merkezi tab yönetimi
+
+### 🔧 Teknik Değişiklikler
+- Versiyon formatı düzeltildi: `0.0.8+1` → `0.0.8` (semantic versioning kurallarına uygun)
+- `pubspec.yaml` ve `app_constants.dart` senkronize edildi
+
+---
+
 ## Hot Fixes (0.0.8+1 sonrası)
 **Tarih:** 2026-05-02 03:20
 

@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/settings_tab.dart';
+import '../../../../shared/providers/navigation_provider.dart';
 import '../../../apartments/domain/entities/apartment_entity.dart';
 
 class ResidentDashboardScreen extends ConsumerStatefulWidget {
@@ -24,7 +25,7 @@ class _ResidentDashboardScreenState
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
-      setState(() {});
+      ref.read(residentTabIndexProvider.notifier).state = _tabController.index;
     });
   }
 
@@ -57,11 +58,10 @@ class _ResidentDashboardScreenState
           ),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Ayarlar'),
         ],
-        currentIndex: _tabController.index,
+        currentIndex: ref.watch(residentTabIndexProvider),
         onTap: (index) {
-          setState(() {
-            _tabController.animateTo(index);
-          });
+          ref.read(residentTabIndexProvider.notifier).state = index;
+          _tabController.animateTo(index);
         },
       ),
     );

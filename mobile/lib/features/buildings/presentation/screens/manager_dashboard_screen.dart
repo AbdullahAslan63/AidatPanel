@@ -11,6 +11,7 @@ import '../../domain/entities/building_entity.dart';
 import 'add_building_screen.dart';
 import 'building_residents_screen.dart';
 import 'invite_code_screen.dart';
+import '../../../../shared/providers/navigation_provider.dart';
 
 class ManagerDashboardScreen extends ConsumerStatefulWidget {
   const ManagerDashboardScreen({super.key});
@@ -29,7 +30,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
-      setState(() {});
+      ref.read(managerTabIndexProvider.notifier).state = _tabController.index;
     });
   }
 
@@ -62,11 +63,10 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
           BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Aidatlar'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Ayarlar'),
         ],
-        currentIndex: _tabController.index,
+        currentIndex: ref.watch(managerTabIndexProvider),
         onTap: (index) {
-          setState(() {
-            _tabController.animateTo(index);
-          });
+          ref.read(managerTabIndexProvider.notifier).state = index;
+          _tabController.animateTo(index);
         },
       ),
     );
