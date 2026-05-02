@@ -3,77 +3,90 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken } from "../utils/generateTokens.js";
 
-const register = async (req, res) => {
-  const { name, email, password } = req.body;
-
-  const mevcutKullanici = await prisma.user.findUnique({
-    where: { email: email },
-  });
-  if (mevcutKullanici) {
-    return res.status(400).json({ error: "Bu email adresi zaten kullanılıyor." });
-  }
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      passwordHash: hashedPassword,
-      role: "MANAGER", // Normal kayıt olanlar otomatik MANAGER
-    },
-  });
-  res.status(201).json({ 
-    success: true,
-    message: "Hesabınız başarıyla oluşturuldu.", 
-    data: { user: user.id } 
-  });
-};
-
-const login = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-  });
-  if (!user) {
-    return res.status(400).json({ 
-      success: false,
-      error: "Email veya şifre hatalı." 
-    });
-  }
-  const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
-  if (!isPasswordValid) {
-    return res.status(400).json({ 
-      success: false,
-      error: "Email veya şifre hatalı." 
-    });
-  }
-  const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user);
-  res.status(200).json({
-    success: true,
-    message: "Giriş başarılı.",
-    data: {
-      accessToken,
-      refreshToken,
-      user: { id: user.id, email: user.email, name: user.name, role: user.role }
-    }
-  });
-};
-
-const refreshToken = async (req, res) => {
-  const { refreshToken } = req.body;
-  if (!refreshToken) {
-    return res.status(401).json({ 
-      success: false,
-      error: "Refresh token gerekli." 
-    });
-  }
+const register = async (req, res, next) => {
   try {
+    const { name, email, password } = req.body;
+
+    const mevcutKullanici = await prisma.user.findUnique({
+      where: { email: email },
+    });
+    if (mevcutKullanici) {
+      return res.status(409).json({ success: false, message: "Bu email adresi zaten kullanılıyor." });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        passwordHash: hashedPassword,
+        role: "MANAGER", // Normal kayıt olanlar otomatik MANAGER
+      },
+    });
+    res.status(201).json({ 
+      success: true,
+      message: "Hesabınız başarıyla oluşturuldu.", 
+      data: { user: user.id } 
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const login = async (req, res, next) => {
+  try {
+    const { identifier, password } = req.body;
+
+    // identifier '@' içeriyorsa email, yoksa telefon numarası
+    const isEmail = identifier.includes('@');
+
+    const user = isEmail
+      ? await prisma.user.findUnique({ where: { email: identifier } })
+      : await prisma.user.findUnique({ where: { phone: identifier } });
+
+    if (!user) {
+      return res.status(401).json({ 
+        success: false,
+        message: "Email/telefon veya şifre hatalı." 
+      });
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isPasswordValid) {
+      return res.status(401).json({ 
+        success: false,
+        message: "Email/telefon veya şifre hatalı." 
+      });
+    }
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    res.status(200).json({
+      success: true,
+      message: "Giriş başarılı.",
+      data: {
+        accessToken,
+        refreshToken,
+        user: { id: user.id, email: user.email, name: user.name, role: user.role }
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const refreshToken = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(401).json({ 
+        success: false,
+        message: "Refresh token gerekli." 
+      });
+    }
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const user = await prisma.user.findUnique({ where: { id: decoded.id } });
     if (!user) {
-      return res.status(404).json({ 
+      return res.status(401).json({ 
         success: false,
-        error: "Kullanıcı bulunamadı." 
+        message: "Kullanıcı bulunamadı." 
       });
     }
     const newAccessToken = generateAccessToken(user);
@@ -82,10 +95,7 @@ const refreshToken = async (req, res) => {
       data: { accessToken: newAccessToken } 
     });
   } catch (error) {
-    res.status(403).json({ 
-      success: false,
-      error: "Geçersiz refresh token." 
-    });
+    next(error);
   }
 };
 

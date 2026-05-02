@@ -55,9 +55,9 @@ export const authSchemas = {
 
   login: {
     body: z.object({
-      email: z
+      identifier: z
         .string()
-        .email("Geçerli bir email adresi giriniz"),
+        .min(1, "Email veya telefon numarası gereklidir"),
       password: z
         .string()
         .min(1, "Şifre gereklidir"),

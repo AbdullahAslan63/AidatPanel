@@ -16,7 +16,7 @@ model User {
   email        String   @unique
   passwordHash String
   name         String
-  phone        String?
+  phone        String? @unique
   role         UserRole @default(RESIDENT)
   fcmToken     String?
   language     String   @default("tr")

@@ -2,16 +2,19 @@ import { config } from "dotenv";
 config();
 
 import { PrismaClient } from "@prisma/client";
-import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaPg } from "@prisma/adapter-pg";
+import pg from "pg";
 
 // Development'da sadece connection status göster - güvenlik açığı düzeltildi
 if (process.env.NODE_ENV === "development") {
   console.log("Database connection status: Checking...");
 }
 
-const adapter = new PrismaNeon({
+const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
 });
+
+const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({
   log:

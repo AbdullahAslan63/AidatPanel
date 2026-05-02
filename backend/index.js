@@ -13,17 +13,33 @@ import { errorHandler, notFoundHandler } from "./src/middlewares/errorHandler.js
 
 const app = express();
 
-const port = 4200;
+const port = process.env.PORT;
 
 // GÜVENLİK MIDDLEWARE'LERİ
 // Helmet - HTTP başlıklarını güvenli hale getirir
 app.use(helmet());
 
-// CORS - Flutter'dan gelen isteklere izin ver
+// CORS - Flutter web + mobil + landing page
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:4200",
+  "http://localhost:2773",
+  "http://api.aidatpanel.com:2773",
+  "https://api.aidatpanel.com:2773",
+  "http://aidatpanel.com",
+  "https://aidatpanel.com",
+];
+
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:4200"],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS policy violation"));
+    }
+  },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
