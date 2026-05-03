@@ -5,6 +5,15 @@
 
 ---
 
+## [GERI DONUS] 2026-05-03 05:17 — API Dokumantasyonu Silindi
+
+- **Islem:** `git reset --hard cfcff99`
+- **Hedef:** Aşama 0 optimizasyon workflow tamam
+- **Silinen:** API_DOCUMENTATION_FURKAN.md (2 commit)
+- **Neden:** API dokumantasyonu stratejisi degisti
+
+---
+
 ## � TEKRAR PERFORMANS OPTIMIZASYONU A0 — HEDEFLER KARŞILANDI
 
 - **Tarih:** 2026-05-03 05:03:00 +0300
