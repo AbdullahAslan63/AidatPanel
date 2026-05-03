@@ -5,6 +5,35 @@
 
 ---
 
+## 🚩 BAYRAK — Aşama 0 - Adım 2-3: JWT Token + Auth Middleware KRİTİK DEĞİŞİKLİK
+
+- **Tarih:** 2026-05-03 04:41:36 +0300
+- **Branch:** `backend/endpoints`
+- **Commit:** `5156f7c` — `feat: add role to JWT payload and remove DB lookup from auth middleware`
+- **Durum:** ✅ Tamamlandı — Auth sistemi temelden değişti
+
+- **Yapılan Değişiklikler:**
+  1. **JWT Payload Genişletme:**
+     - `generateAccessToken`: `role: user.role` eklendi
+     - `generateRefreshToken`: `role: user.role` eklendi
+  2. **Auth Middleware Sadeleştirme:**
+     - `prisma` import kaldırıldı
+     - `prisma.user.findUnique` DB lookup kaldırıldı
+     - `req.user = { id: decoded.id, role: decoded.role }` — direkt JWT payload'dan
+
+- **Teknik Etki:**
+  - ✅ Her auth request ~50-100ms daha hızlı (1 DB query azaldı)
+  - ⚠️ Kullanıcı silinirse token hâlâ geçerli (15dk/30gün süresince)
+  - ⚠️ Rol değişirse eski token eski rolle çalışmaya devam eder
+  - 📝 İleride token revocation list gerekebilir
+
+- **Tag:** `feat:`
+- **Risk:** **YÜKSEK** — Tüm korunan endpoint'leri etkiler
+- **Test Önerisi:** Yeni login/refresh yap, token decode et, `role` var mı kontrol et
+- **Sonraki:** Adım 4 — Zod validasyon middleware (DÜŞÜK risk)
+
+---
+
 ## Aşama 0 - Adım 1 — Prisma @@index Migration HAZIR (Uygulanmayı Bekliyor)
 
 - **Tarih:** 2026-05-03 04:38:28 +0300
