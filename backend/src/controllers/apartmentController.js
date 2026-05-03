@@ -2,6 +2,7 @@ import {
   getApartmentsService,
   createApartmentService,
   deleteApartmentService,
+  updateApartmentService,
 } from "../services/apartmentService.js";
 
 // GET /api/v1/buildings/:buildingId/apartments
@@ -75,5 +76,31 @@ export const deleteApartment = async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Daire silindi.",
+  });
+};
+
+// PUT /api/v1/buildings/:buildingId/apartments/:id
+export const updateApartment = async (req, res) => {
+  const { buildingId, id } = req.params;
+  const { number, floor } = req.body;
+  const managerId = req.user.id;
+
+  const updateData = {};
+  if (number !== undefined) updateData.number = number.trim();
+  if (floor !== undefined) updateData.floor = Number(floor);
+
+  const apartment = await updateApartmentService(id, buildingId, managerId, updateData);
+
+  if (!apartment) {
+    return res.status(404).json({
+      success: false,
+      message: "Daire bulunamadı veya güncelleme yetkiniz yok.",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Daire başarıyla güncellendi.",
+    data: apartment,
   });
 };
