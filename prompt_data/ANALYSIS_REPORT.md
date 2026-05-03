@@ -5,6 +5,34 @@
 
 ---
 
+## Analiz — 2026-05-03 07:22
+- Branch: `backend/endpoints`
+- Push durumu: ✅ BAŞARILI
+- Commit: `5c5bca5` — `test: add comprehensive API test suite (test.py)`
+
+- Değişiklikler:
+  - `backend/test.py`: Eklendi — Tüm endpoint'leri test eden Python test suite
+  - 20 test senaryosu: Auth (7), Buildings (5), Apartments (4), Cleanup (2)
+  - Validasyon hatası testleri dahil
+  - Yetkisiz erişim testleri dahil
+
+- Test Kapsamı:
+  - ✅ POST /auth/register (başarılı + validasyon hatası)
+  - ✅ POST /auth/login (başarılı + yanlış şifre)
+  - ✅ POST /auth/refresh (başarılı + geçersiz token)
+  - ✅ POST /auth/logout
+  - ✅ GET|POST|PUT|DELETE /buildings
+  - ✅ GET|POST|PUT|DELETE /buildings/:id/apartments
+  - ✅ Yetkisiz erişim kontrolü
+
+- Kullanım: `cd backend && python3 test.py`
+- Gereksinim: `pip install requests`
+
+- Tag: `test:`
+- Dosya sayısı: 1 yeni dosya, +400 satır
+
+---
+
 ## Analiz — 2026-05-03 06:22
 - Branch: `backend/endpoints`
 - Push durumu: ✅ BAŞARILI
