@@ -36,7 +36,7 @@ class AltActionButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppSizes.cardRadius),
             border: Border.all(
               color: isEnabled
-                  ? AppColors.primary.withOpacity(0.3)
+                  ? AppColors.primary.withValues(alpha: 0.3)
                   : AppColors.border,
               width: 1,
             ),
@@ -47,7 +47,7 @@ class AltActionButton extends StatelessWidget {
                 icon,
                 color: isEnabled
                     ? AppColors.primary
-                    : AppColors.textSecondary.withOpacity(0.5),
+                    : AppColors.textSecondary.withValues(alpha: 0.5),
                 size: 24,
               ),
               const SizedBox(width: AppSizes.spacingM),
@@ -57,7 +57,7 @@ class AltActionButton extends StatelessWidget {
                   style: AppTypography.body1.copyWith(
                     color: isEnabled
                         ? AppColors.textPrimary
-                        : AppColors.textSecondary.withOpacity(0.5),
+                        : AppColors.textSecondary.withValues(alpha: 0.5),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -66,7 +66,7 @@ class AltActionButton extends StatelessWidget {
                 Icons.arrow_forward_ios,
                 color: isEnabled
                     ? AppColors.primary
-                    : AppColors.textSecondary.withOpacity(0.3),
+                    : AppColors.textSecondary.withValues(alpha: 0.3),
                 size: 16,
               ),
             ],

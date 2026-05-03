@@ -67,7 +67,7 @@ class PasswordField extends StatelessWidget {
                 : null,
           ),
         ),
-        if (passwordCriteria != null) passwordCriteria!,
+        ...?passwordCriteria != null ? [passwordCriteria!] : null,
       ],
     );
   }
