@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/storage/secure_storage.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_sizes.dart';
@@ -76,7 +77,7 @@ class SettingsTab extends ConsumerWidget {
               _SettingsTile(
                 icon: Icons.info_outline,
                 title: 'Hakkında',
-                trailing: 'v0.0.7',
+                trailing: 'v${AppConstants.appVersion}',
                 onTap: () => _showAboutDialog(context),
               ),
             ],
@@ -147,8 +148,8 @@ class SettingsTab extends ConsumerWidget {
   void _showAboutDialog(BuildContext context) {
     showAboutDialog(
       context: context,
-      applicationName: 'AidatPanel',
-      applicationVersion: 'v0.0.7',
+      applicationName: AppConstants.appName,
+      applicationVersion: 'v${AppConstants.appVersion}',
       applicationLegalese: '© 2026 AidatPanel\nTüm hakları saklıdır.',
       children: [
         const SizedBox(height: AppSizes.spacingM),
