@@ -5,6 +5,34 @@
 
 ---
 
+## Aşama 0 - Adım 1 — Prisma @@index Migration HAZIR (Uygulanmayı Bekliyor)
+
+- **Tarih:** 2026-05-03 04:38:28 +0300
+- **Branch:** `backend/endpoints`
+- **Commit:** `f3433b9` — `feat: add @@index directives to all foreign keys for query performance optimization`
+- **Durum:** ✅ Schema hazır, ⏳ Migration uygulanmayı bekliyor (yerel DB kurulumu sonrası)
+
+- **Eklenen Index'ler:**
+  - `User.apartmentId`
+  - `Subscription.userId`
+  - `Building.managerId`
+  - `Apartment.buildingId`
+  - `InviteCode.apartmentId`
+  - `Due.apartmentId`
+  - `Expense.buildingId`
+  - `Ticket.apartmentId`, `Ticket.userId`, `Ticket.[status, createdAt]`
+  - `TicketUpdate.ticketId`
+  - `Notification.[userId, isRead, createdAt]`
+
+- **Teknik etki:** Foreign key sorgularında performans artışı; büyük dataset'lerde kritik
+- **Tag:** `feat:`
+- **Risk:** DÜŞÜK — Schema değişikliği, veri kaybı yok
+- **Sonraki:** Adım 2 — JWT payload `role` ekleme (ORTA risk)
+
+**⚠️ Not:** Migration dosyası oluşturuldu ama veritabanına uygulanmadı. Yerel PostgreSQL kurulumu sonrası `npx prisma migrate dev` çalıştırılmalı.
+
+---
+
 ## Hot Fix — 2026-05-03 04:21:00 +0300
 
 - **Branch:** `backend/endpoints`
