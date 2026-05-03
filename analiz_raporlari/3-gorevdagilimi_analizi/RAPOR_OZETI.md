@@ -1,101 +1,104 @@
-# GOREVDAGILIMI ANALİZ ÖZETİ
+# GOREVDAGILIMI - EXECUTIVE SUMMARY
 
 **Tarih:** 2026-05-03  
-**Kaynak:** planning/GOREVDAGILIMI.md  
-**Durum:** ✅ Analiz Tamamlandı
+**Versiyon:** 1.0  
+**Kaynak:** `planning/GOREVDAGILIMI.md`  
+**Durum:** ✅ Analiz tamam + İyileştirilmiş yol haritası üretildi
 
 ---
 
-## 🎯 ÖZET
+## 🎯 KISA ÖZET
 
-AidatPanel projesi için **3 fazlı MVP** yapısı ve **4 kişilik ekip** görev dağılımı.
-
----
-
-## ✅ GÜÇLÜ YÖNLER
-
-- ✅ **Net rol tanımları:** Abdullah (Lead), Furkan (Senior), Yusuf/Seyit (Junior)
-- ✅ **Faz bazlı ilerleme:** MVP-1 → MVP-2 → Final
-- ✅ **Yetenek hiyerarşisi:** Görevler yetenek seviyesine uygun
-- ✅ **Teknik standartlar:** Code review, Git workflow, 50+ yaş kısıtları
+96 satırlık yol haritası, **4 kişilik ekip** (Abdullah/Furkan/Yusuf/Seyit) için **3 fazlı MVP** geliştirme planını ortaya koyuyor. Ana yapı sağlam ama **timeline, DoD, risk matrisi, knowledge transfer** gibi kritik bileşenler eksik.
 
 ---
 
-## ⚠️ KRİTİK RİSK: Furkan'ın Yükü
+## ✅ BELGENİN GÜÇLÜ YANLARI
 
-| Faz | Furkan'ın Görevi | İş Yükü |
-|-----|------------------|---------|
-| Faz 1 | Flutter projesi, Auth | %35 |
-| Faz 2 | Manager Hub | **%40** |
-| Faz 3 | Ticket sistemi | **%35** |
+- **Net rol tanımları** (Lead → Senior → Junior gradasyonu)
+- **3 fazlı incremental delivery** (MVP-1 → MVP-2 → Final)
+- **Yetenek-uyumlu görev dağılımı**
+- **50+ yaş tasarım kısıtları** (16sp/48dp/BottomNav)
+- **Türkçe hata mesajı politikası**
 
-**Risk:** Furkan Faz 2-3'te en yüksek workload sahibi ve kritik modüllerin tek sorumlusu.
+## ⚠️ BELGENİN EKSİKLERİ
 
-**Öneri:** Knowledge transfer planı, bus factor azaltma.
-
----
-
-## 📊 EKİP YAPISI
-
-| Üye | Rol | Odak | Seviye |
-|-----|-----|------|--------|
-| Abdullah | Lead Developer | Backend, DevOps | ⭐⭐⭐ |
-| **Furkan** | Senior Mobile | Flutter Core | ⭐⭐⭐ |
-| Yusuf | Junior Full-Stack | API, Dashboard | ⭐⭐ |
-| Seyit | Junior UI/UX | Tasarım, Web | ⭐⭐ |
+| Eksik | Risk | Geliştirilmiş Versiyondaki Çözüm |
+|-------|------|----------------------------------|
+| Zaman çizelgesi yok | 🔴 Yüksek | Faz başına haftalık timeline eklendi |
+| Definition of Done yok | 🔴 Yüksek | Her faz için checklist eklendi |
+| Risk matrisi yok | 🔴 Yüksek | Furkan bus factor + mitigation planı |
+| Knowledge transfer yok | 🟡 Orta | Junior pairing planı eklendi |
+| Sync meeting protokolü yok | 🟡 Orta | Günlük standup + haftalık review eklendi |
+| Branch naming/merge yok | 🟡 Orta | Resmi kurallar eklendi |
+| Teknik borç takibi yok | 🟢 Düşük | Faz sonu cleanup checklist |
+| Hata mesajı örnekleri yok | 🟢 Düşük | ✅/❌ örnek seti eklendi |
 
 ---
 
-## 🚀 FAZLAR ÖZETİ
+## 🚨 KRİTİK RİSK: FURKAN'IN YÜKÜ
 
-### Faz 1 (MVP-1): Temel Altyapı
-- Backend: PostgreSQL, Prisma, JWT (Abdullah)
-- Mobile: Flutter projesi, Riverpod, GoRouter, Auth (Furkan)
-- API: Bina/Daire CRUD (Yusuf)
-- UI: Design system, Landing Page (Seyit)
+| Faz | Furkan Workload | Bus Factor |
+|-----|------------------|-----------|
+| Faz 1 | %35 | Auth: yedek var (Yusuf) |
+| Faz 2 | **%40** | Manager Hub: **YEDEK YOK** ⚠️ |
+| Faz 3 | **%35** | Ticket UI: **YEDEK YOK** ⚠️ |
 
-### Faz 2 (MVP-2): Aidat Sistemi
-- Backend: Davet kodu, Aidat bulk, RevenueCat (Abdullah)
-- Mobile: Manager Hub, Aidat durum (Furkan)
-- Mobile: Resident Hub, Davet kodu katılım (Yusuf)
-- UI: Push notification, i18n (Seyit)
-
-### Faz 3 (Final): Giderler ve Destek
-- Backend: PDF rapor, WhatsApp/SMS (Abdullah)
-- Mobile: Ticket sistemi (Furkan)
-- API: Gider kayıt, özet (Yusuf)
-- UI: Profil, UX polish (Seyit)
+**Mitigation:** Knowledge transfer planı + zorunlu modül dokümantasyonu + Yusuf'a pair programming
 
 ---
 
-## 📋 TEKNİK STANDARTLAR
+## 👥 EKİP YETENEK BOŞLUKLARI
 
-| Standart | Kural |
-|----------|-------|
-| Code Review | Abdullah tüm MR'ları onaylar |
-| Git Workflow | Herkes kendi branch'inde: `feature/{name}-{task}` |
-| 50+ Yaş | 16sp font, 48dp touch, BottomNav zorunlu |
-| Hata Mesajları | Teknik jargon yok, Türkçe, anlaşılır |
-
----
-
-## ⚠️ EKSİK ALANLAR
-
-| Alan | Öneri |
-|------|-------|
-| Zaman çizelgesi | Faz 1 için gün/hafta planı ekle |
-| Risk yönetimi | Furkan unavailable senaryosu planla |
-| Definition of Done | Her faz için "tamamlandı" kriteri |
-| Sync meeting | Günlük/haftalık toplantı rutini |
+| Yetenek | Sahip | Yedek | Risk |
+|---------|-------|-------|------|
+| Flutter Senior | Furkan | YOK | 🔴 |
+| Backend Lead | Abdullah | Yusuf (yarı) | 🟡 |
+| UI/UX | Seyit + Furkan | OK | 🟢 |
+| DevOps | Abdullah | YOK | 🔴 |
 
 ---
 
-## 🎯 SONRAKİ ADIM
+## 📊 BELGE KALİTE SKORU
 
-1. **Furkan Risk Planı:** Knowledge transfer ve yedekleme
-2. **Timeline:** Faz 1 için detaylı zaman planı
-3. **DoD:** Her faz için başarı kriterleri
+| Kriter | Skor |
+|--------|------|
+| Rol Netliği | 9/10 |
+| Faz Yapısı | 8/10 |
+| Görev Dağılımı | 8/10 |
+| Zaman Yönetimi | 2/10 |
+| Risk Yönetimi | 1/10 |
+| İletişim Protokolü | 3/10 |
+| Definition of Done | 2/10 |
+| Teknik Standartlar | 7/10 |
+| Knowledge Transfer | 0/10 |
+| **Ortalama** | **4.4/10 (Orta)** |
+
+**Yorum:** Yapı sağlam, ama operasyonel detaylar eksik. `GOREVDAGILIMI_GELISTIRILMIS.md` ile kapatıldı (hedef skor: 8.5+/10).
 
 ---
 
-**Hazır:** Evet, risk planı ve timeline eklenebilir
+## 📁 KLASÖR İÇERİĞİ
+
+```
+3-gorevdagilimi_analizi/
+├── ANALIZ_RAPORU.md                    (Detaylı analiz + risk + skor)
+├── RAPOR_OZETI.md                      (Bu dosya)
+└── GOREVDAGILIMI_GELISTIRILMIS.md     (İyileştirilmiş yol haritası, ekip kullanımına hazır ✅)
+```
+
+---
+
+## 🚀 SONRAKİ ADIM
+
+İyileştirilmiş yol haritası (`GOREVDAGILIMI_GELISTIRILMIS.md`) ekibe sunulabilir. Onaydan sonra `planning/GOREVDAGILIMI.md` ile **değiştirilmesi** veya **referans olarak yan yana tutulması** önerilir.
+
+**Bakım:** Aylık review + tetikleyici olaylarda (faz tamamlanması, ekip değişikliği) revize edilecek.
+
+---
+
+## 📝 REVİZYON GEÇMİŞİ
+
+| Versiyon | Tarih | Değişiklik |
+|----------|-------|-----------|
+| v1.0 | 2026-05-03 | İlk özet (sıfırdan temiz yapım) |

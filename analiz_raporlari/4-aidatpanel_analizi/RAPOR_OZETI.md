@@ -1,197 +1,202 @@
-# AIDATPANEL ANALİZ ÖZETİ
+# AIDATPANEL - EXECUTIVE SUMMARY
 
 **Tarih:** 2026-05-03  
-**Kaynak:** planning/AIDATPANEL.md  
-**Durum:** ✅ Analiz Tamamlandı
+**Versiyon:** 1.0  
+**Kaynak:** `planning/AIDATPANEL.md` (995 satır)  
+**Durum:** ✅ Detaylı analiz + gap analizi tamam
 
 ---
 
-## 🎯 ÖZET
+## 🎯 KISA ÖZET
 
-AidatPanel, **Türk apartman yöneticileri** için geliştirilmiş **Flutter + Node.js** mobil aidat yönetim platformu.
+995 satırlık **master reference dökümanı**. AidatPanel'in stack, DB şeması, 44 API endpoint, Flutter yapısı, rolleri, onboarding, bildirim, abonelik, tasarım sistemi ve deployment detaylarını tanımlıyor.
 
----
-
-## ✅ PROJE ÖZETİ
-
-| Özellik | Değer |
-|---------|-------|
-| **Platform** | iOS + Android (Flutter) |
-| **Backend** | Node.js + Express + Prisma + PostgreSQL |
-| **Domain** | aidatpanel.com |
-| **API** | api.aidatpanel.com:4200 |
-| **Hedef** | 50+ yaş kullanıcılar |
+**Önemli:** Meta-prompt değil — **referans sözleşmesi**. Belge "olması gereken" halini tanımlıyor, gerçek kod (v0.0.8) ile gap'ler mevcut.
 
 ---
 
-## 🏗️ TEKNİK STACK
+## 🏗️ TEKNİK STACK (ÖZET)
 
 ### Backend
-- **Runtime:** Node.js 20+
-- **Framework:** Express.js
-- **ORM:** Prisma
-- **Database:** PostgreSQL
-- **Auth:** JWT (15dk access, 30 gün refresh)
-- **Push:** Firebase FCM
-- **SMS/WhatsApp:** Twilio
-- **Payments:** RevenueCat
+- Node.js 20+ / Express.js / Prisma / PostgreSQL
+- JWT (15dk/30g) / Resend / FCM / Twilio / RevenueCat
+- PM2 + CloudPanel (Contabo VPS, OkulOptik ile ortak)
 
 ### Flutter
-- **State:** Riverpod ^2.5.0
-- **Navigation:** GoRouter ^13.0.0
-- **Network:** Dio ^5.4.0
-- **Storage:** flutter_secure_storage ^9.0.0
-- **IAP:** purchases_flutter ^7.0.0
+- Riverpod ^2.5.0 / GoRouter ^13.0.0 / Dio ^5.4.0
+- flutter_secure_storage / firebase_messaging / purchases_flutter
+- freezed + json_serializable (codegen)
 
 ---
 
-## 🗄️ VERİTABANI ŞEMASI
+## 🗄️ VERİTABANI ÖZET
 
-### Ana Modeller
-| Model | Amaç |
-|-------|------|
-| **User** | Yönetici ve sakinler (MANAGER/RESIDENT) |
-| **Building** | Apartman bilgisi |
-| **Apartment** | Daire bilgisi |
-| **Due** | Aidat kaydı (PENDING/PAID/OVERDUE) |
-| **InviteCode** | Davet kodu (7 gün geçerli, tek kullanımlık) |
-| **Ticket** | Arıza/talep |
-| **Subscription** | Abonelik (ACTIVE/EXPIRED/CANCELLED) |
+**10 model** (User, Subscription, Building, Apartment, InviteCode, Due, Expense, Ticket, TicketUpdate, Notification) + **6 enum** (UserRole, SubscriptionStatus, DueStatus, ExpenseCategory, TicketCategory, TicketStatus, NotificationType).
+
+**Kritik kararlar:** Decimal(10,2) finansal alanlarda / UUID PK / Hard delete / updatedAt otomatik.
 
 ---
 
-## 🔌 API YAPISI (40+ Endpoint)
+## 🔌 API ÖZET (44 Endpoint)
 
-### Kategoriler
-- **Auth:** 6 endpoint (register, login, join, refresh, logout, forgot-password)
-- **Buildings:** 5 endpoint (Yönetici CRUD)
-- **Apartments:** 4 endpoint (Yönetici CRUD)
-- **Dues:** 4 endpoint (bulk create, status update)
-- **Tickets:** 5 endpoint (Sakin/Yönetici)
-- **Notifications:** 4 endpoint
-- **Reports:** 2 endpoint (PDF)
-- **Subscription:** 2 endpoint (RevenueCat webhook)
+| Kategori | # | Kritiklik |
+|----------|---|-----------|
+| Auth | 7 | Çok Yüksek |
+| Buildings | 5 | Yüksek |
+| Apartments | 5 | Yüksek |
+| Dues | 4 | Çok Yüksek |
+| Expenses | 5 | Orta |
+| Tickets | 6 | Yüksek |
+| Notifications | 4 | Orta |
+| Reports | 2 | Orta |
+| Subscription | 2 | Yüksek |
+| Profile | 4 | Orta |
 
----
-
-## 👥 KULLANICI ROLLERİ
-
-### MANAGER (Yönetici)
-**Abonelik Aktifken:**
-- Çoklu apartman yönetimi
-- Daire CRUD + davet kodu
-- Toplu aidat oluşturma
-- Aidat durum güncelleme
-- Gider kaydı (9 kategori)
-- PDF rapor
-- Arıza/talep takibi
-- Push bildirimi
-
-**Abonelik Dolduğunda:** Kilitlenir
-
-### RESIDENT (Sakin)
-**Abonelikten Bağımsız:**
-- Kendi aidat durumu ve geçmişi
-- Arıza/talep oluşturma
-- Bildirimleri görme
+Desenler: RESTful + nested resource + `/api/me/*` + bulk ops + `/api/v1/` prefix.
 
 ---
 
-## 🎨 TASARIM SİSTEMİ (50+ Yaş)
+## 👥 ROLLER
 
-### Temel İlke
-**Sade, güvenilir, net. Şov değil, işlevsellik.**
+### MANAGER
+- **Abonelik aktif:** Çoklu apartman, daire CRUD, davet kodu, toplu aidat, gider, PDF rapor, ticket, push
+- **Abonelik dolunca kilitli:** Yeni bina/daire/aidat, PDF, toplu bildirim
+- **Kilit sonrası:** Read-only mevcut veriler (sakinler etkilenmez)
 
-### Renkler
-- **primary:** #1B3A6B (Koyu lacivert)
-- **accent:** #F59E0B (Amber)
-- **success:** #16A34A
-- **error:** #DC2626
-
-### Boyutlar (Kritik!)
-- Font: **minimum 16sp** (asla altına inme)
-- Buton: **56dp** yükseklik
-- Dokunma: **48x48dp**
-- `textScaleFactor` **kısıtlanmamalı**
-
-### Navigasyon
-**BottomNavigationBar zorunlu - Hamburger menü YASAK!**
-
-### UI Metinleri
-```
-✅ "Aidat Ekle"      ❌ "Add Due"
-✅ "Ödendi İşaretle" ❌ "Mark as Paid"
-```
+### RESIDENT
+- **Her zaman:** Kendi aidat durumu + geçmişi, ticket oluşturma/takip, bildirimler, dil
 
 ---
 
-## 💳 ABONELİK SİSTEMİ (RevenueCat)
+## 🎨 TASARIM SİSTEMİ (50+ YAŞ)
 
-| Plan | ID | Fiyat |
-|------|-------|-------|
-| Aylık | `aidatpanel_monthly` | ₺99/ay |
-| Yıllık | `aidatpanel_annual` | ₺799/yıl |
+### Zorunlu Kurallar
+| Kural | Değer |
+|-------|-------|
+| Font family | **Nunito** |
+| Min font | **16sp** (textScaleFactor kısıtlanmaz) |
+| Primary buton | **56dp** |
+| Dokunma alanı | **48x48dp** min |
+| Navigation | **BottomNav zorunlu** (hamburger YASAK) |
+| Kontrast | WCAG AA ≥ 4.5:1 |
+| Animasyon | Max 200ms, easeInOut, slide |
+| Yasak anim | Lottie / Hero / bounce / 300ms+ |
 
-**Webhook Olayları:** INITIAL_PURCHASE, RENEWAL, CANCELLATION, EXPIRATION, BILLING_ISSUE
+### Renk Paleti
+- **primary:** `#1B3A6B` (koyu lacivert)
+- **accent:** `#F59E0B` (amber)
+- **success/error/warning/info** durum renkleri
+
+### UI Metin Dili
+✅ `Aidat Ekle` / `Ödendi İşaretle` / `Emin misiniz?`  
+❌ `Add Due` / `Mark as Paid` / `Error 422`  
+**Yasak:** dashboard, sync, toggle, payload, cache
+
+### Onay Dialog
+Her geri dönülemez işlemde (silme, ödendi işaretleme, bulk) zorunlu.
+
+---
+
+## 💳 ABONELİK
+
+- **Sağlayıcı:** RevenueCat (iOS + Android tek API)
+- **Plan:** Aylık ₺99 / Yıllık ₺799
+- **Webhook event:** INITIAL_PURCHASE, RENEWAL, CANCELLATION, EXPIRATION, BILLING_ISSUE
+
+---
+
+## 🔔 BİLDİRİM KANALLARI
+
+1. **FCM Push** — aidat hatırlatıcı + ticket + duyuru
+2. **WhatsApp (Twilio)** — manuel hatırlatma
+3. **SMS (Twilio fallback)** — WhatsApp iletilemezse
+4. **Email (Resend)** — şifre reset + sistem
 
 ---
 
 ## 🚀 MVP FAZLARI
 
-### Faz 1 — Çekirdek
-- Auth (register, login, JWT, davet kodu)
-- Bina/daire CRUD
-- Aidat sistemi
-- FCM push
-- RevenueCat abonelik
-- Landing page
-
-### Faz 2 — Tamamlama
-- Gider kaydı
-- Ticket sistemi
-- WhatsApp hatırlatma
-- PDF rapor
-- i18n (TR/EN)
-
-### Faz 3 — Büyüme
-- Online ödeme (İyzico/PayTR)
-- Çoklu yönetici
-- İstatistik dashboard
-- Belge paylaşımı
+- **Faz 1:** Auth + Bina/Daire + Davet + Aidat + FCM + RevenueCat + Landing
+- **Faz 2:** Gider + Ticket + WhatsApp + PDF + i18n
+- **Faz 3:** Online ödeme + çoklu yönetici + istatistik + belge paylaşımı
 
 ---
 
-## ⚠️ EKSİK ALANLAR
+## 📊 BELGE KALİTE SKORU
 
-| Alan | Öneri |
-|------|-------|
-| API Dokümantasyonu | Swagger/OpenAPI ekle |
-| Rate Limiting | Express rate limit |
-| Caching | Redis değerlendir |
-| Testing | Unit/integration test |
-| Monitoring | Health check + metrics |
-| Backup | PostgreSQL backup planı |
+| Kriter | Skor |
+|--------|------|
+| Kapsam | 10/10 |
+| Netlik | 9/10 |
+| Kod örnekleri | 9/10 |
+| Tutarlılık | 8/10 |
+| Güncellenebilirlik | 6/10 |
+| Testing stratejisi | 2/10 |
+| API dokümantasyonu | 1/10 |
+| Monitoring | 2/10 |
+| Caching | 2/10 |
+| Rate limiting | 1/10 |
+| Backup | 1/10 |
+| **Ortalama** | **5.5/10 (İyi)** |
 
----
-
-## 🎯 KRİTİK BAŞARI FAKTÖRLERİ
-
-1. **50+ Yaş Uyumu** - UI her kararda bu gerçeği gözetmeli
-2. **Offline-First** - Cache stratejisi kritik
-3. **Türkçe Öncelik** - i18n var, primary TR
-4. **Abonelik Kilidi** - RevenueCat entegrasyonu kritik
-5. **Davet Kodu** - Onboarding kritik noktası
-6. **PDF Rapor** - Yöneticiler için olmazsa olmaz
+**Yorum:** Çekirdek çok güçlü (10/10 kapsam), ama **operasyonel** alanlar (test/doc/monitoring/cache/ratelimit/backup) eksik.
 
 ---
 
-## 📁 SONRAKİ ADIM
+## ⚠️ TESPİT EDİLEN 10 KRİTİK EKSİK
 
-1. API Dokümantasyonu (Swagger)
-2. Rate Limiting
-3. Testing stratejisi
-4. Monitoring
+1. API dokümantasyonu (Swagger) yok
+2. Rate limiting tanımsız
+3. Caching stratejisi yok
+4. Testing planı yok
+5. Monitoring/observability yok
+6. Backup politikası yok
+7. Security headers tanımsız (Helmet/CORS)
+8. API response standardı yok
+9. Pagination konvansiyonu yok
+10. Structured logging yok
 
 ---
 
-**Hazır:** Evet, eksik alanlar planlanabilir
+## 🔍 KOD vs REFERANS GAP ANALİZİ
+
+`HATA_ANALIZ_RAPORU.md` ile çapraz kontrol: mevcut kod (v0.0.8) referans belgeden **15 noktada** sapıyor.
+
+| Seviye | # | Konu |
+|--------|---|------|
+| 🔴 Kritik | 4 | HTTP→HTTPS, Token expiry, DioClient refresh, ListView perf |
+| 🟡 Yüksek | 4 | Dummy data, Due modülü eksik, RevenueCat kurulumu, API constants |
+| 🟡 Orta | 4 | FCM handler, versiyon +1, intl uyumsuzluk, getStoredUser |
+| 🟢 Düşük | 3 | Obfuscation, Cert pinning, Test coverage |
+
+**Detay + somut yapılacaklar:** `AIDATPANEL_GAP_ANALIZI.md`
+
+---
+
+## 📁 KLASÖR İÇERİĞİ
+
+```
+4-aidatpanel_analizi/
+├── ANALIZ_RAPORU.md               (Detaylı analiz, 18+ bölüm)
+├── RAPOR_OZETI.md                 (Bu dosya)
+└── AIDATPANEL_GAP_ANALIZI.md      (Referans vs kod + somut yapılacaklar ✅)
+```
+
+---
+
+## 🚀 SONRAKİ ADIM
+
+`AIDATPANEL_GAP_ANALIZI.md`'deki **Aşama A (kritik güvenlik)** ile başla:
+1. HTTP → HTTPS
+2. Token expiry 15dk düzelt
+3. DioClient refresh ayrı instance
+
+Sonra Aşama B (Faz 2 bloker): dummy data, Due modülü, API constants.
+
+---
+
+## 📝 REVİZYON GEÇMİŞİ
+
+| Versiyon | Tarih | Değişiklik |
+|----------|-------|-----------|
+| v1.0 | 2026-05-03 | İlk özet (sıfırdan temiz yapım) + gap analizi eklendi |

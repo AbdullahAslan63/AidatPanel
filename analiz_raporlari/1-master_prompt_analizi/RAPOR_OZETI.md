@@ -1,75 +1,87 @@
-# MASTER PROMPTU ANALİZ ÖZETİ
+# MASTER PROMPTU - EXECUTIVE SUMMARY
 
 **Tarih:** 2026-05-03  
-**Kaynak:** planning/MASTER_PROMPTU.md  
-**Durum:** ✅ Analiz Tamamlandı
+**Versiyon:** 1.0  
+**Kaynak:** `planning/MASTER_PROMPTU.md`  
+**Durum:** ✅ Analiz tamam + Furkan profili hazır
 
 ---
 
-## 🎯 ÖZET
+## 🎯 KISA ÖZET
 
-Bu meta-prompt, **kişiselleştirilmiş AI Co-Founder** oluşturmak için **Reverse Engineering** yöntemiyle tasarlanmış bir röportaj süreci tanımlar.
-
----
-
-## ✅ GÜÇLÜ YÖNLER
-
-- ✅ İteratif bilgi toplama (2'şer soru)
-- ✅ Bilişsel yük dağıtımı
-- ✅ Esnek yeterlilik kriteri
-- ✅ Veri odaklı kişiselleştirme
+12 satırlık meta-prompt, **Reverse Engineering** yöntemiyle kişiselleştirilmiş **AI Co-Founder** sistem promptu üretmeyi hedefliyor. Kullanıcıya 2'şerli soru sorup davranış desenlerinden profil çıkararak copy-paste hazır bir master prompt üretiyor.
 
 ---
 
-## ⚠️ EKSİK ALANLAR (Çözümlendi)
+## ✅ META-PROMPT'UN GÜÇLÜ YANLARI
 
-| Alan | Çözüm |
-|------|-------|
-| Kullanıcı Modeli Yapısı | 6 boyutlu çerçeve tanımlandı |
-| Soru Kategorileri | 5 ana başlık belirlendi |
-| Prompt Formatı | Hazır şablon oluşturuldu |
-| Yeterlilik Kriteri | 12-15 cevap / 5-6 döngü önerisi |
+- İteratif bilgi toplama (2 soru/tur)
+- Reverse engineering yaklaşımı (davranıştan profile)
+- Holistik kapsam ("hayatın her alanı")
+- Taşınabilir çıktı (copy-paste hazır)
 
----
+## ⚠️ META-PROMPT'UN EKSİKLERİ
 
-## 📋 RÖPORTAJ PLANI
-
-### 5 Soru Kategorisi:
-1. Çalışma Ritmi ve Enerji Yönetimi
-2. Problem Çözme ve Karar Verme
-3. Öğrenme ve Bilgi İşleme
-4. Ekip ve İletişim Dinamikleri
-5. Vizyon, Motivasyon ve Uzun Vade
-
-### Süreç:
-- 5-6 döngü
-- Toplam 10-12 soru
-- Tahmini süre: 30-60 dakika
+| Eksik | AI'nın Doldurduğu |
+|-------|-------------------|
+| Kullanıcı modeli yapısı yok | 6 boyutlu çerçeve önerildi |
+| Soru kategorileri yok | 5 ana başlık belirlendi |
+| Format şablonu yok | 10 bölümlü Markdown şablon |
+| Yeterlilik kriteri subjektif | Boyut bazlı kriter eklendi |
+| Güncelleme mekanizması yok | Revizyon tetikleyicileri tanımlandı |
+| Doğrulama adımı yok | Kullanıcı onayı eklendi |
 
 ---
 
-## 🚀 BAŞLATMAK İÇİN
+## 📊 FURKAN İÇİN UYGULAMA SONUCU
 
-**Dosyalar:**
-- `ANALIZ_RAPORU.md` - Detaylı analiz ve rehber
-- `RAPOR_OZETI.md` - Bu dosya (özet)
+| Metrik | Değer |
+|--------|-------|
+| Soru Sayısı | 6 |
+| Süre | ~30 dk |
+| Tamamlanan Boyut | 6/6 |
+| Çıktı | `FURKAN_AI_COFUNDER_MASTER_PROMPT.md` (v1.0) |
 
-**Sonraki Adım:**
-Kullanıcıdan "Hazırım" onayı al → İlk 2 soruyu sor
+### Üretilen Profil (Tek Satırda)
+**Furkan:** Gece owl + checkpoint'li çalışma + mükemmeliyetçi + lider + "daha iyi olabilir" + Flutter/Node.js stack + 5 yıl → Teknik Lider
 
 ---
 
-## 📁 KLASÖR YAPISI
+## 📁 KLASÖR İÇERİĞİ
 
 ```
-prompt_data/
-└── analiz_raporlari/
-    ├── ANALIZ_RAPORU.md    (Detaylı analiz)
-    ├── RAPOR_OZETI.md      (Bu özet)
-    └── [SONRAKİ]
-        └── AI_COFUNDER_MASTER_PROMPT.md  (Nihai çıktı)
+1-master_prompt_analizi/
+├── ANALIZ_RAPORU.md                        (Detaylı analiz + gap + uygulama)
+├── RAPOR_OZETI.md                          (Bu dosya)
+└── FURKAN_AI_COFUNDER_MASTER_PROMPT.md    (Nihai prompt, kullanıma hazır ✅)
 ```
 
 ---
 
-**Hazır:** Evet, röportaja başlanabilir
+## 🎯 KALİTE SKORU
+
+| Kriter | Skor |
+|--------|------|
+| Meta-prompt netliği | 7/10 |
+| Yöntem tanımı | 8/10 |
+| Yapı tanımı | 3/10 |
+| Çıktı tanımı | 5/10 |
+| Güncelleme | 2/10 |
+| Doğrulama | 3/10 |
+| **Ortalama** | **4.7/10 (Orta)** |
+
+**Yorum:** Meta-prompt vizyonu net ama yapısal eksikleri AI tarafından doldurulmalı. Furkan için uygulamada bu eksikler kapatıldı.
+
+---
+
+## 🚀 SONRAKİ ADIM
+
+Üretilen `FURKAN_AI_COFUNDER_MASTER_PROMPT.md` kullanıma hazır. Aylık review veya tetikleyici olaylarda (yeni vizyon, stack değişimi, ekip değişikliği) revize edilecek.
+
+---
+
+## 📝 REVİZYON GEÇMİŞİ
+
+| Versiyon | Tarih | Değişiklik |
+|----------|-------|-----------|
+| v1.0 | 2026-05-03 | İlk özet (sıfırdan temiz yapım) |

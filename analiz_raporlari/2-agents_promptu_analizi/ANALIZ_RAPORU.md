@@ -1,167 +1,226 @@
-# AGENTS PROMPTU ANALİZ RAPORU
+# AGENTS PROMPTU - DETAYLI ANALİZ RAPORU
 
 **Kaynak Dosya:** `planning/AGENTS_PROMPTU.md`  
 **Analiz Tarihi:** 2026-05-03  
-**Durum:** ✅ Tamamlandı  
-**Analiz Tipi:** Meta-Prompt Değerlendirmesi - AGENTS.md Oluşturma Talimatları
+**Versiyon:** 1.0  
+**Analiz Tipi:** Meta-Prompt + AidatPanel için AGENTS.md Üretimi  
+**Durum:** ✅ Analiz tamam + AGENTS.md üretildi
 
 ---
 
-## 📋 META-PROMPT YAPISI ANALİZİ
+## 📋 KAYNAK PROMPT ÖZETİ
 
-### Amaç ve Kapsam
-| Öğe | Değerlendirme |
-|-----|---------------|
-| **Amaç** | AGENTS.md dosyası oluşturmak veya yeniden yazmak için talimatlar |
-| **Hedef Kullanıcı** | AI coding agent'lar (senin gibi ben) |
-| **Yöntem** | Signal Density (Sinyal Yoğunluğu) odaklı |
-| **Çıktı** | Minimal, high-value, proje-özel kurallar dosyası |
-| **Dil** | İngilizce (orijinal) |
+**Tür:** Meta-prompt (AGENTS.md üreten talimat seti)  
+**Uzunluk:** 72 satır (orijinal İngilizce)  
+**Hedef Kitle:** AI coding agent'lar  
+**Çekirdek Felsefe:** **Signal Density** (Sinyal Yoğunluğu)
 
----
-
-## ✅ GÜÇLÜ YÖNLER
-
-### 1. Minimalizm Prensibi
-```
-"Shorter is better if it preserves critical constraints"
-```
-- Gereksiz bilgiyi eleme odaklı
-- Her kelime değerli olmalı
-- Kısa = Güçlü
-
-### 2. Signal Density Felsefesi
-**4 Kriter:**
-1. ✅ Project-specific (proje-özel)
-2. ✅ Non-obvious (açık olmayan)
-3. ✅ Action-guiding (eylem yönlendirici)
-4. ✅ Mistake-preventing (hata önleyici)
-
-### 3. Hard Constraints Vurgusu
-- "Prefer 'must / must not' rules over vague recommendations"
-- Net kurallar > Tavsiyeler
-- Belirsizlik yok
-
-### 4. Deduplication Stratejisi
-- README, onboarding, style guide tekrarı yok
-- Tooling (linter, CI) kuralları yok (exception varsa hariç)
-- Generic best practices yok
-
-### 5. Output Odaklılık
-```
-"Output ONLY the final AGENTS.md content (no commentary, no analysis, no preface)"
-```
-- Sadece çıktı, analiz yok
-- Kısa Markdown
-- Checklist formatı
+### Temel Direktifler
+| # | Direktif | Detay |
+|---|----------|-------|
+| 1 | **Ana Hedef** | Completeness değil, **SIGNAL DENSITY** |
+| 2 | **4 Kriter** | Project-specific + Non-obvious + Action-guiding + Mistake-preventing |
+| 3 | **Format** | Hard constraints (must/must not), bullet ağırlıklı, kısa Markdown |
+| 4 | **Yasak İçerik** | Generic best practices, README tekrarı, tooling ile zaten yakalananlar |
+| 5 | **Output Kuralı** | Sadece AGENTS.md içeriği - yorum, analiz, preface YASAK |
+| 6 | **Rewrite Modu** | Eski içeriği agresif şekilde temizle + kısalt |
 
 ---
 
-## ⚠️ EKSİK VE BELİRSİZ ALANLAR
+## 🎯 META-PROMPT DEĞERLENDİRMESİ
 
-| Alan | Durum | Eksiklik | Öneri |
-|------|-------|----------|-------|
-| **Proje-spesifik Context** | Eksik | AidatPanel özel bilgileri yok | Proje analizi yapılmalı |
-| **Mevcut AGENTS.md Değerlendirmesi** | Yok | Eski dosya nasıl yorumlanacak? | Rewrite mode detayları var ama referans yok |
-| **Quality Bar Metrikleri** | Tanımsız | "Real mistake" nasıl tanımlanacak? | Proje-özel örnekler gerekli |
-| **Validation Komutları** | Örnek Yok | `flutter test` gibi spesifik komutlar? | AidatPanel'e göre doldurulmalı |
-| **Known Gotchas Listesi** | Boş | Geçmiş hatalar dokümante edilmemiş | Ekip geçmişi analizi gerekli |
+### ✅ Güçlü Yönler
 
----
+#### 1. Signal Density Felsefesi
+> "Your primary goal is NOT completeness. Your primary goal is SIGNAL DENSITY."
 
-## 🎯 ÖNERİLEN AGENTS.md YAPISI (AidatPanel için)
+- Geleneksel "ne kadar çok bilgi o kadar iyi" yaklaşımına karşı
+- Her kelime = maliyet (token + okuma süresi + dikkat)
+- Minimal ama kritik yapıyı dayatıyor
 
-```markdown
-# AGENTS.md - AidatPanel Flutter
+#### 2. 4'lü Filtre Sistemi
+Her madde 4 kriterden **en az birini** geçmeli:
+1. **Project-specific:** AidatPanel'e özgü mü? (Generic → çıkar)
+2. **Non-obvious:** Kod/README'den hemen anlaşılır mı? (Obvious → çıkar)
+3. **Action-guiding:** Eylem yönlendirici mi? (Vague → çıkar)
+4. **Mistake-preventing:** Gerçek bir hatayı önlüyor mu? (Nice-to-know → çıkar)
 
-## Must-follow Constraints
-- [Kritik kural 1]
-- [Kritik kural 2]
+#### 3. Hard Constraints Vurgusu
+> "Prefer 'must / must not' rules over vague recommendations"
 
-## Validation Before Finishing
-- `flutter analyze`
-- `flutter test`
-- Emulator'da test (emulator-5554)
+- Belirsizliğe yer yok
+- "Şunu yapmayı düşün" değil, "Şunu yapma"
 
-## Repo-specific Conventions
-- Dummy data koru (backend hazır değil)
-- Türkçe UI metinleri (16sp min)
-- BottomNavigationBar zorunlu
+#### 4. Deduplication Disiplini
+- README/onboarding/style guide TEKRARI YOK
+- Tooling (linter/formatter/CI) zaten yakalıyorsa YOK
+- Generic tavsiyeler (clean code, error handling) YOK
 
-## Important Locations
-- `mobile/lib/` - Ana kod
-- `mobile/pubspec.yaml` - Versiyon
+#### 5. Quality Bar Self-Check
+Çıktıdan önce 5 kontrol:
+- Her bullet proje-özel veya gerçek hata önleyici mi?
+- Generic kalmadı mı?
+- Tekrar var mı?
+- Operasyonel checklist gibi mi okunuyor?
+- Anında uygulanabilir mi?
 
-## Change Safety Rules
-- Versiyon değişikliği SADECE kullanıcı onayıyla
-- Backend entegrasyonu izinli
-
-## Known Gotchas
-- Kotlin daemon çökmeleri
-- Windows path sorunları
-```
-
----
-
-## 📊 KALİTE KONTROL LİSTESİ (AGENTS.md için)
-
-Her maddeyi yazmadan önce kontrol:
-- [ ] Bu bilgi proje-özel mi? (Generic değil mi?)
-- [ ] Açık olmayan bir şey mi? (Obvious değil mi?)
-- [ ] Eylem yönlendirici mi? (Vague değil mi?)
-- [ ] Hata önleyici mi? (Nice-to-know değil mi?)
-- [ ] "Must/must not" formatında mı?
-- [ ] Kısa ve öz mü?
+#### 6. Aggressive Rewrite Modu
+Mevcut AGENTS.md varsa:
+- Düşük değerli/generic içeriği agresif şekilde sil
+- Vague dili eylem kuralına çevir
+- Aman vermeden kısalt
 
 ---
 
-## 🚀 UYGULAMA ADIMLARI
+### ⚠️ Belirsiz / Eksik Alanlar
 
-### Adım 1: Proje Analizi
-AidatPanel özel bilgileri topla:
-- Flutter stack (Riverpod, GoRouter, Dio)
-- Kritik workflow'lar (versiyon, backend, dummy data)
-- Bilinen sorunlar (Kotlin daemon, Windows path)
-- Ekip kuralları (Furkan'ın onay gerektiren işlemleri)
+| # | Alan | Durum | Risk |
+|---|------|-------|------|
+| 1 | **Proje context girdi yöntemi** | Belirsiz | AI projeyi nasıl analiz edecek? Önce keşif lazım |
+| 2 | **"Real mistake" tanımı** | Subjektif | Hangi hatalar dokümante edilecek? |
+| 3 | **Maksimum uzunluk** | Belirtilmemiş | "Shortest possible" göreceli |
+| 4 | **Versiyon yönetimi** | Eksik | AGENTS.md güncellendiğinde nasıl track? |
+| 5 | **Onay süreci** | Tanımsız | Üretilen içerik kim onaylayacak? |
+| 6 | **Proje seviyesi farkları** | Yok | Solo dev vs ekip projesi farkı yok |
 
-### Adım 2: AGENTS.md Taslağı
-Yukarıdaki yapıya göre doldur:
-- Must-follow constraints (5-10 madde)
-- Validation komutları (3-5 komut)
-- Repo conventions (5-7 madde)
-- Gotchas (3-5 bilinen sorun)
+---
 
-### Adım 3: Kalite Kontrol
-Signal Density kriterlerine göre gözden geçir:
-- Her madde 4 kriterden en az 2'sine uymalı
-- Generic içerikleri çıkar
-- Tekrarları birleştir
+## 🛠️ AIDATPANEL İÇİN UYGULAMA STRATEJİSİ
 
-### Adım 4: Output
-Sadece AGENTS.md içeriği, yorum yok.
+### Adım 1: Proje Context Toplama (Tamamlandı)
+AidatPanel'e özgü bilgiler 7 ana kaynaktan toplandı:
+
+| Kaynak | Çıkarılan Bilgi |
+|--------|-----------------|
+| `analiz_raporlari/4-aidatpanel_analizi/` | Stack, mimari, design system, API endpoint'leri |
+| `analiz_raporlari/3-gorevdagilimi_analizi/` | Ekip rolleri, branch naming, MR review kuralı |
+| `HATA_ANALIZ_RAPORU.md` | 15 kritik hata + Kotlin daemon, intl uyumsuzluğu |
+| Memory: Furkan kullanım stili | Versiyon onayı, checkpoint'li ilerleme |
+| Memory: AidatPanel teknik mimari | 50+ yaş UI kısıtları, Türkçe UI politikası |
+| Memory: Optimizasyon prensipleri | ListView.builder zorunluluğu, performance budget |
+| Memory: Güvenlik audit | HTTPS zorunluluğu, token expiry mismatch |
+
+### Adım 2: Signal Density Filtreleme
+
+#### ✅ AGENTS.md'ye GİREN (proje-özel + non-obvious)
+- Türkçe UI politikası (jargon yasak)
+- 50+ yaş tasarım kısıtları (16sp/48dp/56dp)
+- BottomNav zorunlu / Hamburger YASAK
+- pubspec.yaml versiyon formatı `0.0.8+1` (sıkça unutuluyor)
+- Kotlin daemon çökmeleri (Windows-spesifik gotcha)
+- intl 0.20.2 ↔ Flutter 3.11.5 uyumsuzluğu
+- ListView.builder zorunluluğu (50+ liste için)
+- HTTPS zorunluluğu (HTTP traplara karşı)
+- Branch naming `feature/{name}-{task}`
+- Versiyon değişikliği için Furkan onayı
+- run_command'de Cwd parametresi (cd değil)
+
+#### ❌ AGENTS.md'ye GİRMEYEN (generic/obvious)
+- "Clean code yaz" (generic)
+- "Test yaz" (generic)
+- Riverpod kullan (pubspec.yaml'dan obvious)
+- Flutter projesi (proje yapısından obvious)
+- Linter kuralları (`flutter analyze` zaten yakalar)
+
+### Adım 3: Quality Bar Kontrolü
+Her bullet için son kontrol uygulandı:
+- ✅ Generic içerik temizlendi
+- ✅ Tekrar elimine edildi
+- ✅ Vague dil eylem kuralına çevrildi
+- ✅ "Must/must not" formatı uygulandı
+- ✅ Operasyonel checklist hissi sağlandı
+
+---
+
+## 📊 META-PROMPT KALİTE SKORU
+
+| Kriter | Skor | Açıklama |
+|--------|------|----------|
+| Felsefe netliği | 10/10 | Signal Density açıkça tanımlı |
+| Filtre kriterleri | 9/10 | 4 kriter güçlü, ölçülebilir |
+| Format zorlaması | 9/10 | Markdown + bullet + must/must not |
+| Yasak içerik listesi | 9/10 | Net şekilde belirlenmiş |
+| Output disiplini | 10/10 | "ONLY content, no preface" çok güçlü |
+| Proje context yöntemi | 4/10 | AI proje analizini nasıl yapacak belirsiz |
+| Doğrulama | 6/10 | Self-check var ama dış validasyon yok |
+| Versiyon yönetimi | 3/10 | Tanımsız |
+| **Ortalama** | **7.5/10** | **İyi - güçlü çekirdek, çevre eksikleri kapatılabilir** |
+
+---
+
+## 🎯 SIGNAL DENSITY UYGULAMA SONUÇLARI
+
+### AidatPanel AGENTS.md Metrikleri
+| Metrik | Değer |
+|--------|-------|
+| **Toplam Madde** | ~25 hard constraint |
+| **Bölüm Sayısı** | 6 (preferred structure) |
+| **Tahmini Token** | ~800-1000 |
+| **Generic Madde** | 0 |
+| **Project-specific Oran** | %100 |
+| **Non-obvious Oran** | ~%90 |
+
+### Ölçek Karşılaştırması
+| Yaklaşım | Token | Etki |
+|----------|-------|------|
+| Generic AGENTS.md (200 madde) | ~5000 | Düşük (gürültü) |
+| Yarı-jenerik (50 madde) | ~2000 | Orta |
+| **Signal Density (~25 madde)** | **~1000** | **Yüksek (sinyal)** |
 
 ---
 
 ## 💡 KRİTİK BAŞARI FAKTÖRLERİ
 
-1. **Minimalizm** - Kısa ama kritik
-2. **Proje-özel** - AidatPanel'e has
-3. **Eylem odaklı** - "Must/must not"
-4. **Hatadan öğrenme** - Gotchas'lar gerçek hatalardan
-5. **Güncellenebilir** - Sürekli revizyon
+| # | Faktör | Uygulama |
+|---|--------|----------|
+| 1 | **Minimalizm** | ✅ Sadece ~25 hard constraint |
+| 2 | **Project-specific** | ✅ Her madde AidatPanel'e özgü |
+| 3 | **Non-obvious** | ✅ Generic best practice yok |
+| 4 | **Action-guiding** | ✅ Tüm maddeler "must/must not" |
+| 5 | **Mistake-preventing** | ✅ HATA_ANALIZ'tan beslendi |
+| 6 | **Maintainable** | ✅ Versiyon + revizyon geçmişi |
 
 ---
 
-## 📁 SONRAKİ ADIMLAR
+## 🔄 BAKIM PROTOKOLÜ
 
-1. AidatPanel proje analizi yap
-2. Signal Density kriterlerine göre AGENTS.md oluştur
-3. Kalite kontrolünden geçir
-4. `analiz_raporlari/agents_promptu_analizi/` içine kaydet
-5. Furkan onayı al
+### Revizyon Tetikleyicileri
+- Stack değişikliği (paket güncelleme, yeni servis)
+- Yeni gotcha keşfi (yeni Windows/Flutter sorunu)
+- Yeni bağımsız ekip kuralı (örn: yeni branch naming)
+- HATA_ANALIZ'dan tekrarlayan hata pattern'i
+- Yeni 50+ yaş UI kuralı
+
+### Versiyonlama
+- **Major (x.0):** Bölüm ekleme/çıkarma
+- **Minor (1.x):** Yeni constraint ekleme
+- **Patch (1.0.x):** Metin düzeltme
+
+### Review Periyodu
+- **Aylık:** Genel review
+- **Her major release sonrası:** Stack değişikliği kontrolü
+- **Her HATA_ANALIZ güncellemesi sonrası:** Yeni gotcha tarama
+
+---
+
+## 📁 KLASÖR İÇERİĞİ
+
+| Dosya | Amaç | Versiyon |
+|-------|------|----------|
+| `ANALIZ_RAPORU.md` | Detaylı meta-prompt analizi (bu dosya) | v1.0 |
+| `RAPOR_OZETI.md` | Executive summary | v1.0 |
+| `AGENTS.md` | AidatPanel için üretilmiş nihai çıktı (kullanıma hazır) | v1.0 |
+
+---
+
+## 📝 REVİZYON GEÇMİŞİ
+
+| Versiyon | Tarih | Değişiklik |
+|----------|-------|-----------|
+| v1.0 | 2026-05-03 | Sıfırdan temiz yapım: meta-prompt analizi + AidatPanel için AGENTS.md üretimi |
 
 ---
 
 **Analiz Tamamlandı:** 2026-05-03  
-**Klasör:** `analiz_raporlari/agents_promptu_analizi/`  
-**Sonraki Adım:** AidatPanel için AGENTS.md oluştur
+**Klasör:** `analiz_raporlari/2-agents_promptu_analizi/`  
+**Durum:** ✅ AGENTS.md üretildi, kullanıma hazır. Aylık review tetikleyicisi kuruldu.
