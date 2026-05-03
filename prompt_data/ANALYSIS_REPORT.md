@@ -5,6 +5,40 @@
 
 ---
 
+## ✅ AŞAMA 0 TAMAMLANDI — Zod Validation + Apartment PUT Endpoint
+
+- **Tarih:** 2026-05-03 04:52:53 +0300
+- **Branch:** `backend/endpoints`
+- **Commit:** `7252c0a` — `feat: add Zod validation schemas and apartment PUT endpoint (Aşama 4-6)`
+- **Durum:** ✅ **AŞAMA 0 TAMAM** — 6/6 adım tamamlandı
+
+- **Yapılan Değişiklikler:**
+  1. **Adım 4 - Zod Validation Middleware:**
+     - `validate.js` mevcut yapı güncellendi
+     - `apartmentSchemas.update` şeması eklendi
+  2. **Adım 5 - Auth Route Validasyonu:**
+     - Mevcut auth route'ları zaten Zod ile korunuyor (`validate.js`)
+  3. **Adım 6 - Daire PUT Endpoint:**
+     - `updateApartmentService` eklendi
+     - `updateApartment` controller eklendi
+     - `PUT /api/v1/buildings/:buildingId/apartments/:id` route'u eklendi
+     - Zod validasyon entegre edildi
+
+- **AŞAMA 0 Özeti:**
+  - ✅ Prisma `@@index` migration hazır
+  - ✅ JWT payload `role` eklendi
+  - ✅ Auth middleware DB lookup kaldırıldı (YÜKSEK riskli)
+  - ✅ Zod validasyon aktif
+  - ✅ Daire PUT endpoint çalışır durumda
+
+- **Tag:** `feat:`
+- **Risk:** DÜŞÜK (Adım 4-6)
+- **Sonraki:** Aşama 1 — Profil endpoint'leri (`GET/PUT /api/me`)
+
+**🔄 Workflow:** Performans optimizasyonu → Güvenlik kontrolü → Tekrar performans optimizasyonu
+
+---
+
 ## 🚩 BAYRAK — Aşama 0 - Adım 2-3: JWT Token + Auth Middleware KRİTİK DEĞİŞİKLİK
 
 - **Tarih:** 2026-05-03 04:41:36 +0300
