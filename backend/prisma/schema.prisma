@@ -16,7 +16,7 @@ model User {
   email        String   @unique
   passwordHash String
   name         String
-  phone        String? @unique
+  phone        String?  @unique
   role         UserRole @default(RESIDENT)
   fcmToken     String?
   language     String   @default("tr")
@@ -34,6 +34,8 @@ model User {
   notifications Notification[]
   tickets       Ticket[]
   subscription  Subscription?
+
+  @@index([apartmentId])
 }
 
 enum UserRole {
@@ -53,6 +55,8 @@ model Subscription {
   currentPeriodEnd   DateTime
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
+
+  @@index([userId])
 }
 
 enum SubscriptionStatus {
@@ -73,6 +77,8 @@ model Building {
   expenses   Expense[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+
+  @@index([managerId])
 }
 
 model Apartment {
@@ -86,6 +92,8 @@ model Apartment {
   inviteCodes InviteCode[]
   tickets     Ticket[]
   createdAt   DateTime     @default(now())
+
+  @@index([buildingId])
 }
 
 model InviteCode {
@@ -97,6 +105,8 @@ model InviteCode {
   usedBy      String?
   expiresAt   DateTime
   createdAt   DateTime  @default(now())
+
+  @@index([apartmentId])
 }
 
 model Due {
@@ -112,6 +122,8 @@ model Due {
   note        String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([apartmentId])
 }
 
 enum DueStatus {
@@ -132,6 +144,8 @@ model Expense {
   note       String?
   receiptUrl String?
   createdAt  DateTime        @default(now())
+
+  @@index([buildingId])
 }
 
 enum ExpenseCategory {
@@ -158,6 +172,10 @@ model Ticket {
   updates     TicketUpdate[]
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+
+  @@index([apartmentId])
+  @@index([userId])
+  @@index([status, createdAt])
 }
 
 enum TicketCategory {
@@ -181,6 +199,8 @@ model TicketUpdate {
   message   String
   fromRole  UserRole
   createdAt DateTime @default(now())
+
+  @@index([ticketId])
 }
 
 model Notification {
@@ -193,6 +213,8 @@ model Notification {
   isRead    Boolean          @default(false)
   data      Json?
   createdAt DateTime         @default(now())
+
+  @@index([userId, isRead, createdAt])
 }
 
 enum NotificationType {
