@@ -5,6 +5,24 @@ Tüm versiyon değişikliklerinin kaydı.
 ---
 
 ## Hot Fixes (0.0.8 sonrası)
+**Tarih:** 2026-05-03 03:54
+
+### 📚 Dokümantasyon ve Prompt Sistemi
+- Eski prompt_data dosyaları silindi (AGENTS.md, AI_COFOUNDER_PROMPTU.md, GUVENLIK_ANALIZI.md, OPTIMIZASYON_ANALIZI.md)
+- `prompt_data/master_promptu_analizi/` klasörü oluşturuldu
+- MASTER_PROMPTU.md detaylı analiz raporu eklendi
+- Furkan için kişiselleştirilmiş AI Co-Founder Master Prompt oluşturuldu (6 soruluk röportaj sonucu)
+- Kullanıcı Modeli: 6 boyutlu profil (Zaman/Enerji, Problem/Karar, Öğrenme, Ekip, Vizyon, Reset)
+
+### 🤖 AI Co-Founder Özellikleri
+- 4 çalışma modu tanımlandı: Teknik Danışman, Proje Yöneticisi, Analiz & Review, Stratejik Ortak
+- Hard constraints: Hataya tolerans yok, mükemmeliyetçi standartlar
+- Özel senaryolar: Checkpoint'li ilerleme, tıkanma detektörü (anime/oyun reset), liderlik kararları
+- Mentorluk protokolü: Detaylı step-by-step talimatlar
+
+---
+
+## Hot Fixes (0.0.8 sonrası)
 **Tarih:** 2026-05-02 04:38
 
 ### ✨ İyileştirmeler
