@@ -50,3 +50,27 @@ export const deleteApartmentService = async (id, buildingId, managerId) => {
     where: { id },
   });
 };
+
+// UPDATE apartment
+export const updateApartmentService = async (id, buildingId, managerId, data) => {
+  const building = await prisma.building.findUnique({
+    where: { id: buildingId },
+  });
+
+  if (!building || building.managerId !== managerId) {
+    return null;
+  }
+
+  const apartment = await prisma.apartment.findFirst({
+    where: { id, buildingId },
+  });
+
+  if (!apartment) {
+    return null;
+  }
+
+  return await prisma.apartment.update({
+    where: { id },
+    data,
+  });
+};
