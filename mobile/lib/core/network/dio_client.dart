@@ -71,12 +71,28 @@ class DioClient {
       final refreshToken = await _secureStorage.getRefreshToken();
       if (refreshToken != null) {
         try {
-          final response = await _dio.post(
+          // FIX: Ayrı Dio instance kullan (interceptor olmadan) sonsuz döngüyü önlemek için
+          final refreshDio = Dio(
+            BaseOptions(
+              baseUrl: ApiConstants.baseUrl,
+              connectTimeout: AppConstants.apiTimeout,
+              receiveTimeout: AppConstants.apiTimeout,
+              contentType: 'application/json',
+            ),
+          );
+
+          final response = await refreshDio.post(
             ApiConstants.refresh,
             data: {'refreshToken': refreshToken},
           );
+
           final newToken = response.data['accessToken'];
           await _secureStorage.saveToken(newToken);
+
+          // Token expiry güncelle (15 dakika)
+          await _secureStorage.saveTokenExpiry(
+            DateTime.now().add(const Duration(minutes: 15)),
+          );
 
           final opts = error.requestOptions;
           opts.headers['Authorization'] = 'Bearer $newToken';
@@ -87,6 +103,16 @@ class DioClient {
             queryParameters: opts.queryParameters,
           );
           return handler.resolve(retryResponse);
+        } on DioException {
+          // Refresh başarısız - token'ları temizle ve logout yap
+          await _secureStorage.clearAll();
+          return handler.reject(
+            DioException(
+              requestOptions: error.requestOptions,
+              error: 'Oturum süreniz doldu. Lütfen tekrar giriş yapın.',
+              type: DioExceptionType.cancel,
+            ),
+          );
         } catch (e) {
           await _secureStorage.clearAll();
           return handler.reject(error);

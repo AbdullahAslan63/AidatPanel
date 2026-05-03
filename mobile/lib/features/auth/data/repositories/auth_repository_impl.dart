@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../../../core/network/api_exception.dart';
 import '../../../../core/storage/secure_storage.dart';
 import '../../domain/entities/user_entity.dart';
@@ -5,6 +7,7 @@ import '../datasources/auth_remote_datasource.dart';
 import '../models/login_request.dart';
 import '../models/register_request.dart';
 import '../models/join_request.dart';
+import '../models/user_data.dart';
 
 abstract class AuthRepository {
   Future<UserEntity> login(String email, String password);
@@ -42,8 +45,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
       await _secureStorage.saveToken(response.accessToken);
       await _secureStorage.saveRefreshToken(response.refreshToken);
-      await _secureStorage.saveUser(response.user.id);
-      // Token expiry: 30 days (change to Duration(seconds: 5) for testing)
+      // FIX: Tüm kullanıcı detaylarını JSON olarak sakla
+      await _secureStorage.saveUser(jsonEncode(response.user));
       await _secureStorage.saveTokenExpiry(
         DateTime.now().add(const Duration(days: 30)),
       );
@@ -74,8 +77,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
       await _secureStorage.saveToken(response.accessToken);
       await _secureStorage.saveRefreshToken(response.refreshToken);
-      await _secureStorage.saveUser(response.user.id);
-      // Token expiry: 30 days (change to Duration(seconds: 5) for testing)
+      // FIX: Tüm kullanıcı detaylarını JSON olarak sakla
+      await _secureStorage.saveUser(jsonEncode(response.user));
       await _secureStorage.saveTokenExpiry(
         DateTime.now().add(const Duration(days: 30)),
       );
@@ -106,8 +109,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
       await _secureStorage.saveToken(response.accessToken);
       await _secureStorage.saveRefreshToken(response.refreshToken);
-      await _secureStorage.saveUser(response.user.id);
-      // Token expiry: 30 days (change to Duration(seconds: 5) for testing)
+      // FIX: Tüm kullanıcı detaylarını JSON olarak sakla
+      await _secureStorage.saveUser(jsonEncode(response.user));
       await _secureStorage.saveTokenExpiry(
         DateTime.now().add(const Duration(days: 30)),
       );
@@ -127,9 +130,17 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<UserEntity?> getStoredUser() async {
-    final userId = await _secureStorage.getUser();
-    return userId != null
-        ? UserEntity(id: userId, email: '', name: '', role: UserRole.resident)
-        : null;
+    final userJson = await _secureStorage.getUser();
+    if (userJson == null) return null;
+
+    try {
+      // FIX: JSON'dan tüm kullanıcı detaylarını parse et
+      final userData = UserData.fromJson(jsonDecode(userJson));
+      return userData.toEntity();
+    } catch (e) {
+      // Eski format (sadece ID) varsa temizle
+      await _secureStorage.clearAll();
+      return null;
+    }
   }
 }

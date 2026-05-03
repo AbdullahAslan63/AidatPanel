@@ -13,25 +13,52 @@ class ApiConstants {
 
   // Buildings endpoints
   static const String buildings = '$apiVersion/buildings';
-  static const String buildingDetail = '$apiVersion/buildings';
+  static String buildingDetail(String buildingId) =>
+      '$apiVersion/buildings/$buildingId';
+  static String buildingApartments(String buildingId) =>
+      '$apiVersion/buildings/$buildingId/apartments';
+  static String buildingDues(String buildingId) =>
+      '$apiVersion/buildings/$buildingId/dues';
+  static String buildingExpenses(String buildingId) =>
+      '$apiVersion/buildings/$buildingId/expenses';
+  static String buildingTickets(String buildingId) =>
+      '$apiVersion/buildings/$buildingId/tickets';
+  static String buildingReports(String buildingId) =>
+      '$apiVersion/buildings/$buildingId/reports';
+  static String buildingInviteCode(String buildingId) =>
+      '$apiVersion/buildings/$buildingId/invite-code';
 
   // Apartments endpoints
-  static const String apartments = '$apiVersion/buildings';
+  static String apartment(String apartmentId) =>
+      '$apiVersion/apartments/$apartmentId';
+  static String apartmentResident(String apartmentId) =>
+      '$apiVersion/apartments/$apartmentId/resident';
+  static String apartmentDues(String apartmentId) =>
+      '$apiVersion/apartments/$apartmentId/dues';
   static const String inviteCode = '$apiVersion/apartments';
 
   // Dues endpoints
-  static const String dues = '$apiVersion/buildings';
+  static String due(String dueId) => '$apiVersion/dues/$dueId';
+  static String dueStatus(String dueId) => '$apiVersion/dues/$dueId/status';
   static const String myDues = '$apiVersion/me/dues';
+  static String bulkDues(String buildingId) =>
+      '$apiVersion/buildings/$buildingId/dues/bulk';
 
   // Expenses endpoints
-  static const String expenses = '$apiVersion/buildings';
+  static String expense(String expenseId) => '$apiVersion/expenses/$expenseId';
+  static String expenseProof(String expenseId) =>
+      '$apiVersion/expenses/$expenseId/proof';
 
   // Tickets endpoints
-  static const String tickets = '$apiVersion/buildings';
+  static String ticket(String ticketId) => '$apiVersion/tickets/$ticketId';
+  static String ticketUpdates(String ticketId) =>
+      '$apiVersion/tickets/$ticketId/updates';
   static const String myTickets = '$apiVersion/me/tickets';
 
   // Notifications endpoints
   static const String notifications = '$apiVersion/notifications';
+  static String notificationRead(String notificationId) =>
+      '$apiVersion/notifications/$notificationId/read';
   static const String fcmToken = '$apiVersion/me/fcm-token';
 
   // Profile endpoints
@@ -41,8 +68,6 @@ class ApiConstants {
 
   // Subscription endpoints
   static const String subscription = '$apiVersion/me/subscription';
-  static const String revenuecatWebhook = '$apiVersion/subscription/webhook/revenuecat';
-
-  // Reports endpoints
-  static const String reports = '$apiVersion/buildings';
+  static const String revenuecatWebhook =
+      '$apiVersion/subscription/webhook/revenuecat';
 }

@@ -2,7 +2,7 @@ name: aidatpanel
 description: "AidatPanel - Türk apartman ve site yöneticileri için mobil aidat yönetim platformu."
 publish_to: 'none'
 
-version: 0.0.8
+version: 0.0.8+1
 
 environment:
   sdk: ^3.11.5
@@ -54,6 +54,10 @@ dev_dependencies:
   riverpod_generator: ^2.3.0
   freezed: ^2.4.0
   json_serializable: ^6.7.0
+
+# Dependency overrides for compatibility
+dependency_overrides:
+  intl: ^0.19.0  # Flutter 3.11.5 ile uyumlu versiyon
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
