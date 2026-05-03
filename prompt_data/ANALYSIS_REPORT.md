@@ -5,6 +5,26 @@
 
 ---
 
+## Analiz — 2026-05-03 06:22
+- Branch: `backend/endpoints`
+- Push durumu: ✅ BAŞARILI
+- Commit: `693b427` — `docs: add detailed INTEGRATION_GUIDE_FURKAN.md`
+
+- Değişiklikler:
+  - `prompt_data/INTEGRATION_GUIDE_FURKAN.md`: Eklendi — Furkan Flutter entegrasyon rehberi
+  - Furkan'ın mock verileri analiz edildi
+  - Backend/Faz 1 uyumsuzlukları detaylı belgelendi
+
+- Teknik etki:
+  - Furkan'ın UI'ında eksik veriler: Building.totalMonthlyDues, Building.collectedDues, Apartment.residentName, Apartment.phone, Apartment.monthlyDues, Apartment.paymentStatus, Apartment.balance
+  - Sebep: Due tablosu ve User-Apartment ilişkisi Faz 2'de
+  - Çözüm: UI'da "Yakında", "-", "0" placeholder'ları kullanılacak
+
+- Tag: `docs:`
+- Dosya sayısı: 1 yeni dosya
+
+---
+
 ## [GERI DONUS] 2026-05-03 05:17 — API Dokumantasyonu Silindi
 
 - **Islem:** `git reset --hard cfcff99`
