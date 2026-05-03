@@ -4,6 +4,55 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
+## [0.0.9] - 2026-05-03
+
+### 🐛 Hata Düzeltmeleri (6 Adet)
+
+#### 1. DioClient Refresh Token Riski
+- **Dosya:** `lib/core/network/dio_client.dart`
+- **Sorun:** Refresh request'i kendi interceptor'ını atlıyordu, sonsuz döngü riski vardı
+- **Çözüm:** Ayrı Dio instance kullanımı ile interceptor bypass engellendi
+- **Commit:** `7f8763c`
+
+#### 2. API Constants Dinamik ID Desteği
+- **Dosya:** `lib/core/constants/api_constants.dart`
+- **Sorun:** Tüm endpoint'ler statik string idi, dinamik ID eklenemiyordu
+- **Çözüm:** Fonksiyon tabanlı endpoint tanımları eklendi (buildingDetail, buildingApartments, vb.)
+- **Örnek:** `ApiConstants.buildingApartments(buildingId)` → `/api/v1/buildings/:id/apartments`
+
+#### 3. AuthRepository Kullanıcı Verisi
+- **Dosya:** `lib/features/auth/data/repositories/auth_repository_impl.dart`
+- **Sorun:** `getStoredUser()` sadece ID döndürüyordu, email/name/role eksikti
+- **Çözüm:** Kullanıcı detayları JSON olarak saklanıyor ve parse ediliyor
+- **Etki:** Splash sonrası kullanıcı bilgileri eksiksiz görünüyor
+
+#### 4. Java 8 Obsolete Uyarısı
+- **Dosya:** `android/gradle.properties`
+- **Sorun:** `source value 8 is obsolete` derleyici uyarısı
+- **Çözüm:** Java 17 ayarları eklendi (org.gradle.java.home)
+
+#### 5. Versiyon Formatı
+- **Dosya:** `pubspec.yaml`
+- **Değişiklik:** `0.0.8` → `0.0.8+1` → `0.0.9`
+- **Neden:** Semantic versioning + build number desteği
+
+#### 6. ProGuard/R8 Obfuscation
+- **Dosya:** `android/app/build.gradle.kts`
+- **Ekleme:** `isMinifyEnabled = true`, `isShrinkResources = true`
+- **Yeni Dosya:** `android/app/proguard-rules.pro`
+
+### 🔧 Teknik İyileştirmeler
+- **intl paket uyumluluğu:** `dependency_overrides` ile Flutter 3.11.5 uyumu sağlandı
+- **Secure Storage:** `saveUser()` JSON format desteği eklendi
+
+### 🧪 Test Durumu
+- ✅ Login/Register/Join çalışıyor
+- ✅ Bina CRUD işlemleri aktif
+- ✅ VS Code 0 hata
+- ✅ Terminal Java uyarısı kalktı
+
+---
+
 ## Hot Fixes (0.0.8 sonrası)
 **Tarih:** 2026-05-03 03:54
 
