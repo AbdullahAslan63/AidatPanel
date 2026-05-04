@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const String baseUrl = 'http://api.aidatpanel.com:4200';
+  static const String baseUrl = 'https://api.aidatpanel.com:4200';
   static const String apiVersion = '/api/v1';
 
   // Auth endpoints

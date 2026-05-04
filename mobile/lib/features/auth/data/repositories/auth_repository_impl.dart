@@ -48,7 +48,7 @@ class AuthRepositoryImpl implements AuthRepository {
       // FIX: Tüm kullanıcı detaylarını JSON olarak sakla
       await _secureStorage.saveUser(jsonEncode(response.user));
       await _secureStorage.saveTokenExpiry(
-        DateTime.now().add(const Duration(days: 30)),
+        DateTime.now().add(const Duration(minutes: 15)),
       );
 
       return response.user.toEntity();
@@ -80,7 +80,7 @@ class AuthRepositoryImpl implements AuthRepository {
       // FIX: Tüm kullanıcı detaylarını JSON olarak sakla
       await _secureStorage.saveUser(jsonEncode(response.user));
       await _secureStorage.saveTokenExpiry(
-        DateTime.now().add(const Duration(days: 30)),
+        DateTime.now().add(const Duration(minutes: 15)),
       );
 
       return response.user.toEntity();
@@ -112,7 +112,7 @@ class AuthRepositoryImpl implements AuthRepository {
       // FIX: Tüm kullanıcı detaylarını JSON olarak sakla
       await _secureStorage.saveUser(jsonEncode(response.user));
       await _secureStorage.saveTokenExpiry(
-        DateTime.now().add(const Duration(days: 30)),
+        DateTime.now().add(const Duration(minutes: 15)),
       );
 
       return response.user.toEntity();
