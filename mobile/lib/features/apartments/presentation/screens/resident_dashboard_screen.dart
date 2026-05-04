@@ -273,26 +273,9 @@ class _ResidentDashboardScreenState
   }
 
   Widget _buildTransactionHistory() {
-    final transactions = [
-      {
-        'date': '15 Nisan 2024',
-        'amount': '₺5,000',
-        'type': 'Ödeme',
-        'status': 'Başarılı',
-      },
-      {
-        'date': '15 Mart 2024',
-        'amount': '₺5,000',
-        'type': 'Ödeme',
-        'status': 'Başarılı',
-      },
-      {
-        'date': '15 Şubat 2024',
-        'amount': '₺5,000',
-        'type': 'Ödeme',
-        'status': 'Başarılı',
-      },
-    ];
+    // TODO: Backend API'den işlem geçmişini çek
+    // Şimdilik: Boş liste göster
+    final transactions = <Map<String, String>>[];
 
     return Column(
       children: transactions
@@ -357,8 +340,8 @@ class _ResidentDashboardScreenState
       id: '1',
       buildingId: '1',
       apartmentNumber: '4B',
-      residentName: 'Furkan Kaya',
-      phone: '+905551234567',
+      residentName: 'Sakin Adı',
+      phone: null,
       monthlyDues: 5000,
       paymentStatus: PaymentStatus.paid,
       lastPaymentDate: DateTime(2024, 4, 15),

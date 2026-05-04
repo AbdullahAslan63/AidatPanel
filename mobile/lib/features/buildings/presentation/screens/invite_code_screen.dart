@@ -250,24 +250,30 @@ class _BuildingPickerStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    // OPTIMIZATION: ListView.builder kullanılıyor (lazy loading)
+    // Büyük bina listelerinde memory efficient, scroll performance artar
+    return ListView.builder(
       padding: const EdgeInsets.all(AppSizes.spacingL),
-      children: [
-        Text(
-          'Hangi binadan kod üretilecek?',
-          style: AppTypography.h4.copyWith(color: AppColors.textPrimary),
-        ),
-        const SizedBox(height: AppSizes.spacingM),
-        ...buildings.map(
-          (b) => InviteSelectableTile(
-            icon: Icons.apartment,
-            iconColor: AppColors.primary,
-            title: b.name,
-            subtitle: b.address,
-            onTap: () => onPick(b),
-          ),
-        ),
-      ],
+      itemCount: buildings.length + 1,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: AppSizes.spacingM),
+            child: Text(
+              'Hangi binadan kod üretilecek?',
+              style: AppTypography.h4.copyWith(color: AppColors.textPrimary),
+            ),
+          );
+        }
+        final b = buildings[index - 1];
+        return InviteSelectableTile(
+          icon: Icons.apartment,
+          iconColor: AppColors.primary,
+          title: b.name,
+          subtitle: b.address,
+          onTap: () => onPick(b),
+        );
+      },
     );
   }
 }
@@ -291,21 +297,50 @@ class _ApartmentPickerStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    // OPTIMIZATION: ListView.builder kullanılıyor (lazy loading)
+    // 50+ daireli binalarda scroll lag ve memory spike'ı önler
+    // 50+ yaş kullanıcılar için kritik performans iyileştirmesi
+    if (apartments.isEmpty) {
+      return ListView(
+        padding: const EdgeInsets.all(AppSizes.spacingL),
+        children: [
+          _buildBuildingBanner(),
+          const SizedBox(height: AppSizes.spacingL),
+          Text(
+            'Hangi daire için kod üretilecek?',
+            style: AppTypography.h4.copyWith(color: AppColors.textPrimary),
+          ),
+          const SizedBox(height: AppSizes.spacingM),
+          _buildEmptyState(),
+        ],
+      );
+    }
+
+    // Header: banner + başlık (2 sabit item)
+    // Items: apartments
+    const headerCount = 3;
+    return ListView.builder(
       padding: const EdgeInsets.all(AppSizes.spacingL),
-      children: [
-        _buildBuildingBanner(),
-        const SizedBox(height: AppSizes.spacingL),
-        Text(
-          'Hangi daire için kod üretilecek?',
-          style: AppTypography.h4.copyWith(color: AppColors.textPrimary),
-        ),
-        const SizedBox(height: AppSizes.spacingM),
-        if (apartments.isEmpty)
-          _buildEmptyState()
-        else
-          ...apartments.map(_buildApartmentTile),
-      ],
+      itemCount: apartments.length + headerCount,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: AppSizes.spacingL),
+            child: _buildBuildingBanner(),
+          );
+        }
+        if (index == 1) {
+          return Text(
+            'Hangi daire için kod üretilecek?',
+            style: AppTypography.h4.copyWith(color: AppColors.textPrimary),
+          );
+        }
+        if (index == 2) {
+          return const SizedBox(height: AppSizes.spacingM);
+        }
+        final apt = apartments[index - headerCount];
+        return _buildApartmentTile(apt);
+      },
     );
   }
 

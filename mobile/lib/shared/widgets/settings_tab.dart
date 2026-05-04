@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -39,7 +40,7 @@ class SettingsTab extends ConsumerWidget {
                 icon: Icons.language,
                 title: 'Dil',
                 trailing: 'Türkçe',
-                onTap: () => _showLanguageDialog(context, ref),
+                onTap: () => _showLanguageComingSoon(ref),
               ),
               const _Divider(),
               _SettingsTile(
@@ -83,9 +84,11 @@ class SettingsTab extends ConsumerWidget {
           ),
           const SizedBox(height: AppSizes.spacingXL),
 
-          // Token expiry test button (DEBUG ONLY - remove after test)
-          _TokenTestButton(),
-          const SizedBox(height: AppSizes.spacingM),
+          // Token expiry test button (DEBUG ONLY - production'da gizli)
+          if (kDebugMode) ...[
+            _TokenTestButton(),
+            const SizedBox(height: AppSizes.spacingM),
+          ],
 
           _LogoutButton(),
           const SizedBox(height: AppSizes.spacingL),
@@ -100,48 +103,10 @@ class SettingsTab extends ConsumerWidget {
         .show('Bu özellik yakında eklenecek', type: ToastType.info);
   }
 
-  void _showLanguageDialog(BuildContext context, WidgetRef ref) {
-    showDialog<void>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Dil Seçimi', style: AppTypography.h3),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(
-                Icons.radio_button_checked,
-                color: AppColors.primary,
-              ),
-              title: const Text('Türkçe', style: AppTypography.body1),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.radio_button_unchecked,
-                color: AppColors.textDisabled,
-              ),
-              title: const Text('English', style: AppTypography.body1),
-              onTap: () {
-                Navigator.pop(context);
-                ref
-                    .read(toastProvider.notifier)
-                    .show(
-                      'Çoklu dil desteği yakında eklenecek',
-                      type: ToastType.info,
-                    );
-              },
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('İptal', style: TextStyle(fontSize: 16)),
-          ),
-        ],
-      ),
-    );
+  void _showLanguageComingSoon(WidgetRef ref) {
+    ref
+        .read(toastProvider.notifier)
+        .show('Çoklu dil desteği yakında eklenecek', type: ToastType.info);
   }
 
   void _showAboutDialog(BuildContext context) {

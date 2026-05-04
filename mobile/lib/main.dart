@@ -23,8 +23,11 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [Locale('en', 'US')],
-      locale: const Locale('en', 'US'),
+      supportedLocales: const [
+        Locale('tr', 'TR'),
+        Locale('en', 'US'),
+      ],
+      locale: const Locale('tr', 'TR'),
       builder: (context, child) {
         return ToastOverlay(child: child ?? const SizedBox.shrink());
       },

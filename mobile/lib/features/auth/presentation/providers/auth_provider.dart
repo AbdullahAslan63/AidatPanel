@@ -48,11 +48,13 @@ class AuthState {
     UserEntity? user,
     String? error,
     bool? isAuthenticated,
+    bool clearUser = false,
+    bool clearError = false,
   }) {
     return AuthState(
       isLoading: isLoading ?? this.isLoading,
-      user: user,
-      error: error,
+      user: clearUser ? null : (user ?? this.user),
+      error: clearError ? null : (error ?? this.error),
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
     );
   }
@@ -117,9 +119,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       // Save mock token and expiry for session management
       await _secureStorage.saveToken('mock_token_${mockUser.id}');
-      // Token expiry: 30 days
+      // Token expiry: 15 minutes (Aşama 0 güvenlik standardı)
       await _secureStorage.saveTokenExpiry(
-        DateTime.now().add(const Duration(days: 30)),
+        DateTime.now().add(const Duration(minutes: 15)),
       );
 
       state = state.copyWith(

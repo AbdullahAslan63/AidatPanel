@@ -6,6 +6,7 @@ import 'api_exception.dart';
 
 class DioClient {
   late Dio _dio;
+  late Dio _refreshDio;
   final SecureStorage _secureStorage;
 
   DioClient({required SecureStorage secureStorage})
@@ -28,6 +29,17 @@ class DioClient {
         onRequest: _onRequest,
         onResponse: _onResponse,
         onError: _onError,
+      ),
+    );
+
+    // Ayrı Dio instance: refresh token için (interceptor'sız)
+    // Sonsuz döngü riskini önler
+    _refreshDio = Dio(
+      BaseOptions(
+        baseUrl: ApiConstants.baseUrl,
+        connectTimeout: AppConstants.apiTimeout,
+        receiveTimeout: AppConstants.apiTimeout,
+        contentType: 'application/json',
       ),
     );
   }
@@ -71,17 +83,8 @@ class DioClient {
       final refreshToken = await _secureStorage.getRefreshToken();
       if (refreshToken != null) {
         try {
-          // FIX: Ayrı Dio instance kullan (interceptor olmadan) sonsuz döngüyü önlemek için
-          final refreshDio = Dio(
-            BaseOptions(
-              baseUrl: ApiConstants.baseUrl,
-              connectTimeout: AppConstants.apiTimeout,
-              receiveTimeout: AppConstants.apiTimeout,
-              contentType: 'application/json',
-            ),
-          );
-
-          final response = await refreshDio.post(
+          // Cached _refreshDio instance kullan (interceptor'sız)
+          final response = await _refreshDio.post(
             ApiConstants.refresh,
             data: {'refreshToken': refreshToken},
           );
@@ -218,7 +221,16 @@ class DioClient {
 
     if (error.response != null) {
       final statusCode = error.response!.statusCode;
-      final message = error.response!.data?['message'] ?? 'Bir hata oluştu';
+      
+      // Safe message extraction
+      String message = 'Bir hata oluştu';
+      try {
+        if (error.response!.data is Map<String, dynamic>) {
+          message = error.response!.data['message'] as String? ?? message;
+        }
+      } catch (e) {
+        // Fallback to default message if parsing fails
+      }
 
       switch (statusCode) {
         case 401:

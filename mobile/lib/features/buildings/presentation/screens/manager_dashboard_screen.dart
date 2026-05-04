@@ -12,6 +12,7 @@ import 'add_building_screen.dart';
 import 'building_residents_screen.dart';
 import 'invite_code_screen.dart';
 import '../../../../shared/providers/navigation_provider.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 
 class ManagerDashboardScreen extends ConsumerStatefulWidget {
   const ManagerDashboardScreen({super.key});
@@ -74,14 +75,16 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
 
   Widget _buildHomeTab() {
     final buildings = ref.watch(buildingsStoreProvider);
+    final authState = ref.watch(authStateProvider);
+    final userName = authState.user?.name ?? 'Kullanıcı';
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSizes.spacingL),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Hoş Geldiniz, Test Kullanıcısı',
-            style: TextStyle(
+          Text(
+            'Hoş Geldiniz, $userName',
+            style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w700,
               color: Color(0xFF0F172A),
@@ -381,12 +384,22 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   Widget _buildStatsRow(BuildContext context) {
+    final buildings = ref.watch(buildingsStoreProvider);
+    
+    // Toplam daire ve dolu daire hesapla
+    int totalApartments = 0;
+    int occupiedApartments = 0;
+    for (final building in buildings) {
+      totalApartments += building.totalApartments;
+      occupiedApartments += building.occupiedApartments;
+    }
+    
     return Row(
       children: [
         Expanded(
           child: _buildStatCard(
             title: 'Toplam Daire',
-            value: '24',
+            value: totalApartments.toString(),
             icon: Icons.apartment_outlined,
           ),
         ),
@@ -394,7 +407,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
         Expanded(
           child: _buildStatCard(
             title: 'Dolu Daire',
-            value: '22',
+            value: occupiedApartments.toString(),
             icon: Icons.check_circle_outlined,
           ),
         ),
