@@ -1,4 +1,6 @@
-# AGENTS.md
+# 3️⃣ AGENTS.md
+
+## AGENTS.md
 
 AidatPanel — Flutter mobile + Node.js backend (apartman aidat yönetimi, hedef kitle 50+ yaş).
 

@@ -1,4 +1,6 @@
-# GUVENLIK PROMPTU ANALİZ ÖZETİ
+# 2️⃣ RAPOR_OZETI.md (v2.0)
+
+## GUVENLIK PROMPTU ANALİZ ÖZETİ
 
 **Tarih:** 2026-05-04  
 **Kaynak:** planning/GUVENLIK_PROMPTU.md v2.0  

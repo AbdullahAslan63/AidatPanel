@@ -1,4 +1,6 @@
-# 📋 AidatPanel - Ekip Standartları ve Çalışma Protokolü
+# 3️⃣ GOREVDAGILIMI_GELISTIRILMIS.md
+
+## 📋 AidatPanel - Ekip Standartları ve Çalışma Protokolü
 
 **Versiyon:** 3.0 (Sadeleştirilmiş — `YOL_HARITASI.md` ile hizalanmış)  
 **Son Güncelleme:** 2026-05-04  

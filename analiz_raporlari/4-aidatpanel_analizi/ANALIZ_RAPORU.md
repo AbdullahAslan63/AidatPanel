@@ -1,4 +1,6 @@
-# AIDATPANEL - DETAYLI ANALİZ RAPORU v2.0
+# 1️⃣ ANALIZ_RAPORU.md (v2.0)
+
+## AIDATPANEL - DETAYLI ANALİZ RAPORU v2.0
 
 **Versiyon:** 2.0  
 **Tarih:** 2026-05-04  

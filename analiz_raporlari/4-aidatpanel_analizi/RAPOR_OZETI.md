@@ -1,4 +1,6 @@
-# AIDATPANEL - EXECUTIVE SUMMARY
+# 2️⃣ RAPOR_OZETI.md (v2.0)
+
+## AIDATPANEL - EXECUTIVE SUMMARY
 
 **Tarih:** 2026-05-04  
 **Versiyon:** 2.0  

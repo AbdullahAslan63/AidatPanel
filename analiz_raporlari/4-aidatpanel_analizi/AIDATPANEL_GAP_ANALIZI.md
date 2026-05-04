@@ -1,4 +1,6 @@
-# 🔍 AIDATPANEL - REFERANS vs KOD GAP ANALİZİ
+# 3️⃣ AIDATPANEL_GAP_ANALIZI.md
+
+## 🔍 AIDATPANEL - REFERANS vs KOD GAP ANALİZİ
 
 **Versiyon:** 2.0 (Sadeleştirilmiş — `YOL_HARITASI.md` ile hizalanmış)  
 **Tarih:** 2026-05-04  
