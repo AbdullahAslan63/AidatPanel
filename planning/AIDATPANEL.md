@@ -1,4 +1,10 @@
-# AidatPanel — Claude Code Master Reference
+# AidatPanel — Master Reference v2.0
+
+**Versiyon:** 2.0 (Operasyonel Detay + Test + API Doc + Monitoring + Caching + Rate Limit)  
+**Tarih:** 2026-05-04  
+**Hedef Puan:** 7.5/10 (Mevcut: 5.5/10)
+
+---
 
 ## 📌 Proje Özeti
 
@@ -991,4 +997,192 @@ Her ekran tamamlanmadan önce şunlar kontrol edilmeli:
 - Port çakışması olmaması için OkulOptik portunu kontrol et, 4200 müsait değilse 4201 kullan
 - Tüm API route'ları `/api/v1/` prefix'i ile başlamalı (ileride versiyonlama için)
 - KVKK uyumu için kullanıcı verisi silme endpoint'i (`DELETE /api/me`) faz 1'de yazılmalı
+
+---
+
+## 🧪 TEST STRATEJİSİ (v2.0 YENİ)
+
+### Unit Tests
+- **Flutter:** `test/` klasörü, `flutter test` komutu
+  - Models: Serialization/deserialization
+  - Providers: State management logic
+  - Utils: Helper functions
+  - **Hedef:** %70+ coverage
+
+- **Node.js:** `test/` klasörü, `npm test` komutu
+  - Controllers: Business logic
+  - Services: API calls, validation
+  - Middleware: Auth, error handling
+  - **Hedef:** %60+ coverage
+
+### Widget Tests (Flutter)
+- **Screens:** Login, Register, Manager Hub, Resident Hub
+- **Widgets:** Custom buttons, input fields, dialogs
+- **Hedef:** Kritik screens %80+ coverage
+
+### Integration Tests
+- **Flutter:** `integration_test/` klasörü
+  - Login → Bina seç → Daire seç akışı
+  - Davet koduyla katılım akışı
+  - Aidat ödeme durumu güncelleme
+  - **Hedef:** Tüm kritik akışlar
+
+- **Node.js:** Postman/Insomnia collection
+  - Auth endpoints (login, refresh, logout)
+  - Building/Apartment CRUD
+  - Dues endpoints
+  - **Hedef:** Tüm public endpoint'ler
+
+### CI/CD Validation
+- `flutter analyze` (lint)
+- `flutter test` (unit + widget)
+- `npm run lint` (ESLint)
+- `npm test` (unit tests)
+- `npm run build` (production build)
+
+---
+
+## 📚 API DOKÜMANTASYONU (v2.0 YENİ)
+
+### Swagger/OpenAPI
+- **Dosya:** `backend/swagger.yaml` veya `backend/openapi.json`
+- **Sunucu:** `GET /api/docs` (Swagger UI)
+- **İçerik:**
+  - Tüm endpoint'ler (method, path, parameters, response)
+  - Authentication scheme (Bearer token)
+  - Error codes (400, 401, 403, 404, 500)
+  - Example requests/responses
+
+### Endpoint Dokümantasyonu
+Her endpoint için:
+- [ ] **Path:** `/api/v1/buildings/:id/dues`
+- [ ] **Method:** GET, POST, PATCH, DELETE
+- [ ] **Auth:** Required/Optional, scope
+- [ ] **Parameters:** Query, path, body
+- [ ] **Response:** 200, 400, 401, 403, 404, 500
+- [ ] **Example:** cURL, Postman
+
+### Postman Collection
+- **Dosya:** `backend/postman_collection.json`
+- **Klasörler:** Auth, Buildings, Apartments, Dues, Tickets, Expenses
+- **Environments:** dev, staging, production
+- **Tests:** Response validation, assertion'lar
+
+---
+
+## 📊 MONITORING & OBSERVABILITY (v2.0 YENİ)
+
+### Flutter (Client-side)
+- **Firebase Performance:** API latency, screen load time
+- **Sentry:** Crash reporting, error tracking
+- **Custom Metrics:**
+  - Login success rate
+  - API error rate
+  - Screen transition time
+  - Battery/memory usage
+
+### Node.js (Server-side)
+- **Sentry:** Error tracking, performance monitoring
+- **Prometheus:** Metrics (request count, latency, errors)
+- **Logs:** Winston (structured logging, PII filtering)
+  - Request/response logging (auth, building, dues)
+  - Error logging (stack trace, context)
+  - Performance logging (slow queries, API calls)
+
+### Database
+- **PostgreSQL Monitoring:**
+  - Slow query log (`log_min_duration_statement = 1000`)
+  - Connection pool (Prisma `connection_limit`)
+  - Index usage (`pg_stat_user_indexes`)
+  - Disk space
+
+### Dashboards
+- **Grafana:** Request latency, error rate, database metrics
+- **Sentry Dashboard:** Crash-free sessions, error trends
+- **Firebase Console:** App performance, user engagement
+
+---
+
+## 💾 CACHING STRATEJİSİ (v2.0 YENİ)
+
+### Flutter (Client-side)
+- **Hive:** Offline-first local storage
+  - Buildings, apartments, dues (user-scoped)
+  - User profile, preferences
+  - **Invalidation:** API response sonrası, manual refresh
+  - **Hedef:** 50+ yaş bağlantı sorunları için offline mode
+
+- **Memory Cache:** Riverpod providers
+  - State management (auto-invalidation)
+  - Image caching (`cached_network_image`)
+
+### Node.js (Server-side)
+- **Redis:** Session, JWT validation cache
+  - Session store (refresh token)
+  - JWT validation cache (5 dk TTL)
+  - Rate limit counters
+  - **Hedef:** Auth latency <50ms
+
+- **Database Query Cache:**
+  - Buildings/apartments (1 saat TTL)
+  - User permissions (30 dk TTL)
+  - Invalidation: POST/PATCH/DELETE sonrası
+
+### Cache Invalidation
+- **Automatic:** TTL-based
+- **Manual:** API mutation sonrası (POST, PATCH, DELETE)
+- **Webhook:** Real-time updates (FCM push)
+
+---
+
+## 🚦 RATE LIMITING (v2.0 YENİ)
+
+### Endpoint-level
+| Endpoint | Limit | Window |
+|----------|-------|--------|
+| POST /api/v1/auth/login | 5 req | 15 min |
+| POST /api/v1/auth/register | 3 req | 1 hour |
+| POST /api/v1/buildings/:id/dues | 10 req | 1 hour |
+| GET /api/v1/buildings/:id/dues | 100 req | 1 hour |
+| DELETE /api/v1/users/:id | 1 req | 24 hours |
+
+### Implementation
+- **Library:** `express-rate-limit`
+- **Store:** Redis (distributed rate limiting)
+- **Response:** 429 Too Many Requests + Retry-After header
+
+### Bypass
+- Admin endpoints (whitelist)
+- Internal services (API key)
+
+---
+
+## 🔄 BACKUP & DISASTER RECOVERY (v2.0 YENİ)
+
+### Database Backup
+- **Frequency:** Günlük (02:00 UTC)
+- **Retention:** 30 gün
+- **Storage:** Contabo backup service + AWS S3
+- **Encryption:** AES-256
+- **Recovery Test:** Aylık (RTO: 1 saat, RPO: 1 gün)
+
+### Application Backup
+- **Git:** GitHub (source code)
+- **Docker Images:** Docker Hub (production images)
+- **Configuration:** Encrypted .env backup
+
+### Disaster Recovery Plan
+- [ ] Database corruption: Restore from backup (1 saat)
+- [ ] Server crash: PM2 auto-restart + health check
+- [ ] Data loss: 30 gün backup retention
+- [ ] Security breach: Incident response plan
+
+---
+
+## 📝 REVİZYON GEÇMİŞİ
+
+| Versiyon | Tarih | Değişiklik |
+|----------|-------|-----------|
+| v1.0 | 2026-05-03 | İlk versiyon (proje özeti, stack, API, Flutter, database) |
+| v2.0 | 2026-05-04 | Operasyonel detay: Test stratejisi, API dokümantasyonu, monitoring, caching, rate limiting, backup. Puan: 5.5 → 7.5/10 |
 - Apple App Store'da "Kids Category" seçilmemeli, subscription için "Finance" kategorisi uygundur
