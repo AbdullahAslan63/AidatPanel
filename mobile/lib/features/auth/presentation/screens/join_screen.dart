@@ -7,6 +7,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/utils/auth_validators.dart';
+import '../../../../core/utils/input_validators.dart';
 import '../../../../shared/widgets/alt_action_button.dart';
 import '../../../../shared/widgets/password_field.dart';
 import '../../../../shared/widgets/toast_overlay.dart';
@@ -31,8 +32,10 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
   String? _inviteCodeError;
   String? _phoneError;
   bool _hasMinLength = false;
-  bool _hasLetter = false;
+  bool _hasUpperCase = false;
+  bool _hasLowerCase = false;
   bool _hasNumber = false;
+  bool _hasSpecialChar = false;
   bool _passwordsMatch = false;
 
   @override
@@ -126,13 +129,11 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
       return;
     }
 
-    if (!AuthValidators.isStrongPassword(password)) {
+    final passwordError = InputValidators.validatePassword(password);
+    if (passwordError != null) {
       ref
           .read(toastProvider.notifier)
-          .show(
-            'Şifre en az 6 karakter, en az 1 harf ve en az 1 sayı içermelidir',
-            type: ToastType.error,
-          );
+          .show(passwordError, type: ToastType.error);
       return;
     }
 
@@ -256,9 +257,11 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
                       enabled: !authState.isLoading,
                       onChanged: (value) {
                         setState(() {
-                          _hasMinLength = value.length >= 6;
-                          _hasLetter = RegExp(r'[A-Za-z]').hasMatch(value);
+                          _hasMinLength = value.length >= 8;
+                          _hasUpperCase = RegExp(r'[A-Z]').hasMatch(value);
+                          _hasLowerCase = RegExp(r'[a-z]').hasMatch(value);
                           _hasNumber = RegExp(r'\d').hasMatch(value);
+                          _hasSpecialChar = RegExp(r'[@$!%*?&]').hasMatch(value);
                         });
                       },
                       focusNode: _passwordFocusNode,
@@ -267,11 +270,22 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _buildCriterion(
-                                  'En az 6 karakter',
+                                  'En az 8 karakter',
                                   _hasMinLength,
                                 ),
-                                _buildCriterion('En az 1 harf', _hasLetter),
+                                _buildCriterion(
+                                  'En az 1 büyük harf',
+                                  _hasUpperCase,
+                                ),
+                                _buildCriterion(
+                                  'En az 1 küçük harf',
+                                  _hasLowerCase,
+                                ),
                                 _buildCriterion('En az 1 rakam', _hasNumber),
+                                _buildCriterion(
+                                  'En az 1 özel karakter (@\$!%*?&)',
+                                  _hasSpecialChar,
+                                ),
                               ],
                             )
                           : null,

@@ -59,7 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       identifierError = InputValidators.validateEmail(raw);
     }
 
-    passwordError = InputValidators.validatePassword(password);
+    passwordError = password.isEmpty ? 'Şifre gerekli' : null;
 
     // Show validation errors
     if (identifierError != null || passwordError != null) {

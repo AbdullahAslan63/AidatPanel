@@ -31,8 +31,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   String? _emailError;
   String? _phoneError;
   bool _hasMinLength = false;
-  bool _hasLetter = false;
+  bool _hasUpperCase = false;
+  bool _hasLowerCase = false;
   bool _hasNumber = false;
+  bool _hasSpecialChar = false;
   bool _passwordsMatch = false;
 
   @override
@@ -280,9 +282,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       enabled: !authState.isLoading,
                       onChanged: (value) {
                         setState(() {
-                          _hasMinLength = value.length >= 6;
-                          _hasLetter = RegExp(r'[A-Za-z]').hasMatch(value);
+                          _hasMinLength = value.length >= 8;
+                          _hasUpperCase = RegExp(r'[A-Z]').hasMatch(value);
+                          _hasLowerCase = RegExp(r'[a-z]').hasMatch(value);
                           _hasNumber = RegExp(r'\d').hasMatch(value);
+                          _hasSpecialChar = RegExp(r'[@$!%*?&]').hasMatch(value);
                         });
                       },
                       focusNode: _passwordFocusNode,
@@ -291,11 +295,22 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _buildCriterion(
-                                  'En az 6 karakter',
+                                  'En az 8 karakter',
                                   _hasMinLength,
                                 ),
-                                _buildCriterion('En az 1 harf', _hasLetter),
+                                _buildCriterion(
+                                  'En az 1 büyük harf',
+                                  _hasUpperCase,
+                                ),
+                                _buildCriterion(
+                                  'En az 1 küçük harf',
+                                  _hasLowerCase,
+                                ),
                                 _buildCriterion('En az 1 rakam', _hasNumber),
+                                _buildCriterion(
+                                  'En az 1 özel karakter (@\$!%*?&)',
+                                  _hasSpecialChar,
+                                ),
                               ],
                             )
                           : null,

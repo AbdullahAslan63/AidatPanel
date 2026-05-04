@@ -6,6 +6,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/settings_tab.dart';
 import '../../../../shared/providers/navigation_provider.dart';
 import '../../../apartments/domain/entities/apartment_entity.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 
 class ResidentDashboardScreen extends ConsumerStatefulWidget {
   const ResidentDashboardScreen({super.key});
@@ -69,13 +70,15 @@ class _ResidentDashboardScreenState
 
   Widget _buildHomeTab() {
     final apartment = _getDummyApartment();
+    final authState = ref.watch(authStateProvider);
+    final userName = authState.user?.name ?? apartment.residentName;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSizes.spacingL),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Hoş Geldiniz, ${apartment.residentName}',
+            'Hoş Geldiniz, $userName',
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w700,
@@ -262,6 +265,8 @@ class _ResidentDashboardScreenState
             Text(
               label,
               textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: AppTypography.caption.copyWith(
                 color: AppColors.textPrimary,
               ),
