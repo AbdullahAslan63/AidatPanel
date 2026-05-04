@@ -1,6 +1,16 @@
-You are an expert software optimization auditor. Your job is to perform a **full optimization check** on code, queries, scripts, services, or architectures.
+# ⚡ OPTIMIZASYON PROMPTU - Optimization Audit Rehberi
 
-Your primary goal is to identify opportunities to improve:
+**Versiyon:** 2.0 (Operasyonel Detay + AidatPanel Context + Monitoring + CI/CD)  
+**Tarih:** 2026-05-04  
+**Hedef Puan:** 8.0/10 (Mevcut: 7.2/10)
+
+---
+
+## 📋 GÖREV
+
+Yazılım kodunda, sorgularında, servislerinde veya mimarisinde **tam optimizasyon kontrolü** yapmak.
+
+Amaç: Şu alanlarda iyileştirme fırsatları tespit etmek:
 
 * **Performance** (CPU, memory, latency, throughput)
 * **Scalability** (load behavior, bottlenecks, concurrency)
@@ -184,3 +194,182 @@ If I provide only a snippet, still perform a useful optimization check by:
 ## Tone
 
 Be concise, technical, and actionable. Avoid generic advice.
+
+---
+
+## AIDATPANEL-SPESIFIK CONTEXT (v2.0 YENİ)
+
+### Stack
+- **Frontend:** Flutter (Dart), Riverpod, GoRouter
+- **Backend:** Node.js, Express, Prisma ORM
+- **Database:** PostgreSQL
+- **Target Users:** 50+ yaş (accessibility kritik)
+- **Performance Budget:**
+  - API latency (p95): <200ms
+  - Flutter frame time: <16ms (60 FPS)
+  - APK size: <50MB
+  - Memory peak: <150MB
+
+### Critical Paths
+- **Auth:** Login/Register → Token refresh (15dk access, 30 gün refresh)
+- **Aidat:** Manager Hub → Dues list → Status update
+- **Resident:** Login → Apartment select → Dues view
+- **Notifications:** FCM push → In-app display
+
+### Known Bottlenecks (from HATA_ANALIZ_RAPORU.md)
+1. **ListView Performance:** `ListView(children: [...])` → `ListView.builder` (50+ daire)
+2. **Dummy Data:** Hardcoded buildings/apartments (backend API hazır)
+3. **N+1 Queries:** Prisma eager loading eksik
+4. **JWT Caching:** Validation her request'te (Redis candidate)
+5. **Image Caching:** `cached_network_image` optimize gerekli
+
+### Optimization Priorities (ROI-based)
+1. **High Impact, Low Effort:** ListView.builder, Riverpod select, image cache
+2. **High Impact, Medium Effort:** N+1 queries, JWT caching, pagination
+3. **Medium Impact, Low Effort:** Dead code, unused imports, bundle size
+4. **Deeper:** Database partitioning, CDN, offline-first caching
+
+---
+
+## MONITORING & PROFILING SETUP (v2.0 YENİ)
+
+### Flutter Profiling
+- **Flutter DevTools:** CPU, memory, frame time, widget rebuild
+- **Command:** `flutter run --profile` + DevTools
+- **Metrics to Track:**
+  - Frame time (target: <16ms)
+  - Memory usage (target: <150MB peak)
+  - API latency (target: <200ms p95)
+  - Image cache hit rate
+
+### Node.js Profiling
+- **clinic.js:** CPU, memory, I/O profiling
+- **Command:** `clinic doctor -- npm start`
+- **Metrics to Track:**
+  - Request latency (p50, p95, p99)
+  - Database query time
+  - Memory growth over time
+  - Error rate
+
+### Database Profiling
+- **PostgreSQL:** `EXPLAIN ANALYZE` slow queries
+- **Metrics:**
+  - Query time (target: <100ms)
+  - Index usage
+  - Connection pool utilization
+  - Disk I/O
+
+### Continuous Monitoring
+- **Firebase Performance:** API latency, screen load time
+- **Sentry:** Error tracking, performance monitoring
+- **Custom Dashboards:** Grafana (if available)
+
+---
+
+## CI/CD PERFORMANCE REGRESSION TESTING (v2.0 YENİ)
+
+### Automated Checks
+- **Bundle Size:** `flutter build apk --analyze-size` (target: <50MB)
+- **Code Coverage:** `flutter test --coverage` (target: >60%)
+- **Lint:** `flutter analyze` (no warnings)
+- **Performance Tests:** Custom benchmarks
+
+### Performance Benchmarks
+```dart
+// Flutter example
+void main() {
+  group('ListView Performance', () {
+    testWidgets('ListView.builder renders 1000 items', (WidgetTester tester) async {
+      await tester.pumpWidget(MyApp());
+      final stopwatch = Stopwatch()..start();
+      await tester.pumpWidget(MyApp(itemCount: 1000));
+      stopwatch.stop();
+      expect(stopwatch.elapsedMilliseconds, lessThan(500)); // <500ms
+    });
+  });
+}
+```
+
+### Node.js Benchmarks
+```javascript
+// Example: API latency benchmark
+const autocannon = require('autocannon');
+
+autocannon({
+  url: 'http://localhost:4200/api/v1/buildings',
+  connections: 10,
+  duration: 30,
+  pipelining: 1,
+}, (err, result) => {
+  console.log(`Latency p95: ${result.latency.p95}ms (target: <200ms)`);
+});
+```
+
+### Regression Detection
+- **Baseline:** First commit (v0.0.8)
+- **Threshold:** +10% latency = warning, +20% = failure
+- **Action:** Revert or optimize before merge
+
+---
+
+## OPTIMIZATION WORKFLOW (v2.0 YENİ)
+
+### 1. Measure (Baseline)
+- [ ] Profile current state (Flutter DevTools, clinic.js, EXPLAIN ANALYZE)
+- [ ] Document metrics (latency, memory, bundle size, query time)
+- [ ] Identify top 3 bottlenecks
+
+### 2. Hypothesize
+- [ ] Root cause analysis (why is it slow?)
+- [ ] Estimate impact (% improvement expected)
+- [ ] Calculate ROI (effort vs impact)
+
+### 3. Optimize
+- [ ] Implement fix (code change, config, query rewrite)
+- [ ] Test correctness (unit + integration tests)
+- [ ] Verify no regressions (performance tests)
+
+### 4. Validate
+- [ ] Re-measure (same metrics as baseline)
+- [ ] Compare before/after
+- [ ] Document improvement (% or absolute)
+
+### 5. Deploy
+- [ ] Merge to main
+- [ ] Monitor production (Sentry, Firebase)
+- [ ] Alert if regression detected
+
+---
+
+## QUICK WINS TEMPLATE (v2.0 YENİ)
+
+For AidatPanel, prioritize:
+
+### Flutter Quick Wins
+- [ ] Replace `ListView(children: [...])` with `ListView.builder` (50+ items)
+- [ ] Add `select()` to Riverpod providers (minimize rebuilds)
+- [ ] Enable image caching: `CachedNetworkImage(cacheManager: ...)`
+- [ ] Remove debug banners: `debugShowCheckedModeBanner: false`
+- [ ] Analyze APK size: `flutter build apk --analyze-size`
+
+### Node.js Quick Wins
+- [ ] Add Prisma `include` for N+1 prevention
+- [ ] Implement pagination (default limit: 50)
+- [ ] Cache JWT validation (Redis, 5 min TTL)
+- [ ] Remove `SELECT *`, use field selection
+- [ ] Add request logging (latency tracking)
+
+### Database Quick Wins
+- [ ] Index frequently queried fields (`createdAt`, `userId`, `apartmentId`)
+- [ ] Run `EXPLAIN ANALYZE` on slow queries
+- [ ] Adjust Prisma connection pool (`max_pool_size: 20`)
+- [ ] Enable slow query log (`log_min_duration_statement: 1000`)
+
+---
+
+## 📝 REVİZYON GEÇMİŞİ
+
+| Versiyon | Tarih | Değişiklik |
+|----------|-------|-----------|
+| v1.0 | 2026-05-03 | İlk versiyon (7 boyut, 6 bölümlü format, 9 kategori checklist) |
+| v2.0 | 2026-05-04 | Operasyonel detay: AidatPanel context, monitoring setup, CI/CD regression testing, optimization workflow, quick wins template. Puan: 7.2 → 8.0/10 |
