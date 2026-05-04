@@ -2,7 +2,7 @@
 
 **Tarih:** 2026-05-04  
 **Kaynak:** planning/GUVENLIK_PROMPTU.md  
-**Hizalama:** YOL_HARITASI.md v2.0 (Aşama 0, 2.2)  
+**Hizalama:** YOL_HARITASI.md v3.0 (Aşama 0, 2.2)  
 **Durum:** ✅ Analiz Tamamlandı
 
 ---
@@ -127,6 +127,35 @@ Bu meta-prompt, **Senior Security Researcher** rolünde **adversarial mindset** 
 3. Dynamic testing (Auth bypass, IDOR, input validation)
 4. Dependency scanning
 5. Security report ve fix implementation
+
+---
+
+## 🎯 KALİTE SKORU
+
+| Kriter | Skor |
+|--------|------|
+| Adversarial mindset | 10/10 |
+| Zero trust prensibi | 10/10 |
+| 5 risk kategorisi | 10/10 |
+| Çıktı formatı | 9/10 |
+| Signal-to-noise | 10/10 |
+| Compliance (KVKK/GDPR) | 2/10 |
+| Threat modeling | 3/10 |
+| Mobile security (MASVS) | 4/10 |
+| Dependency scanning | 3/10 |
+| Secrets management | 2/10 |
+| **Ortalama** | **6.3/10 (İyi)** |
+
+**Yorum:** Temel güvenlik mükemmel (9.5/10), ama compliance ve advanced threat modeling eksik.
+
+---
+
+## 📝 REVİZYON GEÇMİŞİ
+
+| Versiyon | Tarih | Değişiklik |
+|----------|-------|-----------|
+| v1.0 | 2026-05-04 | İlk özet (sıfırdan temiz yapım) |
+| v1.1 | 2026-05-04 | YOL_HARITASI v3.0 referansı, puan tablosu eklendi |
 
 ---
 
