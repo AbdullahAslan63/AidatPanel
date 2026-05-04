@@ -3,7 +3,7 @@
 **Versiyon:** 1.1  
 **Tarih:** 2026-05-04  
 **Denetlenen Kod:** `mobile/lib/` (Flutter)  
-**Standart:** `analiz_raporlari/2-agents_promptu_analizi/AGENTS.md` v1.0  
+**Standart:** `analiz_raporlari/2-agents_promptu_analizi/2-AGENTS.md` v2.0 (puan: 7.5 → 9.1)  
 **Yol Haritası:** `YOL_HARITASI.md` v3.0 (Aşama 0-6 detaylı plan)
 
 ---
