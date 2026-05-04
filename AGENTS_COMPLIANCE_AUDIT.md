@@ -1,9 +1,10 @@
 # AGENTS.md KOD UYUMLULUK DENETİMİ
 
-**Versiyon:** 1.0  
+**Versiyon:** 1.1  
 **Tarih:** 2026-05-04  
 **Denetlenen Kod:** `mobile/lib/` (Flutter)  
-**Standart:** `analiz_raporlari/2-agents_promptu_analizi/AGENTS.md` v1.0
+**Standart:** `analiz_raporlari/2-agents_promptu_analizi/AGENTS.md` v1.0  
+**Yol Haritası:** `YOL_HARITASI.md` v3.0 (Aşama 0-6 detaylı plan)
 
 ---
 

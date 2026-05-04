@@ -4,6 +4,37 @@ Tüm versiyon değişikliklerinin kaydı.
 
 ---
 
+## [0.0.8] - 2026-05-04 (Yol Haritası v3.0 Oluşturuldu)
+
+### 📋 Dokümantasyon Güncellemeleri
+
+#### 1. YOL_HARITASI.md v3.0 Oluşturuldu
+- **Versiyon:** v3.0 (Operasyonel Detay + Furkan Profili)
+- **İçerik:** 7 aşama (0-6) tam detaylandırıldı, Furkan ritmi entegre edildi
+- **Aşamalar:** 
+  - Aşama 0: Acil Güvenlik (1-2 gün) — HTTP→HTTPS, Token 15dk, DioClient, ListView, Versiyon, intl
+  - Aşama 1: Aidat Sistemi (1-2 hafta) — Due modülü, dummy data temizliği
+  - Aşama 2: Güvenlik Hardening (1 hafta) — ProGuard, Helmet.js, rate limiting
+  - Aşama 3: FCM + i18n (1 hafta)
+  - Aşama 4: RevenueCat (1 hafta)
+  - Aşama 5: Ticket Sistemi (2 hafta)
+  - Aşama 6: Gider + PDF (2 hafta)
+- **Takvim:** 10 hafta, v1.0.0 hedefi 2026-07-14
+- **Checkpoint Protokolü:** 2-3 saatlik bloklar, reset molası (Genshin/Valorant)
+- **Risk Matrisi:** 8 risk × azaltma stratejisi
+
+#### 2. Analiz Raporları Güncellendi
+- **AGENTS_COMPLIANCE_AUDIT.md:** v1.0 → v1.1 (YOL_HARITASI.md v3.0 referansı)
+- **SECURITY_AUDIT.md:** v1.0 → v1.1 (YOL_HARITASI.md v3.0 referansı)
+
+#### 3. Lokal Checkpoint Oluşturuldu
+- **Dosya:** `checkpoints/2026-05-04_14-00.checkpoint.md`
+- **Amaç:** Son çalışan durumu kaydet, hard reset referansı
+
+**Durum:** 🟢 Yol haritası operasyonel, Aşama 0'a başlamaya hazır
+
+---
+
 ## [0.0.9] - 2026-05-03
 
 ### 🐛 Hata Düzeltmeleri (6 Adet)

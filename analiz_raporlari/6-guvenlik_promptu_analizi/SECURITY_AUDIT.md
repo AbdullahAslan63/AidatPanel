@@ -1,9 +1,9 @@
 # AIDATPANEL v0.0.8 - SECURITY AUDIT REPORT
 
-**Versiyon:** 1.0  
+**Versiyon:** 1.1  
 **Tarih:** 2026-05-04  
 **Kod Versiyonu:** v0.0.8  
-**Hedef:** YOL_HARITASI.md v2.0 → Aşama 0 (Acil Güvenlik), Aşama 2.2  
+**Hedef:** YOL_HARITASI.md v3.0 → Aşama 0 (Acil Güvenlik), Aşama 2.2  
 **Denetçi:** AI Co-Founder (Senior Security Researcher rolünde)  
 **Format:** GUVENLIK_PROMPTU.md standardı (Adversarial Mindset)
 
