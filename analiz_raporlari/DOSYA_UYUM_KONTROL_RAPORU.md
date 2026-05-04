@@ -18,84 +18,101 @@
 
 ---
 
-## 📋 Detaylı Kontrol
+## 📋 Detaylı Kontrol (Güncelleme Sırasına Göre)
 
 ### 1. 1-master_prompt_analizi
-- **RAPOR_OZETI.md:** ✅ Güncellenmiş (8.3/10)
-  - Puan tablosu: v1.0 (4.7) vs v2.0 (8.3) ✅
-  - Revizyon geçmişi: v2.0 güncellemesi ✅
-  - Tarih: 2026-05-04 ✅
-  
-- **FURKAN_AI_COFUNDER_MASTER_PROMPT.md:** ✅ Uyumlu
-  - Dosya var ve güncel ✅
-  - ANALIZ_RAPORU.md'deki 8 bulgularla uyumlu ✅
-  - 6 boyutlu çerçeve, 10 bölümlü format ✅
-  - Doğrulama, güncelleme, versiyon yönetimi ✅
+#### 1️⃣ ANALIZ_RAPORU.md (v2.0)
+- Detaylı analiz, 8 bulgu, puan tablosu (v1.0: 4.7 → v2.0: 8.3) ✅
+
+#### 2️⃣ RAPOR_OZETI.md (v2.0)
+- Puan tablosu: v1.0 (4.7) vs v2.0 (8.3) ✅
+- Revizyon geçmişi: v2.0 güncellemesi ✅
+- Tarih: 2026-05-04 ✅
+
+#### 3️⃣ FURKAN_AI_COFUNDER_MASTER_PROMPT.md
+- Dosya var ve güncel ✅
+- ANALIZ_RAPORU.md'deki 8 bulgularla uyumlu ✅
+- 6 boyutlu çerçeve, 10 bölümlü format ✅
 
 ---
 
 ### 2. 2-agents_promptu_analizi
-- **RAPOR_OZETI.md:** ✅ Güncellenmiş (9.1/10)
-  - Puan tablosu: v1.0 (7.5) vs v2.0 (9.1) ✅
-  - Revizyon geçmişi: v2.0 güncellemesi ✅
-  - Tarih: 2026-05-04 ✅
-  
-- **AGENTS.md:** ✅ Uyumlu
-  - Dosya var ve güncel ✅
-  - ANALIZ_RAPORU.md'deki 6 bulgularla uyumlu ✅
-  - Context toplama, doğrulama, versiyon yönetimi ✅
+#### 1️⃣ ANALIZ_RAPORU.md (v2.0)
+- Detaylı analiz, 6 bulgu, puan tablosu (v1.0: 7.5 → v2.0: 9.1) ✅
+
+#### 2️⃣ RAPOR_OZETI.md (v2.0)
+- Puan tablosu: v1.0 (7.5) vs v2.0 (9.1) ✅
+- Revizyon geçmişi: v2.0 güncellemesi ✅
+- Tarih: 2026-05-04 ✅
+
+#### 3️⃣ AGENTS.md
+- Dosya var ve güncel ✅
+- ANALIZ_RAPORU.md'deki 6 bulgularla uyumlu ✅
+- Context toplama, doğrulama, versiyon yönetimi ✅
 
 ---
 
 ### 3. 3-gorevdagilimi_analizi
-- **RAPOR_OZETI.md:** ✅ Güncellenmiş (8.8/10)
-  - Puan tablosu: v1.0 (4.4) vs v2.0 (8.8) ✅
-  - Revizyon geçmişi: v2.0 güncellemesi ✅
-  - Tarih: 2026-05-04 ✅
-  
-- **GOREVDAGILIMI_GELISTIRILMIS.md:** ✅ Uyumlu
-  - Dosya var ve güncel ✅
-  - ANALIZ_RAPORU.md'deki 10 bulgularla uyumlu ✅
-  - Timeline, DoD, risk, knowledge transfer, sync meeting, git workflow ✅
+#### 1️⃣ ANALIZ_RAPORU.md (v2.0)
+- Detaylı analiz, 10 bulgu, puan tablosu (v1.0: 4.4 → v2.0: 8.8) ✅
+
+#### 2️⃣ RAPOR_OZETI.md (v2.0)
+- Puan tablosu: v1.0 (4.4) vs v2.0 (8.8) ✅
+- Revizyon geçmişi: v2.0 güncellemesi ✅
+- Tarih: 2026-05-04 ✅
+
+#### 3️⃣ GOREVDAGILIMI_GELISTIRILMIS.md
+- Dosya var ve güncel ✅
+- ANALIZ_RAPORU.md'deki 10 bulgularla uyumlu ✅
+- Timeline, DoD, risk, knowledge transfer, sync meeting, git workflow ✅
 
 ---
 
 ### 4. 4-aidatpanel_analizi
-- **RAPOR_OZETI.md:** ✅ Güncellenmiş (8.8/10)
-  - Puan tablosu: v1.0 (5.5) vs v2.0 (8.8) ✅
-  - Revizyon geçmişi: v2.0 güncellemesi ✅
-  - Tarih: 2026-05-04 ✅
-  
-- **AIDATPANEL_GAP_ANALIZI.md:** ✅ Uyumlu
-  - Dosya var ve güncel ✅
-  - ANALIZ_RAPORU.md'deki 13 bulgularla uyumlu ✅
-  - Test, API doc, monitoring, caching, rate limit, backup/DR ✅
+#### 1️⃣ ANALIZ_RAPORU.md (v2.0)
+- Detaylı analiz, 13 bulgu, puan tablosu (v1.0: 5.5 → v2.0: 8.8) ✅
+
+#### 2️⃣ RAPOR_OZETI.md (v2.0)
+- Puan tablosu: v1.0 (5.5) vs v2.0 (8.8) ✅
+- Revizyon geçmişi: v2.0 güncellemesi ✅
+- Tarih: 2026-05-04 ✅
+
+#### 3️⃣ AIDATPANEL_GAP_ANALIZI.md
+- Dosya var ve güncel ✅
+- ANALIZ_RAPORU.md'deki 13 bulgularla uyumlu ✅
+- Test, API doc, monitoring, caching, rate limit, backup/DR ✅
 
 ---
 
 ### 5. 5-optimizasyon_promptu_analizi
-- **RAPOR_OZETI.md:** ✅ Güncellenmiş (9.2/10)
-  - Puan tablosu: v1.0 (7.2) vs v2.0 (9.2) ✅
-  - Revizyon geçmişi: v2.0 güncellemesi ✅
-  - Tarih: 2026-05-04 ✅
-  
-- **OPTIMIZATIONS.md:** ✅ Uyumlu
-  - Dosya var ve güncel ✅
-  - ANALIZ_RAPORU.md'deki 10 bulgularla uyumlu ✅
-  - AidatPanel context, monitoring, CI/CD, workflow, quick wins ✅
+#### 1️⃣ ANALIZ_RAPORU.md (v2.0)
+- Detaylı analiz, 10 bulgu, puan tablosu (v1.0: 7.2 → v2.0: 9.2) ✅
+
+#### 2️⃣ RAPOR_OZETI.md (v2.0)
+- Puan tablosu: v1.0 (7.2) vs v2.0 (9.2) ✅
+- Revizyon geçmişi: v2.0 güncellemesi ✅
+- Tarih: 2026-05-04 ✅
+
+#### 3️⃣ OPTIMIZATIONS.md
+- Dosya var ve güncel ✅
+- ANALIZ_RAPORU.md'deki 10 bulgularla uyumlu ✅
+- AidatPanel context, monitoring, CI/CD, workflow, quick wins ✅
 
 ---
 
 ### 6. 6-guvenlik_promptu_analizi
-- **RAPOR_OZETI.md:** ✅ Güncellenmiş (9.3/10)
-  - Puan tablosu: v1.0 (6.3) vs v2.0 (9.3) ✅
-  - Revizyon geçmişi: v2.0 güncellemesi ✅
-  - Tarih: 2026-05-04 ✅
-  
-- **SECURITY_AUDIT.md:** ✅ Uyumlu
-  - Dosya var ve güncel ✅
-  - ANALIZ_RAPORU.md'deki 11 bulgularla uyumlu ✅
-  - Compliance, threat modeling, MASVS, secrets, incident response ✅
+#### 1️⃣ ANALIZ_RAPORU.md (v2.0)
+- Detaylı analiz, 11 bulgu, puan tablosu (v1.0: 6.3 → v2.0: 9.3) ✅
+
+#### 2️⃣ RAPOR_OZETI.md (v2.0)
+- Puan tablosu: v1.0 (6.3) vs v2.0 (9.3) ✅
+- Revizyon geçmişi: v2.0 güncellemesi ✅
+- Tarih: 2026-05-04 ✅
+
+#### 3️⃣ SECURITY_AUDIT.md
+- Dosya var ve güncel ✅
+- ANALIZ_RAPORU.md'deki 11 bulgularla uyumlu ✅
+- Compliance, threat modeling, MASVS, secrets, incident response ✅
 
 ---
 
