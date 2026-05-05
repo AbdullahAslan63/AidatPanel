@@ -67,8 +67,7 @@
    - Error handling middleware
 
 6. **Test Altyapısı**
-   - Python test suite (test.py) - 20 test senaryosu
-   - Auth, Building, Apartment endpoint testleri
+   - ⚠️ Yeniden yapılandırılıyor
 
 #### Devam Eden / Yapılacaklar 🔄
 1. **Davet Kodu Sistemi** (Faz 2 başlangıcı)
@@ -162,7 +161,7 @@ Seyit (Junior UI/UX) → Tasarım + Landing Page
 1. **Faz Kilitleme:** AGENTS.md kuralına uy - Faz dışı implementasyon yapma
 2. **Code Review:** Yusuf ve Furkan'ın MR'larını öncelikli incele
 3. **Dokümantasyon:** API değişikliklerini FURKAN_ICIN_DOKUMANTASYON.md'ye yansıt
-4. **Test Coverage:** Her yeni endpoint için test.py'ye senaryo ekle
+4. **Test Coverage:** Her yeni endpoint için test senaryosu oluştur
 5. **Güvenlik:** Her push öncesi AGENTS.md validasyon checklist'ini kontrol et
 
 ### Risk Alanları
@@ -178,7 +177,7 @@ Abdullah, AidatPanel projesinde **Faz 1'in %75'i tamamlanmış** durumda. Backen
 
 **Önerilen Sonraki Adım:**
 1. Davet kodu üretim endpoint'ini implemente et
-2. Test.py'ye davet kodu senaryoları ekle
+2. Davet kodu senaryoları için testler ekle
 3. Furkan ile API entegrasyonu için sync meeting planla
 
 ---

@@ -38,7 +38,7 @@
 - ✅ Zod validasyon (email, uuid, password validation)
 - ✅ Rate limiting (brute force koruması)
 - ✅ Error handling middleware
-- ✅ Test suite (20 test senaryosu - test.py)
+- ⚠️ Test altyapısı yeniden yapılandırılıyor
 
 ### 2. Güvenlik (Aşama 0) - BAŞARILI
 - ✅ Kritik güvenlik açığı YOK
@@ -158,7 +158,7 @@ Bağımlılık: Furkan'ın Flutter entegrasyonu
 4. [ ] 7 gün expiration mantığı
 5. [ ] Tek kullanımlık kontrolü (usedAt, usedBy)
 6. [ ] `POST /api/auth/join` endpoint'i (kod doğrulama)
-7. [ ] Test.py'ye senaryo ekle
+7. [ ] Test senaryoları ekle
 
 **Kod Formatı:** "AP3-B12-X7K9" (bina ve daire ID'sine bağlı)
 
@@ -223,7 +223,7 @@ Tahmini Süre: 2-3 saat
 - [ ] UUID validasyonu var mı?
 
 ### Kalite Kontrolü
-- [ ] test.py yeni endpoint'leri kapsıyor mu?
+- [ ] Yeni endpoint'ler için test senaryoları oluşturuldu mu?
 - [ ] console.log yerine logger kullandım mı?
 - [ ] API dokümantasyonu (README) güncel mi?
 

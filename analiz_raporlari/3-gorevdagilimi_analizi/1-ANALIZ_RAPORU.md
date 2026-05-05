@@ -175,7 +175,7 @@
 ### Ekip İçin
 1. **Sync Meetings:** Haftalık Furkan-Abdullah backend sync meeting'i
 2. **API Contract:** Swagger/OpenAPI dokümantasyonu oluştur
-3. **Test Coverage:** Her endpoint için test.py'ye senaryo ekleme zorunluluğu
+3. **Test Coverage:** Her endpoint için test senaryosu ekleme zorunluluğu
 
 ---
 

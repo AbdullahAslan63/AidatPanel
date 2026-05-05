@@ -143,24 +143,17 @@ DELETE /api/v1/buildings/:buildingId/apartments/:id ✅
 
 ---
 
-### 6. Test Altyapısı - %100
+### 6. Test Altyapısı - ⚠️ GÜNCELLENİYOR
 **AIDATPANEL.md Gereksinim:**
-- [x] API endpoint testleri
-- [x] Auth testleri
-- [x] Building testleri
-- [x] Apartment testleri
+- [ ] API endpoint testleri
+- [ ] Auth testleri
+- [ ] Building testleri
+- [ ] Apartment testleri
 
 **Mevcut Implementasyon:**
 ```
-✅ backend/test.py (20 test senaryosu)
-   - Auth: 7 test (register, login, refresh, logout)
-   - Buildings: 5 test
-   - Apartments: 4 test
-   - Cleanup: 2 test
-   - Yetkisiz erişim testleri dahil
+⚠️ Test altyapısı yeniden yapılandırılıyor
 ```
-
-**Kullanım:** `cd backend && python3 test.py`
 
 ---
 
@@ -334,7 +327,7 @@ DELETE /api/v1/buildings/:buildingId/apartments/:id ✅
 - [ ] Davet kodu algoritması tamamlandı mı?
 - [ ] Aidat bulk create çalışıyor mu?
 - [ ] RevenueCat webhook test edildi mi?
-- [ ] Test.py yeni endpoint'leri kapsıyor mu?
+- [ ] Yeni endpoint'ler için test senaryoları oluşturuldu mu?
 
 ### Ekip İçin
 - [ ] Furkan login entegrasyonu tamamlandı mı?

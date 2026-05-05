@@ -196,7 +196,7 @@ Her bulgu için format:
    - Compression etkin mi?
 
 7. **Test Suite Performansı**
-   - test.py çalışma süresi
+   - Test çalışma süresi
    - Paralel test imkanı
 
 ---
