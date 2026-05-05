@@ -19,7 +19,7 @@
 - `[REPORT]` Davet Kodu Sistemi: 2/2 endpoint tamamlandı
 
 ### 📝 Teknik Detaylar
-- **Commit:** Beklemede
+- **Commit:** `edd99f0dc704d7f06c6f206b5a3e8c2267f8e1c2`
 - **Branch:** backend/yedek
 - **Değişiklikler:**
   - `backend/src/controllers/inviteCodeController.js` - validateInviteCode aktifleştirildi
