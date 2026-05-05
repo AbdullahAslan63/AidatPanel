@@ -22,10 +22,10 @@ const register = async (req, res, next) => {
         role: "MANAGER", // Normal kayıt olanlar otomatik MANAGER
       },
     });
-    res.status(201).json({ 
+    res.status(201).json({
       success: true,
-      message: "Hesabınız başarıyla oluşturuldu.", 
-      data: { user: user.id } 
+      message: "Hesabınız başarıyla oluşturuldu.",
+      data: { user: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role, createdAt: user.createdAt, updatedAt: user.updatedAt }
     });
   } catch (error) {
     next(error);
@@ -44,16 +44,16 @@ const login = async (req, res, next) => {
       : await prisma.user.findUnique({ where: { phone: identifier } });
 
     if (!user) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: "Email/telefon veya şifre hatalı." 
+        message: "Email/telefon veya şifre hatalı."
       });
     }
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: "Email/telefon veya şifre hatalı." 
+        message: "Email/telefon veya şifre hatalı."
       });
     }
     const accessToken = generateAccessToken(user);
@@ -64,7 +64,7 @@ const login = async (req, res, next) => {
       data: {
         accessToken,
         refreshToken,
-        user: { id: user.id, email: user.email, name: user.name, role: user.role }
+        user: { id: user.id, email: user.email, name: user.name, role: user.role, phone: user.phone, createdAt: user.createdAt, updatedAt: user.updatedAt }
       }
     });
   } catch (error) {
@@ -76,23 +76,23 @@ const refreshToken = async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: "Refresh token gerekli." 
+        message: "Refresh token gerekli."
       });
     }
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const user = await prisma.user.findUnique({ where: { id: decoded.id } });
     if (!user) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        message: "Kullanıcı bulunamadı." 
+        message: "Kullanıcı bulunamadı."
       });
     }
     const newAccessToken = generateAccessToken(user);
-    res.status(200).json({ 
+    res.status(200).json({
       success: true,
-      data: { accessToken: newAccessToken } 
+      data: { accessToken: newAccessToken }
     });
   } catch (error) {
     next(error);
@@ -172,10 +172,10 @@ const logout = async (req, res) => {
   // Client-side token silme islemi
   // Not: Stateless JWT'da server tarafinda token invalidation icin
   // blacklist/whitelist sistemi gerekir (Redis vb.)
-  res.status(200).json({ 
+  res.status(200).json({
     success: true,
-    message: "Çıkış başarılı." 
+    message: "Çıkış başarılı."
   });
 };
 
-export { register, login, refreshToken, logout};
+export { register, login, refreshToken, logout };
