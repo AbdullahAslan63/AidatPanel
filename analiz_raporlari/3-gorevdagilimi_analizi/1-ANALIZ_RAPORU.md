@@ -52,8 +52,8 @@
 **Hedef:** Aidat döngüsünün başlatılması ve sakinlerin davet koduyla katılımı
 
 #### Abdullah (Logic & Payment)
-- Davet kodu (Invite Code) üretim ve doğrulama algoritması
-- Toplu aidat oluşturma (Bulk creation) arka plan işleri
+- Davet kodu (Devam ediyor) üretim ve doğrulama algoritması
+- Devam ediyor 🔄
 - RevenueCat abonelik kontrol middleware'i
 
 #### Furkan (Manager Hub)
@@ -112,11 +112,11 @@
 ## Mevcut Durum Analizi (2026-05-05)
 
 ### Abdullah'nın İlerlemesi
-**Faz 1 Status:** %75 Tamamlandı ✅
+**Faz 1 Status:** %83 Tamamlandı ✅
 - ✅ Veritabanı + Prisma
 - ✅ JWT Auth sistemi
 - ✅ Bina/Daire CRUD
-- 🔄 Davet kodu (başlanacak)
+- 🔄 Davet kodu (Devam ediyor)
 
 ### Furkan'ın İlerlemesi
 **Faz 1 Status:** %50 Tamamlandı 🔄

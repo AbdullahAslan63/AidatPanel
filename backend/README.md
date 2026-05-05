@@ -211,6 +211,22 @@ npx prisma db push
 ### Logları İzle
 Geliştirme modunda (`npm run dev`) konsol logları otomatik gösterilir.
 
+### Analiz Raporlarını Güncelle
+Backend kodundaki değişikliklere göre analiz raporlarını otomatik güncelle:
+
+```bash
+# Önizleme (dry-run)
+npm run update-reports
+
+# Gerçek güncelleme
+npm run update-reports -- --write
+
+# Sadece durum göster
+npm run update-reports -- --status
+```
+
+Detaylı bilgi için: `../scripts/README.md`
+
 ---
 
 ## 📚 Dokümantasyon

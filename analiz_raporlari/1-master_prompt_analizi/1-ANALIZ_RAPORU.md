@@ -136,7 +136,7 @@ Seyit (Junior UI/UX) → Tasarım + Landing Page
 - [x] Auth sistemi
 - [x] Bina/Daire CRUD
 - [x] Validasyon ve güvenlik
-- [ ] Davet kodu sistemi (başlanacak)
+- [-] Davet kodu sistemi (başlanacak) (Devam ediyor)
 - [ ] Aidat oluşturma (başlanacak)
 - [ ] RevenueCat entegrasyonu (başlanacak)
 
@@ -173,7 +173,7 @@ Seyit (Junior UI/UX) → Tasarım + Landing Page
 
 ## Sonuç
 
-Abdullah, AidatPanel projesinde **Faz 1'in %75'i tamamlanmış** durumda. Backend altyapısı sağlam kuruldu, auth ve temel CRUD operasyonları çalışır durumda. Önümüzdeki odak noktası **Davet Kodu sistemi ve Aidat yönetimi** olmalıdır.
+Abdullah, AidatPanel projesinde **Faz 1'in %83'i tamamlanmış** durumda. Backend altyapısı sağlam kuruldu, auth ve temel CRUD operasyonları çalışır durumda. Önümüzdeki odak noktası **Davet Kodu sistemi ve Aidat yönetimi** olmalıdır.
 
 **Önerilen Sonraki Adım:**
 1. Davet kodu üretim endpoint'ini implemente et
