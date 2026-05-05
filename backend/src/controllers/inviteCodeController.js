@@ -2,14 +2,14 @@ import { prisma } from "../config/db.js";
 import crypto from "crypto";
 
 // Davet kodu üret
-export const generateInviteCode = async (req, res) => {
+export const generateInviteCode = async (req, res, next) => {
   try {
-    const { apartmentId } = req.body;
+    const { apartmentId } = req.params;
     const managerId = req.user.id;
 
     // Apartmanın bu yöneticiye ait olduğunu kontrol et
     const apartment = await prisma.apartment.findFirst({
-      where: { 
+      where: {
         id: apartmentId,
         building: { managerId }
       }
@@ -51,44 +51,26 @@ export const generateInviteCode = async (req, res) => {
   }
 };
 
-/* const validateInviteCode = async (req, res) => {
-  try {
-    const { code } = req.body;
+export { generateInviteCode, validateInviteCode };
 
-    const inviteCode = await prisma.inviteCode.findUnique({
-      where: { code },
-      include: { apartment: { include: { building: true } } }
-    });
+// Davet kodu doğrula (dahili kullanım için)
+export const validateInviteCode = async (code) => {
+  const inviteCode = await prisma.inviteCode.findUnique({
+    where: { code },
+    include: { apartment: { include: { building: true } } }
+  });
 
-    if (!inviteCode) {
-      return res.status(400).json({
-        success: false,
-        message: "Geçersiz davet kodu."
-      });
-    }
-
-    if (inviteCode.usedAt) {
-      return res.status(400).json({
-        success: false,
-        message: "Bu davet kodu zaten kullanılmış."
-      });
-    }
-
-    if (inviteCode.expiresAt < new Date()) {
-      return res.status(400).json({
-        success: false,
-        message: "Davet kodunun süresi dolmuş."
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      data: {
-        apartment: inviteCode.apartment,
-        building: inviteCode.apartment.building
-      }
-    });
-  } catch (error) {
-    next(error);
+  if (!inviteCode) {
+    throw new Error("Geçersiz davet kodu.");
   }
-}; */
+
+  if (inviteCode.usedAt) {
+    throw new Error("Bu davet kodu zaten kullanılmış.");
+  }
+
+  if (inviteCode.expiresAt < new Date()) {
+    throw new Error("Davet kodunun süresi dolmuş.");
+  }
+
+  return inviteCode;
+};

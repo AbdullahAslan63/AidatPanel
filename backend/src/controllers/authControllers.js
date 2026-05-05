@@ -99,74 +99,78 @@ const refreshToken = async (req, res, next) => {
   }
 };
 
-/* const join = async (req, res) => {
-  const { name, email, password, inviteCode } = req.body;
+import { validateInviteCode } from "./inviteCodeController.js";
 
-  // Davet kodunu kontrol et
-  const code = await prisma.inviteCode.findUnique({
-    where: { code: inviteCode },
-    include: { apartment: true }
-  });
+const join = async (req, res, next) => {
+  try {
+    const { name, email, password, inviteCode } = req.body;
 
-  if (!code) {
-    return res.status(400).json({ error: "Geçersiz davet kodu." });
+    // Davet kodunu doğrula
+    const inviteCodeData = await validateInviteCode(inviteCode);
+
+    // Email zaten kullanılıyor mu kontrol et
+    const mevcutKullanici = await prisma.user.findUnique({
+      where: { email: email },
+    });
+    if (mevcutKullanici) {
+      return res.status(409).json({
+        success: false,
+        message: "Bu email adresi zaten kullanılıyor."
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // RESIDENT olarak kullanıcı oluştur
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        passwordHash: hashedPassword,
+        role: "RESIDENT",
+        apartmentId: inviteCodeData.apartmentId,
+        invitedBy: inviteCodeData.createdBy, // Davet eden yönetici
+      },
+    });
+
+    // Davet kodunu kullanıldı olarak işaretle
+    await prisma.inviteCode.update({
+      where: { id: inviteCodeData.id },
+      data: {
+        usedAt: new Date(),
+        usedBy: user.id,
+      },
+    });
+
+    // Token'lar oluştur
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    res.status(201).json({
+      success: true,
+      message: "Apartmana başarıyla katıldınız.",
+      data: {
+        accessToken,
+        refreshToken,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          apartmentId: user.apartmentId
+        }
+      }
+    });
+  } catch (error) {
+    if (error.message.includes("davet kodu")) {
+      return res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+    next(error);
   }
-
-  if (code.usedAt) {
-    return res.status(400).json({ error: "Bu davet kodu zaten kullanılmış." });
-  }
-
-  if (code.expiresAt < new Date()) {
-    return res.status(400).json({ error: "Davet kodunun süresi dolmuş." });
-  }
-
-  // Email zaten kullanılıyor mu kontrol et
-  const mevcutKullanici = await prisma.user.findUnique({
-    where: { email: email },
-  });
-  if (mevcutKullanici) {
-    return res.status(400).json({ error: "Bu email adresi zaten kullanılıyor." });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // RESIDENT olarak kullanıcı oluştur
-  const user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      passwordHash: hashedPassword,
-      role: "RESIDENT",
-      apartmentId: code.apartmentId, // Davet kodunun bağlı olduğu daire
-    },
-  });
-
-  // Davet kodunu kullanıldı olarak işaretle
-  await prisma.inviteCode.update({
-    where: { id: code.id },
-    data: {
-      usedAt: new Date(),
-      usedBy: user.id,
-    },
-  });
-
-  // Token'lar oluştur
-  const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user);
-
-  res.status(201).json({
-    message: "Apartmana başarıyla katıldınız.",
-    accessToken,
-    refreshToken,
-    user: { 
-      id: user.id, 
-      email: user.email, 
-      name: user.name, 
-      role: user.role,
-      apartmentId: user.apartmentId
-    },
-  });
-}; */
+};
 
 const logout = async (req, res) => {
   // Client-side token silme islemi
@@ -178,4 +182,4 @@ const logout = async (req, res) => {
   });
 };
 
-export { register, login, refreshToken, logout };
+export { register, login, refreshToken, join, logout };

@@ -5,6 +5,33 @@
 
 ---
 
+## 🏷️ v0.0.1-dev - 2026-05-06 @00:50:00
+
+### 🚀 Yeni Özellikler
+- `[FEAT]` **Davet Kodu Sistemi tamamlandı** - Faz 1 %100 ✅
+  - `POST /api/v1/auth/join` - Davet koduyla sakin kaydı
+  - `POST /api/v1/apartments/:id/invite-code` - Davet kodu üretme
+  - `validateInviteCode` fonksiyonu aktifleştirildi
+  - Kod formatı: `APXXX-XXX-XXX` (7 gün geçerli, tek kullanımlık)
+
+### 📊 Rapor Güncellemeleri
+- `[REPORT]` Analiz raporları güncellendi - **Faz 1: %100** tamamlandı 🎉
+- `[REPORT]` Davet Kodu Sistemi: 2/2 endpoint tamamlandı
+
+### 📝 Teknik Detaylar
+- **Commit:** Beklemede
+- **Branch:** backend/yedek
+- **Değişiklikler:**
+  - `backend/src/controllers/inviteCodeController.js` - validateInviteCode aktifleştirildi
+  - `backend/src/controllers/authControllers.js` - join fonksiyonu eklendi
+  - `backend/src/routes/authRoutes.js` - /join route'u aktifleştirildi
+  - `backend/index.js` - inviteCodeRoutes eklendi
+  - `ENDPOINTS_LISTESİ.md` - Yeni endpoint'ler dokumente edildi
+
+**Tagler:** `#backend` `#davet_kodu` `#faz1` `#tamamlandı` `#join` `#sakin`
+
+---
+
 ## 🏷️ v0.0.1-dev - 2026-05-06 @00:11:00
 
 ### 🚀 Yeni Özellikler
@@ -94,6 +121,6 @@
 
 | Faz | Durum | Yüzde |
 |-----|-------|-------|
-| Faz 1 (Temel Altyapı) | Devam ediyor | %83 |
-| Faz 2 (Aidat/Onboard) | Başlanacak | %25 |
+| Faz 1 (Temel Altyapı) | **Tamamlandı** ✅ | **%100** |
+| Faz 2 (Aidat/Onboard) | Devam ediyor | %50 |
 | Faz 3 (Gider/Rapor) | Başlanacak | %0 |

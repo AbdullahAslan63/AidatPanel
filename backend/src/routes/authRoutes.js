@@ -1,5 +1,5 @@
 import express from "express";
-import { register, login, refreshToken, logout} from "../controllers/authControllers.js";
+import { register, login, refreshToken, join, logout } from "../controllers/authControllers.js";
 import { authLimiter } from "../middlewares/rateLimitMiddleware.js";
 import { validate, authSchemas } from "../middlewares/validate.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
@@ -13,7 +13,7 @@ router.use(authLimiter);
 router.post("/register", validate(authSchemas.register), register);
 router.post("/login", validate(authSchemas.login), login);
 router.post("/refresh", validate(authSchemas.refreshToken), refreshToken);
-// router.post("/join", validate(authSchemas.join), join);
+router.post("/join", validate(authSchemas.join), join);
 router.post("/logout", authMiddleware, logout);
 
 export default router;

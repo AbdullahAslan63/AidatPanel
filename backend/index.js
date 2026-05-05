@@ -8,6 +8,7 @@ import { connectDB, disconnectDB } from "./src/config/db.js";
 import authRouter from "./src/routes/authRoutes.js";
 import buildingRoutes from "./src/routes/buildingRoutes.js";
 import apartmentRoutes from "./src/routes/apartmentRoutes.js";
+import inviteCodeRoutes from "./src/routes/inviteCodeRoutes.js";
 import { apiLimiter } from "./src/middlewares/rateLimitMiddleware.js";
 import { errorHandler, notFoundHandler } from "./src/middlewares/errorHandler.js";
 
@@ -53,6 +54,7 @@ app.use(express.json());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/buildings", buildingRoutes);
 app.use("/api/v1/buildings/:buildingId/apartments", apartmentRoutes);
+app.use("/api/v1/apartments/:apartmentId/invite-code", inviteCodeRoutes);
 
 // 404 Handler - Tanımlanmamış route'lar
 app.use(notFoundHandler);

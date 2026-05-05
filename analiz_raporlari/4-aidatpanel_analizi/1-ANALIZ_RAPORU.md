@@ -339,10 +339,10 @@ module.exports = {
 
 ## MVP Geliştirme Önceliği
 
-### Faz 1 — Çekirdek (MVP) - Hedef: %83 Tamamlandı
-- [ ] Auth (register, login, JWT, davet kodu ile katılım)
+### Faz 1 — Çekirdek (MVP) - Hedef: %100 Tamamlandı
+- [x] Auth (register, login, JWT, davet kodu ile katılım)
 - [x] Bina ve daire CRUD
-- [ ] Davet kodu sistemi (Devam ediyor)
+- [x] Davet kodu sistemi (Tamamlandı)
 - [ ] Aylık aidat oluşturma (toplu) ve durum güncelleme
 - [ ] Sakin: kendi aidat durumunu görme
 - [ ] FCM push notification altyapısı

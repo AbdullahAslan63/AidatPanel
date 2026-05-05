@@ -1,6 +1,6 @@
 # AidatPanel Backend - Aktif Endpoint Listesi
 
-> Son güncelleme: 2026-05-05  
+> Son güncelleme: 2026-05-06  
 > Not: Test eden kişi response detaylarını keşfedecektir.
 
 ---
@@ -59,6 +59,23 @@ Authorization: Bearer {accessToken}
 ```
 
 **req.body:** Yok
+
+---
+
+### POST /join
+Davet koduyla sakin kaydı. Yöneticinin ürettiği davet kodunu kullanarak apartmana katılır.
+
+**req.body:**
+```json
+{
+  "name": "string (min 2, max 50)",
+  "email": "string (email format)",
+  "password": "string (min 6, max 100)",
+  "inviteCode": "string - Örn: AP3B1-2X7K-9MNP"
+}
+```
+
+> 💡 **Not:** `inviteCode` formatı: `APXXX-XXX-XXX` (12 karakter, 7 gün geçerli)
 
 ---
 
@@ -183,7 +200,34 @@ Daire sil.
 
 ---
 
-## 📋 Özet Tablo
+## � Invite Codes (`/api/v1/apartments/:apartmentId/invite-code`)
+
+Sadece **yönetici** kullanabilir. Daireye davet kodu üretme işlemi.
+
+### POST /
+Yeni davet kodu üret. Kod 7 gün geçerli ve tek kullanımlıktır.
+
+**URL Params:**
+- `apartmentId`: UUID string
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**req.body:** Yok
+
+**Response:**
+```json
+{
+  "code": "AP3B1-2X7K-9MNP",
+  "expiresAt": "2026-05-13T00:00:00.000Z"
+}
+```
+
+---
+
+## � Özet Tablo
 
 | Endpoint | Metod | Auth | Açıklama |
 |----------|-------|------|----------|
@@ -191,6 +235,7 @@ Daire sil.
 | `/api/v1/auth/login` | POST | - | Giriş |
 | `/api/v1/auth/refresh` | POST | - | Token yenileme |
 | `/api/v1/auth/logout` | POST | ✅ | Çıkış |
+| `/api/v1/auth/join` | POST | - | Davet koduyla kayıt |
 | `/api/v1/buildings` | POST | ✅ | Bina oluştur |
 | `/api/v1/buildings` | GET | ✅ | Binaları listele |
 | `/api/v1/buildings/:id` | GET | ✅ | Bina detayı |
@@ -200,6 +245,7 @@ Daire sil.
 | `/api/v1/buildings/:buildingId/apartments` | POST | ✅ | Daire ekle |
 | `/api/v1/buildings/:buildingId/apartments/:id` | PUT | ✅ | Daire güncelle |
 | `/api/v1/buildings/:buildingId/apartments/:id` | DELETE | ✅ | Daire sil |
+| `/api/v1/apartments/:apartmentId/invite-code` | POST | ✅ | Davet kodu üret |
 
 ---
 
