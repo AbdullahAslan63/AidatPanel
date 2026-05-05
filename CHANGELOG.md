@@ -14,14 +14,31 @@
 - `[REPORT]` Analiz raporları otomatik güncellendi - Faz 1: %83 tamamlandı - @2026-05-06
 
 ### 📝 Teknik Detaylar
-- **Commit:** Beklemede
+- **Commit:** `7ece11727b39d96ba5558d62d54e59a6bf1ac346`
 - **Branch:** backend/yedek
 - **Değişiklikler:**
-  - `analiz_raporlari/*` - Raporlar senkronize edildi
-  - `backend/src/controllers/authControllers.js` - Güncellendi
+  - `CHANGELOG.md` - Yeni eklendi
   - `ENDPOINTS_LISTESİ.md` - Yeni eklendi
+  - `analiz_raporlari/*` - Raporlar senkronize edildi
 
 **Tagler:** `#backend` `#endpoints` `#dokumentasyon` `#faz1`
+
+---
+
+## 🏷️ v0.0.1-dev - 2026-05-06 @00:16:00
+
+### 📊 Rapor Güncellemeleri
+- `[REPORT]` Otomatik rapor kontrolü - Tüm raporlar güncel, değişiklik yok - Faz 1: %83
+
+### 🔧 Altyapı
+- `[INFRA]` Git remote URL güncellendi: `mahmutoktay/AidatPanel`
+
+### 📝 Teknik Detaylar
+- **Commit:** `7ece11727b39d96ba5558d62d54e59a6bf1ac346` (önceki)
+- **Branch:** backend/yedek
+- **Komut:** `raporla ve push et` - Raporlar zaten güncel
+
+**Tagler:** `#raporlama` `#kontrol` `#faz1` `#git`
 
 ---
 
