@@ -205,4 +205,10 @@ export const apartmentSchemas = {
         .optional(),
     }),
   },
+
+  generateInviteCode: {
+    params: z.object({
+      apartmentId: z.string().uuid("Geçerli bir daire ID'si giriniz"),
+    }),
+  },
 };

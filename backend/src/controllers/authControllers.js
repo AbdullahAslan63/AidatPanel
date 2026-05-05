@@ -157,7 +157,9 @@ const join = async (req, res, next) => {
           email: user.email,
           name: user.name,
           role: user.role,
-          apartmentId: user.apartmentId
+          apartmentId: user.apartmentId,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
         }
       }
     });

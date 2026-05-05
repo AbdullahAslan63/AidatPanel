@@ -1,12 +1,157 @@
 # Güvenlik Promptu - Analiz Raporu
 
 ## Analiz Tarihi
-2026-05-05
+2026-05-06 @01:20:00 (GÜNCELLENDİ)
 
 ## Analiz Edilen Kaynak
-**Dosya:** `planning/GÜVENLİK PROMPTU.md`  
-**Tür:** Güvenlik Denetim Promptu  
-**Hedef:** Kod diff'indeki güvenlik açıklarını ve mantık hatalarını tespit
+**Prompt:** `planning/GÜVENLİK PROMPTU.md`  
+**Kod:** `backend/src/` (controllers, routes, middlewares)  
+**Son Değişiklikler:** `edd99f0` - Davet Kodu Sistemi tamamlandı  
+**Tür:** Gerçek Backend Güvenlik Denetimi  
+**Hedef:** Faz 1 tamamlanması sonrası güvenlik değerlendirmesi
+
+---
+
+### 🔒 SECURITY AUDIT: Faz 1 Tamamlanması + Davet Kodu Sistemi
+
+**Risk Assessment:** 🟢 **GÜVENLİ** (Low Risk)
+
+**Analiz Edilen Commit:** `edd99f0` - Davet Kodu Sistemi tamamlandı  
+**Değişiklikler:**
+- `inviteCodeController.js`: validateInviteCode aktifleştirildi
+- `authControllers.js`: join fonksiyonu eklendi
+- `authRoutes.js`: /join endpoint'i aktifleştirildi
+- `index.js`: inviteCodeRoutes eklendi
+
+---
+
+#### **Findings:**
+
+**✅ Tüm Güvenlik Kontrolleri - BAŞARILI**
+
+**1. JWT Token Güvenliği** (Severity: None)
+* **Location:** `backend/src/middlewares/authMiddleware.js`
+* **The Exploit:** N/A - Güvenli implementasyon
+* **The Fix:** Gerekli değil
+* **Durum:** ✅ `authMiddleware` DB lookup yapmıyor, token'dan `req.user = { id, role }` direkt alınıyor
+
+**2. Zod Validasyon Güvenliği** (Severity: None)
+* **Location:** Tüm route dosyaları
+* **The Exploit:** N/A - Tüm endpoint'ler validasyonlu
+* **The Fix:** Gerekli değil
+* **Durum:** ✅ Tüm POST/PUT endpoint'leri Zod validasyonundan geçiyor
+  - `/register`: name, email, password validasyonu
+  - `/login`: identifier, password validasyonu
+  - `/join`: name, email, password, inviteCode validasyonu ✅ **YENİ**
+  - `/refresh`: refreshToken validasyonu
+
+**3. Davet Kodu Sistemi Güvenlik Analizi** (Severity: None)
+* **Location:** `inviteCodeController.js`, `authControllers.js`
+* **The Exploit:** N/A - Güvenli implementasyon
+* **Security Controls:**
+  - ✅ `generateInviteCode`: `authMiddleware` + `managerId` kontrolü
+  - ✅ `validateInviteCode`: Kodun varlığı, kullanılmışlığı, süresi kontrolü
+  - ✅ `join`: Email unique kontrolü, RESIDENT rolü ataması, `invitedBy` takibi
+  - ✅ Kod formatı: `APXXX-XXX-XXX` (12 karakter, unique)
+  - ✅ Geçerlilik: 7 gün, tek kullanımlık (`usedAt`, `usedBy`)
+
+**4. Authorization (Yetkilendirme)** (Severity: None)
+* **Location:** Tüm service katmanları
+* **The Exploit:** N/A - Yetki kontrolleri aktif
+* **Durum:** 
+  - ✅ `buildingService`: `managerId` kontrolü
+  - ✅ `apartmentService`: `managerId` + `buildingId` kontrolü
+  - ✅ `inviteCodeController`: Dairenin yöneticiye ait olduğu kontrolü
+
+**5. Rate Limiting** (Severity: Low - Monitoring)
+* **Location:** `backend/src/middlewares/rateLimitMiddleware.js`
+* **The Exploit:** Brute force saldırıları (sınırlı risk)
+* **The Fix:** Faz 2'de Redis rate limiter değerlendirilecek
+* **Durum:** ✅ Şu an `MemoryStore` kullanılıyor (Faz 1 için kabul edilebilir)
+
+**6. Input Validation** (Severity: None)
+* **Location:** `backend/src/middlewares/validate.js`
+* **The Exploit:** N/A - Tüm girdiler validate ediliyor
+* **Durum:** ✅ Zod şemaları:
+  - Email: `.email()` format kontrolü
+  - UUID: `.uuid()` format kontrolü tüm ID'lerde
+  - Şifre: min 6, max 100 karakter
+  - Türkçe hata mesajları (UX dostu)
+
+---
+
+#### **Observations:**
+
+**🟡 Düşük Risk Gözlemler:**
+
+1. **inviteCodeRoutes UUID Validasyonu Eksik**
+   * **Location:** `backend/src/routes/inviteCodeRoutes.js:8`
+   * **Observation:** `apartmentId` URL parametresi UUID validasyonuna tabi değil
+   * **Öneri:** `validate(apartmentSchemas.getById)` middleware'i ekle
+
+2. **JWT Token Revocation**
+   * **Risk:** Kullanıcı silinirse veya rol değişirse eski token hâlâ geçerli (15dk/30gün)
+   * **Çözüm:** Faz 2'de Redis tabanlı token revocation list değerlendir
+
+3. **Zod Error Handling**
+   * **Location:** `backend/src/middlewares/errorHandler.js`
+   * **Observation:** ZodError'ların `{ success: false, errors: [...] }` formatına çevrildiği doğrulanmalı
+
+---
+
+## 📊 Güvenlik Özeti (Güncel)
+
+| Kategori | Durum | Notlar |
+|----------|-------|--------|
+| **Authentication** | ✅ GÜVENLİ | JWT + role doğru implemente |
+| **Authorization** | ✅ GÜVENLİ | managerId kontrolleri aktif |
+| **Input Validation** | ✅ GÜVENLİ | Zod tüm endpoint'leri koruyor |
+| **Davet Kodu Sistemi** | ✅ GÜVENLİ | Tek kullanımlık, süreli, yetki kontrollü |
+| **Rate Limiting** | ⚠️ İZLENDİ | MemoryStore (Faz 2'de Redis) |
+| **Token Yönetimi** | ⚠️ İZLENDİ | Revocation Faz 2'de ele alınacak |
+
+---
+
+## 🎯 Güvenlik Önerileri (Önceliklendirilmiş)
+
+### Hemen (Quick Fix)
+1. **inviteCodeRoutes.js** - `apartmentId` UUID validasyonu ekle
+
+### Faz 2'de Değerlendirilecek
+2. **Redis token revocation** veya kısa refresh token TTL
+3. **Redis rate limiter** (cluster desteği için)
+
+### Sürekli Monitoring
+4. **Zod error formatının** doğruluğu
+5. ** inviteCode kullanım pattern'leri** (abuse detection)
+
+---
+
+## Analiz Sonucu (Güncel)
+
+**Faz 1 Güvenlik Denetimi: BAŞARILI ✅**
+
+- **Kritik Açık:** Tespit edilmedi ❌
+- **Yüksek Risk:** Tespit edilmedi ❌  
+- **Orta Risk:** Tespit edilmedi ❌
+- **Düşük Risk:** 3 adet (monitoring ve minor hardening) ⚠️
+
+**Davet Kodu Sistemi Güvenlik Değerlendirmesi:**
+- ✅ Kod üretim: Yetkilendirme kontrolü var
+- ✅ Kod doğrulama: Varlık, süre, kullanılmışlık kontrolleri var
+- ✅ Kayıt: Unique email, RESIDENT rolü, apartman bağlama
+- ✅ Tracking: `invitedBy`, `usedAt`, `usedBy` takibi var
+
+**Sonuç:**  
+Backend altyapısı ve yeni Davet Kodu Sistemi **güvenli** bir şekilde implemente edildi. Faz 2'de daha gelişmiş güvenlik özellikleri (Redis revocation, rate limiter) eklenebilir.
+
+---
+
+**Not:** Aşağıdaki bölümler prompt'un orijinal yapısını belgelemektedir.
+
+---
+
+## Eski Prompt Analizi (Arşiv)
 
 ---
 
