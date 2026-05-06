@@ -175,112 +175,100 @@ class TokenStorage {
 
 Her API isteğine otomatik olarak "Authorization: Bearer <token>" header'ı eklemelisin. Buna Interceptor denir.
 
+### API Constants Oluştur (lib/core/constants/api_constants.dart):
+
+```dart
+import 'dart:io';
+
+class ApiConstants {
+  static const String _prod    = 'https://api.aidatpanel.com/api/v1';
+  static const String _android = 'http://10.0.2.2:4200/api/v1';   // Android emülatör
+  static const String _ios     = 'http://localhost:4200/api/v1';   // iOS simülatör
+
+  static String get baseUrl {
+    // Release build'de her zaman production URL kullan
+    const bool isRelease = bool.fromEnvironment('dart.vm.product');
+    if (isRelease) return _prod;
+    return Platform.isAndroid ? _android : _ios;
+  }
+}
+```
+
 ### Dio Client Oluştur (lib/core/network/dio_client.dart):
 
 ```dart
 import 'package:dio/dio.dart';
+import '../constants/api_constants.dart';
 import '../storage/token_storage.dart';
 
 class DioClient {
   static Dio? _dio;
-  
+
   static Dio get dio {
     _dio ??= _createDio();
     return _dio!;
   }
-  
+
   static Dio _createDio() {
     final dio = Dio(
       BaseOptions(
-        baseUrl: 'https://api.aidatpanel.com/api/v1',  // Backend URL
+        baseUrl: ApiConstants.baseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
       ),
     );
-    
-    // INTERCEPTOR: Her istekten önce çalışır
+
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          // 1. Token'ı secure storage'dan oku
           final token = await TokenStorage.getAccessToken();
-          
-          // 2. Token varsa header'a ekle
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
           }
-          
-          print('📤 Request: ${options.method} ${options.path}');
-          print('🔑 Token: ${token != null ? "Var" : "Yok"}');
-          
           return handler.next(options);
         },
-        
+
         onResponse: (response, handler) {
-          print('✅ Response: ${response.statusCode}');
           return handler.next(response);
         },
-        
+
         onError: (error, handler) async {
-          print('❌ Error: ${error.response?.statusCode}');
-          
-          // 401 Unauthorized hatası mı? (Token geçersiz/süresi dolmuş)
           if (error.response?.statusCode == 401) {
-            print('🔄 Token yenileniyor...');
-            
-            // Token'ı yenilemeyi dene
             final refreshed = await _refreshToken();
-            
             if (refreshed) {
-              // Yeni token ile isteği tekrar dene
               final newToken = await TokenStorage.getAccessToken();
               error.requestOptions.headers['Authorization'] = 'Bearer $newToken';
-              
-              // İsteği tekrar gönder
               final response = await dio.fetch(error.requestOptions);
               return handler.resolve(response);
-            } else {
-              // Refresh de başarısız oldu, login'e yönlendir
-              print('🚫 Refresh başarısız, login gerekli');
-              // Burada Riverpod ile auth state'i güncellenir
-              // Navigator.pushReplacementNamed(context, '/login');
             }
+            // Refresh başarısız: token'ları temizle, auth state'i unauthenticated yap
+            await TokenStorage.clearTokens();
           }
-          
           return handler.next(error);
         },
       ),
     );
-    
+
     return dio;
   }
-  
-  /// Token yenileme fonksiyonu
+
+  // Refresh isteği için interceptor'sız ayrı Dio — sonsuz döngüyü önler
   static Future<bool> _refreshToken() async {
     try {
       final refreshToken = await TokenStorage.getRefreshToken();
-      
-      if (refreshToken == null) {
-        return false;
-      }
-      
-      // Refresh endpoint'ine istek at
-      final response = await dio.post(
+      if (refreshToken == null) return false;
+
+      final plainDio = Dio(BaseOptions(baseUrl: ApiConstants.baseUrl));
+      final response = await plainDio.post(
         '/auth/refresh',
         data: {'refreshToken': refreshToken},
       );
-      
-      // Yeni access token'ı kaydet (yeni response formatı)
+
       final newAccessToken = response.data['data']['accessToken'];
       await TokenStorage.updateAccessToken(newAccessToken);
-      
-      print('✅ Token yenilendi');
       return true;
     } catch (e) {
-      print('❌ Token yenileme hatası: $e');
       return false;
     }
   }
@@ -967,7 +955,7 @@ Future<void> checkTokens() async {
 
 ### 4. Thunder Client / Postman ile Test
 
-**Login Test:**
+**Login Test (local):**
 ```
 POST http://localhost:4200/api/v1/auth/login
 Content-Type: application/json
@@ -978,9 +966,20 @@ Content-Type: application/json
 }
 ```
 
+**Login Test (production):**
+```
+POST https://api.aidatpanel.com/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "123456"
+}
+```
+
 **Building List Test (Auth Gerekli):**
 ```
-GET http://localhost:4200/api/v1/buildings
+GET https://api.aidatpanel.com/api/v1/buildings
 Authorization: Bearer <access_token>
 ```
 
