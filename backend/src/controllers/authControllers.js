@@ -128,8 +128,7 @@ const join = async (req, res, next) => {
         email,
         passwordHash: hashedPassword,
         role: "RESIDENT",
-        apartmentId: inviteCodeData.apartmentId,
-        invitedBy: inviteCodeData.createdBy, // Davet eden yönetici
+        apartmentId: inviteCodeData.apartmentId
       },
     });
 

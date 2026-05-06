@@ -34,8 +34,7 @@ export const generateInviteCode = async (req, res, next) => {
       data: {
         code: formattedCode,
         apartmentId,
-        expiresAt,
-        createdBy: managerId
+        expiresAt
       }
     });
 
@@ -51,10 +50,8 @@ export const generateInviteCode = async (req, res, next) => {
   }
 };
 
-export { generateInviteCode, validateInviteCode };
-
 // Davet kodu doğrula (dahili kullanım için)
-export const validateInviteCode = async (code) => {
+const validateInviteCode = async (code) => {
   const inviteCode = await prisma.inviteCode.findUnique({
     where: { code },
     include: { apartment: { include: { building: true } } }
@@ -74,3 +71,5 @@ export const validateInviteCode = async (code) => {
 
   return inviteCode;
 };
+
+export { generateInviteCode, validateInviteCode };

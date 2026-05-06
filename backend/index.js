@@ -14,6 +14,10 @@ import { errorHandler, notFoundHandler } from "./src/middlewares/errorHandler.js
 
 const app = express();
 
+// Trust proxy - reverse proxy (nginx, Cloudflare) arkasında çalışırken gerekli
+// Express-rate-limit X-Forwarded-For header'ını doğru şekilde okuyabilsin
+app.set('trust proxy', 1);
+
 const port = process.env.PORT || 4200;
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS
