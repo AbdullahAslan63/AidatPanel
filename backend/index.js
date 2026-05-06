@@ -14,36 +14,23 @@ import { errorHandler, notFoundHandler } from "./src/middlewares/errorHandler.js
 
 const app = express();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 4200;
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:3000', 'http://localhost:4200'];
 
 // GÜVENLİK MIDDLEWARE'LERİ
 // Helmet - HTTP başlıklarını güvenli hale getirir
 app.use(helmet());
 
-// CORS - Flutter web + mobil + landing page
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:4200",
-  "http://localhost:2773",
-  "http://api.aidatpanel.com:2773",
-  "https://api.aidatpanel.com:2773",
-  "http://aidatpanel.com",
-  "https://aidatpanel.com",
-];
-
+// CORS - Flutter'dan gelen isteklere izin ver
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS policy violation"));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
-
 // Rate Limiting - Tüm API'ler için 15 dakikada 100 istek
 app.use("/api/v1", apiLimiter);
 
