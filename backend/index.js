@@ -13,7 +13,11 @@ import { errorHandler, notFoundHandler } from "./src/middlewares/errorHandler.js
 
 const app = express();
 
-const port = 4200;
+const port = process.env.PORT || 4200;
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:3000', 'http://localhost:4200'];
 
 // GÜVENLİK MIDDLEWARE'LERİ
 // Helmet - HTTP başlıklarını güvenli hale getirir
@@ -21,7 +25,7 @@ app.use(helmet());
 
 // CORS - Flutter'dan gelen isteklere izin ver
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:4200"],
+  origin: allowedOrigins,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
