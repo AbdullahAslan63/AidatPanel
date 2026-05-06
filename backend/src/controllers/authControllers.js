@@ -5,7 +5,7 @@ import { generateAccessToken, generateRefreshToken } from "../utils/generateToke
 
 const register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, phone, password } = req.body;
 
     const mevcutKullanici = await prisma.user.findUnique({
       where: { email: email },
@@ -18,6 +18,7 @@ const register = async (req, res, next) => {
       data: {
         name,
         email,
+        phone,
         passwordHash: hashedPassword,
         role: "MANAGER", // Normal kayıt olanlar otomatik MANAGER
       },
@@ -25,7 +26,15 @@ const register = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: "Hesabınız başarıyla oluşturuldu.",
-      data: { user: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role, createdAt: user.createdAt, updatedAt: user.updatedAt }
+      data: {
+        user: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      }
     });
   } catch (error) {
     next(error);

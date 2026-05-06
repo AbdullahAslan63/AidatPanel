@@ -46,6 +46,11 @@ export const authSchemas = {
       email: z
         .string()
         .email("Geçerli bir email adresi giriniz"),
+      phone: z
+        .string()
+        .min(10, "Telefon numarası en az 10 karakter olmalıdır")
+        .max(15, "Telefon numarası en fazla 15 karakter olabilir")
+        .optional(),
       password: z
         .string()
         .min(6, "Şifre en az 6 karakter olmalıdır")
@@ -112,6 +117,18 @@ export const buildingSchemas = {
         .string()
         .min(2, "Şehir en az 2 karakter olmalıdır")
         .max(50, "Şehir en fazla 50 karakter olabilir"),
+      totalFloors: z
+        .number()
+        .int("Kat sayısı tam sayı olmalıdır")
+        .min(1, "Kat sayısı en az 1 olmalıdır")
+        .max(200, "Kat sayısı en fazla 200 olabilir")
+        .optional(),
+      apartmentsPerFloor: z
+        .number()
+        .int("Daire sayısı tam sayı olmalıdır")
+        .min(1, "Daire sayısı en az 1 olmalıdır")
+        .max(50, "Daire sayısı en fazla 50 olabilir")
+        .optional(),
     }),
   },
 

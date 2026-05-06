@@ -1,8 +1,8 @@
 import { prisma } from "../config/db.js";
 
-export const createBuildingService = async ({ name, address, city, managerId }) => {
+export const createBuildingService = async ({ name, address, city, totalFloors, apartmentsPerFloor, managerId }) => {
   return await prisma.building.create({
-    data: { name, address, city, managerId },
+    data: { name, address, city, totalFloors, apartmentsPerFloor, managerId },
   });
 };
 

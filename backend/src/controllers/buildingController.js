@@ -8,7 +8,7 @@ import {
 
 // CREATE
 export const createBuilding = async (req, res) => {
-  const { name, address, city } = req.body;
+  const { name, address, city, totalFloors, apartmentsPerFloor } = req.body;
 
   const managerId = req.user.id; // JWT'den geliyor
 
@@ -16,6 +16,8 @@ export const createBuilding = async (req, res) => {
     name,
     address,
     city,
+    totalFloors,
+    apartmentsPerFloor,
     managerId,
   });
 

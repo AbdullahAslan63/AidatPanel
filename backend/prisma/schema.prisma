@@ -67,16 +67,18 @@ enum SubscriptionStatus {
 }
 
 model Building {
-  id         String      @id @default(uuid())
-  name       String
-  address    String
-  city       String
-  managerId  String
-  manager    User        @relation("BuildingManager", fields: [managerId], references: [id])
-  apartments Apartment[]
-  expenses   Expense[]
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id                String      @id @default(uuid())
+  name              String
+  address           String
+  city              String
+  totalFloors       Int?
+  apartmentsPerFloor Int?
+  managerId         String
+  manager           User        @relation("BuildingManager", fields: [managerId], references: [id])
+  apartments        Apartment[]
+  expenses          Expense[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 
   @@index([managerId])
 }

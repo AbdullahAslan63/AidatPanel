@@ -2,8 +2,9 @@ import { prisma } from "../config/db.js";
 import crypto from "crypto";
 
 // Davet kodu üret
-export const generateInviteCode = async (req, res, next) => {
+const generateInviteCode = async (req, res, next) => {
   try {
+    // api/v1/buildings/:id/aparments/:id/
     const { apartmentId } = req.params;
     const managerId = req.user.id;
 
