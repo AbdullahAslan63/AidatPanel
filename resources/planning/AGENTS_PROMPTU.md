@@ -1,16 +1,16 @@
-# 🤖 AGENTS PROMPTU - AGENTS.md Oluşturma Rehberi
+# 🤖 AGENTS PROMPT - AGENTS.md Creation Guide
 
-**Versiyon:** 3.0 (Solo dev uyarlaması + Skor rubriği + Tekrar kaldırma)  
-**Tarih:** 2026-05-07  
-**Hedef Puan:** 9.0/10 (Mevcut: 7.5/10)
+**Version:** 3.0 (Solo dev adaptation + Score rubric + Removed duplicates)  
+**Date:** 2026-05-07  
+**Target Score:** 9.0/10 (Current: 7.5/10)
 
 ---
 
-## 📋 GÖREV
+## 📋 TASK
 
-Yazılım projeleri için **AGENTS.md** oluşturmak veya yeniden yazmak. Amaç: **SIGNAL DENSITY** (yüksek sinyal yoğunluğu).
+Create or rewrite **AGENTS.md** for software projects. Goal: **SIGNAL DENSITY** (high signal-to-noise ratio).
 
-**Çıktı:** Minimal, project-specific, action-guiding, hata önleyici AGENTS.md (1-2 sayfa).
+**Output:** Minimal, project-specific, action-guiding, mistake-preventing AGENTS.md (1-2 pages).
 
 AGENTS.md should be a minimal, high-value instruction file for coding agents working in the repo. It must only include information that is:
 1) project-specific,
@@ -82,117 +82,118 @@ Before producing output, ensure:
 
 ---
 
-## 📊 CONTEXT TOPLAMA YÖNTEMİ (v2.0 YENİ)
+## 📊 CONTEXT COLLECTION METHOD
 
-AGENTS.md oluşturmadan önce şu kaynaklardan context topla:
+Collect context from these sources before creating AGENTS.md:
 
-### 1. Proje Yapısı (5-10 dk)
-- [ ] `README.md` oku (stack, setup, conventions)
-- [ ] `package.json` / `pubspec.yaml` / `go.mod` oku (dependencies, scripts)
-- [ ] Mevcut `AGENTS.md` varsa oku (ne var, ne eksik?)
-- [ ] `.github/workflows/` oku (CI/CD, validation commands)
-- [ ] `tsconfig.json` / `eslint.config.js` / `dart_defines` oku (tooling)
+### 1. Project Structure (5-10 min)
+- [ ] Read `README.md` (stack, setup, conventions)
+- [ ] Read `package.json` / `pubspec.yaml` / `go.mod` (dependencies, scripts)
+- [ ] Read existing `AGENTS.md` if present (what's there, what's missing?)
+- [ ] Read `.github/workflows/` (CI/CD, validation commands)
+- [ ] Read `tsconfig.json` / `eslint.config.js` / `dart_defines` (tooling)
 
-### 2. Kod Analizi (10-15 dk)
-- [ ] Proje kökü: Dosya yapısını tara (`src/`, `lib/`, `app/`, vb.)
-- [ ] Kritik dosyalar: `main.ts`, `main.dart`, `app.ts`, `index.js` oku
-- [ ] API/Backend: Endpoint tanımları, auth middleware, validation
+### 2. Code Analysis (10-15 min)
+- [ ] Project root: Scan file structure (`src/`, `lib/`, `app/`, etc.)
+- [ ] Critical files: Read `main.ts`, `main.dart`, `app.ts`, `index.js`
+- [ ] API/Backend: Endpoint definitions, auth middleware, validation
 - [ ] Frontend: State management, routing, component structure
 - [ ] Database: Schema, migrations, constraints
 - [ ] Secrets/Config: `.env.example`, environment variables
 
-### 3. Hata Geçmişi (5-10 dk)
-- [ ] Git log'u tara: Sık tekrarlanan hatalar, revert commit'ler
-- [ ] Commit mesajlarını tara: "fix", "revert", "hotfix" içerenleri incele
-- [ ] PR description'larını tara: Reddedilen veya revize edilen değişiklikler
+### 3. Error History (5-10 min)
+- [ ] Scan git log: Frequently repeated errors, revert commits
+- [ ] Scan commit messages: Look for "fix", "revert", "hotfix" entries
+- [ ] Scan PR descriptions: Rejected or revised changes
 
-### 4. Kişisel Geliştirici Notları (5 dk)
-- [ ] CLAUDE.md veya proje notları var mı? Oku
-- [ ] Planning dosyaları: Hangi kararlar alındı, neden?
-- [ ] "Hangi hataları kendim tekrar ettim?"
+### 4. Developer Notes (5 min)
+- [ ] Is there a CLAUDE.md or project notes file? Read it.
+- [ ] Planning files: What decisions were made and why?
+- [ ] "What mistakes have I repeatedly made myself?"
 
-### 5. Standart Checklist (2-3 dk)
-- [ ] Backward compatibility gerekli mi?
-- [ ] Breaking changes nasıl handle ediliyor?
-- [ ] Migration stratejisi nedir?
-- [ ] Secrets nasıl yönetiliyor?
-- [ ] API versioning var mı?
-
----
-
-## ✅ DOĞRULAMA & KALİTE KONTROL
-
-AGENTS.md oluşturduktan sonra tek geçişte kontrol et:
-
-### İçerik
-- [ ] **Signal Density:** Her satır project-specific veya hata önleyici mi?
-- [ ] **Minimal:** 1-2 sayfa (3+ = çok fazla)
-- [ ] **Actionable:** must/must not formatında mı?
-- [ ] **Doğru:** Kod ile eşleşiyor mu? (stale rule yok mu?)
-- [ ] **Duplikasyon yok:** README/tooling ile overlap kaldırıldı mı?
-- [ ] **Gotcha'lar:** Tekrar eden hatalar yakalandı mı?
-
-### Teknik
-- [ ] Validation commands gerçekten kullanılıyor mu?
-- [ ] API contract / migration kuralları var mı?
-- [ ] Non-obvious workflow kısıtları belirtildi mi?
+### 5. Standard Checklist (2-3 min)
+- [ ] Is backward compatibility required?
+- [ ] How are breaking changes handled?
+- [ ] What is the migration strategy?
+- [ ] How are secrets managed?
+- [ ] Is there API versioning?
 
 ---
 
-## 🔄 VERSİYON YÖNETİMİ
+## ✅ VALIDATION & QUALITY CONTROL
 
-### Versiyon Numaralandırması
-- **Patch (v1.0.1):** Yazım hatası, minor clarification
-- **Minor (v1.1.0):** Yeni rule eklendi, existing rule revize edildi
-- **Major (v2.0.0):** Komple rewrite, 3+ rule değişti
+After creating AGENTS.md, check in a single pass:
 
-### Güncelleme Tetikleyicileri
-- [ ] Yeni stack component eklendi (dependency)
-- [ ] Yeni validation tool eklendi (linter, formatter, test framework)
-- [ ] Repeated mistake tespit edildi (code review'de)
-- [ ] API contract değişti (breaking change)
-- [ ] Migration stratejisi değişti
-- [ ] Secrets management yöntemi değişti
+### Content
+- [ ] **Signal Density:** Is every line project-specific or mistake-preventing?
+- [ ] **Minimal:** 1-2 pages (3+ = too much)
+- [ ] **Actionable:** In must/must not format?
+- [ ] **Accurate:** Matches the code? (no stale rules?)
+- [ ] **No duplication:** README/tooling overlap removed?
+- [ ] **Gotchas:** Repeated mistakes captured?
 
-### Güncelleme Süreci
-1. Tetikleyici olay oluştu
-2. Context topla (yeni kurallar neler?)
-3. AGENTS.md'yi revize et
-4. Doğrulama checklist'i geç
-5. Versiyon numarasını artır
-6. Revizyon geçmişine ekle
+### Technical
+- [ ] Are validation commands actually used?
+- [ ] Are API contract / migration rules present?
+- [ ] Are non-obvious workflow constraints specified?
 
-### Revizyon Geçmişi Formatı
+---
+
+## 🔄 VERSION MANAGEMENT
+
+### Version Numbering
+- **Patch (v1.0.1):** Typo, minor clarification
+- **Minor (v1.1.0):** New rule added, existing rule revised
+- **Major (v2.0.0):** Complete rewrite, 3+ rules changed
+
+### Update Triggers
+- [ ] New stack component added (dependency)
+- [ ] New validation tool added (linter, formatter, test framework)
+- [ ] Repeated mistake identified (in code review)
+- [ ] API contract changed (breaking change)
+- [ ] Migration strategy changed
+- [ ] Secrets management method changed
+
+### Update Process
+1. Trigger event occurred
+2. Collect context (what are the new rules?)
+3. Revise AGENTS.md
+4. Pass the validation checklist
+5. Increment version number
+6. Add to revision history
+
+### Revision History Format
 ```markdown
-## 📝 REVİZYON GEÇMİŞİ
+## 📝 REVISION HISTORY
 
-| Versiyon | Tarih | Değişiklik |
-|----------|-------|-----------|
-| v1.0 | 2026-05-03 | İlk versiyon (signal density prensibi) |
-| v1.1 | 2026-05-04 | Flutter-specific rules eklendi |
-| v2.0 | 2026-05-05 | Context toplama, doğrulama, versiyon yönetimi eklendi |
+| Version | Date | Change |
+|---------|------|--------|
+| v1.0 | 2026-05-03 | Initial version (signal density principle) |
+| v1.1 | 2026-05-04 | Flutter-specific rules added |
+| v2.0 | 2026-05-05 | Context collection, validation, version management added |
 ```
 
 ---
 
-## 📊 SKOR RUBRİĞİ
+## 📊 SCORE RUBRIC
 
-| Puan | Kriter |
-|------|--------|
-| 4/10 | Her kural generic — herhangi bir proje için geçerli |
-| 5/10 | Stack belirtilmiş, birkaç proje-specific kural var |
-| 6/10 | Must/must not formatında, validation commands var |
-| 7/10 | Gotcha'lar yakalanmış, stale rule yok |
-| 8/10 | Duplikasyon yok, 1-2 sayfa, hızlı okunuyor |
-| 9/10 | "Bu dosyayı okuyunca proje hakkında net fikir oluşuyor" |
-| 10/10 | Hiçbir satır çıkarılamaz, hiçbir satır eksik değil |
+| Score | Criteria |
+|-------|----------|
+| 4/10 | Every rule is generic — valid for any project |
+| 5/10 | Stack specified, a few project-specific rules present |
+| 6/10 | In must/must not format, validation commands present |
+| 7/10 | Gotchas captured, no stale rules |
+| 8/10 | No duplication, 1-2 pages, skimmable |
+| 9/10 | "Reading this file gives a clear picture of the project" |
+| 10/10 | No line can be removed, no line is missing |
 
 ---
 
-## 📝 REVİZYON GEÇMİŞİ
+## 📝 REVISION HISTORY
 
-| Versiyon | Tarih | Değişiklik |
-|----------|-------|-----------|
-| v1.0 | 2026-05-03 | İlk versiyon (signal density prensibi, core principles, output requirements) |
-| v2.0 | 2026-05-04 | Operasyonel detay: Context toplama yöntemi (5 kaynak), doğrulama checklist, versiyon yönetimi, kalite kontrol. Puan: 7.5 → 8.5/10 |
-| v3.0 | 2026-05-07 | Solo dev uyarlaması: Team Knowledge → Kişisel notlar, Slack referansları kaldırıldı, DOĞRULAMA+KALİTE birleştirildi, skor rubriği eklendi |
+| Version | Date | Change |
+|---------|------|--------|
+| v1.0 | 2026-05-03 | Initial version (signal density principle, core principles, output requirements) |
+| v2.0 | 2026-05-04 | Operational detail: Context collection method (5 sources), validation checklist, version management, quality control. Score: 7.5 → 8.5/10 |
+| v3.0 | 2026-05-07 | Solo dev adaptation: Team Knowledge → personal notes, removed Slack references, merged VALIDATION+QUALITY, added score rubric |
+| v3.1 | 2026-05-07 | Translated to English for better AI tool comprehension |

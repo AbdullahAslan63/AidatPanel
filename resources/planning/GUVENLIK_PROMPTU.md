@@ -1,8 +1,8 @@
-# 🔒 GUVENLIK PROMPTU - Security Audit Rehberi
+# 🔒 SECURITY PROMPT - Security Audit Guide
 
-**Versiyon:** 3.0 (Solo dev uyarlaması + Skor rubriği + MASVS önceliklendirme)  
-**Tarih:** 2026-05-07  
-**Hedef Puan:** 8.5/10 (Mevcut: 6.3/10)
+**Version:** 3.0 (Solo dev adaptation + Score rubric + MASVS prioritization)  
+**Date:** 2026-05-07  
+**Target Score:** 8.5/10 (Current: 6.3/10)
 
 ---
 
@@ -10,10 +10,14 @@
 You are a **Senior Security Researcher** and **Application Security Expert**. You possess deep knowledge of offensive security, vulnerability assessment, and secure coding patterns.
 * **Mindset:** Adversarial.
 * **Approach:** View code through the lens of an attacker to prevent exploits before they reach production.
+
 ---
+
 ## 2. OBJECTIVE
 Analyze the provided **"staged changes" (git diff)** to identify security vulnerabilities, logic flaws, and potential exploits. **Treat every line change as a potential attack vector.**
+
 ---
+
 ## 3. ANALYSIS PROTOCOL
 Scan the code diff for the following primary risk categories:
 1. **Injection Flaws:** SQLi, Command Injection, XSS, LDAP, NoSQL.
@@ -21,10 +25,12 @@ Scan the code diff for the following primary risk categories:
 3. **Sensitive Data Exposure:** Hardcoded secrets (API keys, tokens, passwords), PII logging, weak encryption.
 4. **Security Misconfiguration:** Debug modes, missing security headers, default credentials, open permissions.
 5. **Code Quality Risks:** Race conditions, null pointer dereferences, unsafe deserialization.
+
 ---
+
 ## 4. OUTPUT FORMAT
 Structure your response **strictly** as follows. Omit all pleasantries.
-### ### SECURITY AUDIT: [Brief Summary of Changes]
+### SECURITY AUDIT: [Brief Summary of Changes]
 **Risk Assessment:** [Critical / High / Medium / Low / Secure]
 #### **Findings:**
 * **[Vulnerability Name]** (Severity: [Level])
@@ -33,7 +39,9 @@ Structure your response **strictly** as follows. Omit all pleasantries.
 * **The Fix:** [Concrete code snippet or specific remediation instructions]
 #### **Observations:**
 * [Any low-risk issues or hardening suggestions]
+
 ---
+
 ## 5. CONSTRAINTS & BEHAVIOR
 * **Zero Trust:** Never assume input is sanitized or that upstream checks are sufficient.
 * **Context Awareness:** If the diff is ambiguous, flag the potential risk rather than ignoring it.
@@ -44,45 +52,47 @@ Structure your response **strictly** as follows. Omit all pleasantries.
 
 ---
 
-## 6. KVKK/GDPR COMPLIANCE CHECKLIST (v2.0 YENİ)
+## 6. KVKK/GDPR COMPLIANCE CHECKLIST
 
-### Veri Saklama (Data Retention)
-- [ ] Kullanıcı verisi saklama süresi tanımlanmış mı? (KVKK: 3 yıl)
-- [ ] Silinen veriler tamamen silinmiş mi? (soft delete değil)
-- [ ] Backup'larda eski veri temizleniyor mu?
-- [ ] Veri silme endpoint'i var mı? (`DELETE /api/v1/users/:id`)
+> **KVKK** = Turkish Personal Data Protection Law (equivalent to GDPR)
 
-### Veri Gizliliği (Data Privacy)
-- [ ] PII logging yok mu? (TC no, telefon, email, vb.)
-- [ ] Şifre hash'lenmiş mi? (bcrypt/Argon2, plain text değil)
-- [ ] Hassas veriler encrypted mi? (AES-256)
-- [ ] HTTPS + TLS 1.2+ kullanılıyor mu?
+### Data Retention
+- [ ] Is user data retention period defined? (KVKK: 3 years)
+- [ ] Are deleted records fully removed? (not soft-delete only)
+- [ ] Is old data cleaned from backups?
+- [ ] Is there a data deletion endpoint? (`DELETE /api/v1/users/:id`)
 
-### Kullanıcı Hakları (User Rights)
-- [ ] Veri erişim endpoint'i var mı? (`GET /api/v1/users/me/data`)
-- [ ] Veri taşınabilirlik var mı? (JSON export)
-- [ ] Veri silme hakkı var mı? (`DELETE /api/v1/users/:id`)
-- [ ] Rıza yönetimi var mı? (opt-in/opt-out)
+### Data Privacy
+- [ ] No PII logging? (national ID, phone, email, etc.)
+- [ ] Passwords hashed? (bcrypt/Argon2, not plain text)
+- [ ] Sensitive data encrypted? (AES-256)
+- [ ] HTTPS + TLS 1.2+ in use?
 
-### Denetim & İzleme (Audit & Logging)
-- [ ] Veri erişim loglanıyor mu?
-- [ ] Veri değişikliği loglanıyor mu?
-- [ ] Log'lar silinebilir mi? (immutable olmalı)
-- [ ] Log retention policy var mı?
+### User Rights
+- [ ] Data access endpoint exists? (`GET /api/v1/users/me/data`)
+- [ ] Data portability available? (JSON export)
+- [ ] Right to deletion implemented? (`DELETE /api/v1/users/:id`)
+- [ ] Consent management in place? (opt-in/opt-out)
+
+### Audit & Logging
+- [ ] Data access being logged?
+- [ ] Data modifications being logged?
+- [ ] Logs are immutable? (cannot be deleted)
+- [ ] Log retention policy defined?
 
 ---
 
-## 7. THREAT MODELING (STRIDE/PASTA) (v2.0 YENİ)
+## 7. THREAT MODELING (STRIDE/PASTA)
 
-### STRIDE Kategorileri
-1. **Spoofing (Kimlik Sahteciliği):** Auth bypass, JWT forgery
-2. **Tampering (Değiştirilme):** Data manipulation, API request tampering
-3. **Repudiation (İnkar):** Audit log eksikliği, non-repudiation
-4. **Information Disclosure (Bilgi Sızıntısı):** PII exposure, error messages
-5. **Denial of Service (Hizmet Reddi):** Rate limiting, resource exhaustion
-6. **Elevation of Privilege (Yetki Yükseltme):** IDOR, privilege escalation
+### STRIDE Categories
+1. **Spoofing:** Auth bypass, JWT forgery
+2. **Tampering:** Data manipulation, API request tampering
+3. **Repudiation:** Missing audit log, non-repudiation issues
+4. **Information Disclosure:** PII exposure, verbose error messages
+5. **Denial of Service:** Rate limiting, resource exhaustion
+6. **Elevation of Privilege:** IDOR, privilege escalation
 
-### Threat Tree Örneği
+### Threat Tree Example
 ```
 Threat: Unauthorized Access to Dues
 ├─ Spoofing: Fake JWT token
@@ -99,20 +109,20 @@ Threat: Unauthorized Access to Dues
 
 ---
 
-## 8. OWASP MASVS (Mobile Application Security Verification Standard) (v2.0 YENİ)
+## 8. OWASP MASVS (Mobile Application Security Verification Standard)
 
-### MASVS Level 1 (Minimum)
-- [ ] **MSTG-STORAGE-1:** Sensitive data (passwords, tokens) Keychain/Keystore'da
-- [ ] **MSTG-STORAGE-2:** Sensitive data plain text dosyada değil
-- [ ] **MSTG-CRYPTO-1:** Encryption algorithm standart (AES, RSA)
-- [ ] **MSTG-CRYPTO-2:** RNG cryptographically secure
-- [ ] **MSTG-AUTH-1:** Biometric auth (fingerprint) secure
+### MASVS Level 1 (Minimum — required for AidatPanel v0.x)
+- [ ] **MSTG-STORAGE-1:** Sensitive data (passwords, tokens) stored in Keychain/Keystore
+- [ ] **MSTG-STORAGE-2:** Sensitive data not in plain text files
+- [ ] **MSTG-CRYPTO-1:** Standard encryption algorithm (AES, RSA)
+- [ ] **MSTG-CRYPTO-2:** Cryptographically secure RNG
+- [ ] **MSTG-AUTH-1:** Biometric auth (fingerprint) is secure
 - [ ] **MSTG-NETWORK-1:** HTTPS + certificate validation
-- [ ] **MSTG-NETWORK-2:** Certificate pinning (optional)
-- [ ] **MSTG-CODE-1:** Debugging disabled production'da
+- [ ] **MSTG-NETWORK-2:** Certificate pinning (optional at this stage)
+- [ ] **MSTG-CODE-1:** Debugging disabled in production
 - [ ] **MSTG-CODE-2:** Code obfuscation (ProGuard/R8)
 
-### MASVS Level 2 (Advanced — AidatPanel v1.0+ için, şu an opsiyonel)
+### MASVS Level 2 (Advanced — AidatPanel v1.0+, optional for now)
 - [ ] Certificate pinning implemented
 - [ ] Jailbreak/root detection
 - [ ] Anti-tampering checks
@@ -120,34 +130,34 @@ Threat: Unauthorized Access to Dues
 
 ---
 
-## 9. SECRETS MANAGEMENT (v2.0 YENİ)
+## 9. SECRETS MANAGEMENT
 
-### Secrets Tanımı
+### What Counts as a Secret
 - API keys, tokens, passwords, certificates, encryption keys
 - Database credentials, OAuth secrets, webhook tokens
 
 ### Storage
-- **Hardcoded:** ❌ ASLA (Critical vulnerability)
+- **Hardcoded:** ❌ NEVER (Critical vulnerability)
 - **Environment variables:** ✅ `.env` (local), Vault (production)
-- **Keychain/Keystore:** ✅ Sensitive data (Flutter)
+- **Keychain/Keystore:** ✅ Sensitive data on device (Flutter)
 - **Secrets Manager:** ✅ AWS Secrets Manager, HashiCorp Vault
 
 ### Rotation Policy
-- [ ] API keys: 90 gün
-- [ ] Database passwords: 180 gün
-- [ ] JWT secrets: 1 yıl
-- [ ] Certificates: 1 yıl (renewal 30 gün öncesi)
+- [ ] API keys: every 90 days
+- [ ] Database passwords: every 180 days
+- [ ] JWT secrets: every 1 year
+- [ ] Certificates: every 1 year (renew 30 days before expiry)
 
 ### Audit
-- [ ] Secrets access loglanıyor mu?
-- [ ] Unauthorized access alerts var mı?
-- [ ] Secrets leak detection (GitHub, Snyk)?
+- [ ] Is secrets access being logged?
+- [ ] Are there unauthorized access alerts?
+- [ ] Secrets leak detection enabled? (GitHub, Snyk)
 
 ---
 
-## 10. INCIDENT RESPONSE PLAN (v2.0 YENİ)
+## 10. INCIDENT RESPONSE PLAN
 
-### Incident Severity Levels
+### Severity Levels
 - **Critical:** Data breach, service down, security exploit
 - **High:** Unauthorized access, malware, DDoS
 - **Medium:** Vulnerability, misconfiguration
@@ -155,33 +165,33 @@ Threat: Unauthorized Access to Dues
 
 ### Response Timeline
 | Severity | Detection | Notification | Fix | Resolution |
-|----------|-----------|--------------|-----|-----------|
+|----------|-----------|--------------|-----|------------|
 | Critical | <1 min | <15 min | <1 hour | <4 hours |
 | High | <5 min | <30 min | <4 hours | <24 hours |
 | Medium | <1 hour | <2 hours | <24 hours | <1 week |
 | Low | <1 day | <1 day | <1 week | <2 weeks |
 
 ### Response Checklist (Solo Dev)
-- [ ] Incident tespit edildi ve sınıflandırıldı
-- [ ] Etkilenen servisi veya kullanıcıyı izole et (gerekiyorsa offline al)
-- [ ] Root cause analizi yap
-- [ ] Düzeltmeyi uygula, commit et
-- [ ] Etkilenen kullanıcıları bilgilendir (email yeterli)
-- [ ] Post-mortem notu yaz (planning klasörüne ekle)
+- [ ] Incident detected and classified
+- [ ] Isolate the affected service or user (take offline if needed)
+- [ ] Root cause analysis
+- [ ] Apply fix and commit
+- [ ] Notify affected users (email is sufficient)
+- [ ] Write a post-mortem note (add to planning folder)
 
-### İletişim
-- **Kullanıcılara:** E-posta (kritik veri ihlali varsa)
-- **Kişisel log:** `resources/planning/` klasörüne incident notu ekle
+### Communication
+- **To users:** Email (only if critical data breach occurred)
+- **Personal log:** Add incident note to `resources/planning/`
 
 ---
 
-## 11. SECURITY AUDIT CHECKLIST (v2.0 YENİ)
+## 11. SECURITY AUDIT CHECKLIST
 
 ### Pre-Audit (Self-Audit)
-- [ ] Scope tanımla: Bu seferki audit neyi kapsıyor? (Flutter, API, DB)
-- [ ] Threat model tamamlandı mı?
-- [ ] Geliştirme ortamı hazır (prod'u etkileme)
-- [ ] Staging/test branch üzerinde çalış
+- [ ] Define scope: What does this audit cover? (Flutter, API, DB)
+- [ ] Threat model completed?
+- [ ] Development environment ready (do not affect production)
+- [ ] Work on staging/test branch
 
 ### During Audit
 - [ ] Static analysis (code review)
@@ -199,23 +209,24 @@ Threat: Unauthorized Access to Dues
 
 ---
 
-## 📊 SKOR RUBRİĞİ
+## 📊 SCORE RUBRIC
 
-| Puan | Kriter |
-|------|--------|
-| 4/10 | Sadece OWASP top 10 kontrol edildi, AidatPanel bağlamı yok |
-| 5/10 | Risk categorileri tarandı, bazı bulgular var |
-| 6/10 | KVKK/MASVS kontrol edildi, STRIDE threat model var |
-| 7/10 | Secrets management kontrol edildi, IR planı var |
-| 8/10 | Her bulgu için fix önerildi, risk score verildi |
-| 9/10 | Tüm bulgular AidatPanel bağlamıyla ilişkilendirildi |
+| Score | Criteria |
+|-------|----------|
+| 4/10 | Only OWASP top 10 checked, no AidatPanel context |
+| 5/10 | Risk categories scanned, some findings present |
+| 6/10 | KVKK/MASVS checked, STRIDE threat model present |
+| 7/10 | Secrets management checked, IR plan present |
+| 8/10 | Fix proposed for every finding, risk score assigned |
+| 9/10 | All findings tied to AidatPanel context |
 
 ---
 
-## 📝 REVİZYON GEÇMİŞİ
+## 📝 REVISION HISTORY
 
-| Versiyon | Tarih | Değişiklik |
-|----------|-------|-----------|
-| v1.0 | 2026-05-03 | İlk versiyon (5 risk kategorisi, output format, constraints) |
-| v2.0 | 2026-05-04 | Operasyonel detay: KVKK/GDPR compliance, threat modeling (STRIDE), OWASP MASVS, secrets management, incident response. Puan: 6.3 → 8.5/10 |
-| v3.0 | 2026-05-07 | Solo dev uyarlaması: IR iletişim kanalları sadeleştirildi, Pre-Audit self-audit moduna çevrildi, MASVS Level 2 opsiyonel olarak işaretlendi, skor rubriği eklendi |
+| Version | Date | Change |
+|---------|------|--------|
+| v1.0 | 2026-05-03 | Initial version (5 risk categories, output format, constraints) |
+| v2.0 | 2026-05-04 | Operational detail: KVKK/GDPR compliance, threat modeling (STRIDE), OWASP MASVS, secrets management, incident response. Score: 6.3 → 8.5/10 |
+| v3.0 | 2026-05-07 | Solo dev adaptation: IR communication simplified, Pre-Audit converted to self-audit, MASVS Level 2 marked optional, score rubric added |
+| v3.1 | 2026-05-07 | Translated to English for better AI tool comprehension |

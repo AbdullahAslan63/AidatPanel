@@ -1,16 +1,16 @@
-# ⚡ OPTIMIZASYON PROMPTU - Optimization Audit Rehberi
+# ⚡ OPTIMIZATION PROMPT - Optimization Audit Guide
 
-**Versiyon:** 3.0 (Stale referanslar temizlendi + Backend durumu güncellendi + Skor rubriği)  
-**Tarih:** 2026-05-07  
-**Hedef Puan:** 8.5/10 (Mevcut: 7.2/10)
+**Version:** 3.0 (Stale references cleaned + Backend status updated + Score rubric)  
+**Date:** 2026-05-07  
+**Target Score:** 8.5/10 (Current: 7.2/10)
 
 ---
 
-## 📋 GÖREV
+## 📋 TASK
 
-Yazılım kodunda, sorgularında, servislerinde veya mimarisinde **tam optimizasyon kontrolü** yapmak.
+Perform a **full optimization audit** on software code, queries, services, or architecture.
 
-Amaç: Şu alanlarda iyileştirme fırsatları tespit etmek:
+Goal: Identify improvement opportunities in these areas:
 
 * **Performance** (CPU, memory, latency, throughput)
 * **Scalability** (load behavior, bottlenecks, concurrency)
@@ -180,7 +180,7 @@ For each issue found, classify as:
 * If you cannot prove a bottleneck from code alone, label it as **"likely"** and specify what to measure.
 * Never sacrifice correctness for speed without explicitly stating the tradeoff.
 * Keep recommendations realistic for production teams.
-* Put everything in OPTIMIZATIONS.md never try to fix anything unless you are told so.
+* Put everything in OPTIMIZATIONS.md — never try to fix anything unless told to.
 * Treat code duplication and dead code as **optimization issues** when they increase maintenance cost, bug surface area, bundle size, build time, or runtime overhead.
 
 ## When context is limited
@@ -197,13 +197,13 @@ Be concise, technical, and actionable. Avoid generic advice.
 
 ---
 
-## AIDATPANEL-SPESIFIK CONTEXT (v2.0 YENİ)
+## AIDATPANEL-SPECIFIC CONTEXT
 
 ### Stack
 - **Frontend:** Flutter (Dart), Riverpod, GoRouter
 - **Backend:** Node.js, Express, Prisma ORM
 - **Database:** PostgreSQL
-- **Target Users:** 50+ yaş (accessibility kritik)
+- **Target Users:** 50+ years old (accessibility is critical)
 - **Performance Budget:**
   - API latency (p95): <200ms
   - Flutter frame time: <16ms (60 FPS)
@@ -211,17 +211,17 @@ Be concise, technical, and actionable. Avoid generic advice.
   - Memory peak: <150MB
 
 ### Critical Paths
-- **Auth:** Login/Register → Token refresh (15dk access, 30 gün refresh)
-- **Aidat:** Manager Hub → Dues list → Status update
+- **Auth:** Login/Register → Token refresh (15 min access, 30 day refresh)
+- **Dues:** Manager Hub → Dues list → Status update
 - **Resident:** Login → Apartment select → Dues view
 - **Notifications:** FCM push → In-app display
 
 ### Known Bottlenecks
-1. **ListView Performance:** `ListView(children: [...])` → `ListView.builder` (50+ daire)
-2. **Dummy Data:** Hardcoded buildings/apartments (backend API entegre edildi — v0.1.0)
-3. **N+1 Queries:** Prisma eager loading eksik (backend aktif olduğunda)
-4. **JWT Caching:** Validation her request'te (Redis candidate, backend hazır olduğunda)
-5. **Image Caching:** `cached_network_image` optimize gerekli
+1. **ListView Performance:** `ListView(children: [...])` → `ListView.builder` (50+ apartments)
+2. **Dummy Data:** Hardcoded buildings/apartments (backend API integrated — v0.1.0)
+3. **N+1 Queries:** Prisma eager loading missing (when backend is active)
+4. **JWT Caching:** Validation on every request (Redis candidate, when backend is ready)
+5. **Image Caching:** `cached_network_image` needs optimization
 
 ### Optimization Priorities (ROI-based)
 1. **High Impact, Low Effort:** ListView.builder, Riverpod select, image cache
@@ -231,7 +231,7 @@ Be concise, technical, and actionable. Avoid generic advice.
 
 ---
 
-## MONITORING & PROFILING SETUP (v2.0 YENİ)
+## MONITORING & PROFILING SETUP
 
 ### Flutter Profiling
 - **Flutter DevTools:** CPU, memory, frame time, widget rebuild
@@ -242,7 +242,7 @@ Be concise, technical, and actionable. Avoid generic advice.
   - API latency (target: <200ms p95)
   - Image cache hit rate
 
-### Node.js Profiling (Backend hazır olduğunda aktifleştir)
+### Node.js Profiling (enable when backend is ready)
 - **clinic.js:** CPU, memory, I/O profiling
 - **Command:** `clinic doctor -- npm start`
 - **Metrics to Track:**
@@ -252,7 +252,7 @@ Be concise, technical, and actionable. Avoid generic advice.
   - Error rate
 
 ### Database Profiling
-- **PostgreSQL:** `EXPLAIN ANALYZE` slow queries
+- **PostgreSQL:** `EXPLAIN ANALYZE` for slow queries
 - **Metrics:**
   - Query time (target: <100ms)
   - Index usage
@@ -266,11 +266,11 @@ Be concise, technical, and actionable. Avoid generic advice.
 
 ---
 
-## CI/CD PERFORMANCE REGRESSION TESTING (v2.0 YENİ)
+## CI/CD PERFORMANCE REGRESSION TESTING
 
 ### Automated Checks
 - **Bundle Size:** `flutter build apk --analyze-size` (target: <50MB)
-- **Code Coverage:** `flutter test --coverage` (target: >30% — başlangıç hedefi, test eklendikçe artır)
+- **Code Coverage:** `flutter test --coverage` (target: >30% — initial goal, increase as tests are added)
 - **Lint:** `flutter analyze` (no warnings)
 - **Performance Tests:** Custom benchmarks
 
@@ -290,7 +290,7 @@ void main() {
 }
 ```
 
-### Node.js Benchmarks
+### Node.js Benchmarks (enable when backend is ready)
 ```javascript
 // Example: API latency benchmark
 const autocannon = require('autocannon');
@@ -306,13 +306,13 @@ autocannon({
 ```
 
 ### Regression Detection
-- **Baseline:** v0.1.0 (mevcut kararlı sürüm)
+- **Baseline:** v0.1.0 (current stable version)
 - **Threshold:** +10% latency = warning, +20% = failure
 - **Action:** Revert or optimize before merge
 
 ---
 
-## OPTIMIZATION WORKFLOW (v2.0 YENİ)
+## OPTIMIZATION WORKFLOW
 
 ### 1. Measure (Baseline)
 - [ ] Profile current state (Flutter DevTools, clinic.js, EXPLAIN ANALYZE)
@@ -341,7 +341,7 @@ autocannon({
 
 ---
 
-## QUICK WINS TEMPLATE (v2.0 YENİ)
+## QUICK WINS TEMPLATE
 
 For AidatPanel, prioritize:
 
@@ -352,7 +352,7 @@ For AidatPanel, prioritize:
 - [ ] Remove debug banners: `debugShowCheckedModeBanner: false`
 - [ ] Analyze APK size: `flutter build apk --analyze-size`
 
-### Node.js Quick Wins (Backend hazır olduğunda)
+### Node.js Quick Wins (when backend is ready)
 - [ ] Add Prisma `include` for N+1 prevention
 - [ ] Implement pagination (default limit: 50)
 - [ ] Cache JWT validation (Redis, 5 min TTL)
@@ -367,23 +367,24 @@ For AidatPanel, prioritize:
 
 ---
 
-## 📊 SKOR RUBRİĞİ
+## 📊 SCORE RUBRIC
 
-| Puan | Kriter |
-|------|--------|
-| 4/10 | Sadece genel öneriler, bottleneck kanıtlanmamış |
-| 5/10 | Bottleneck'lar tespit edildi, kategori verildi |
-| 6/10 | Her bulgu için ROI tahmini ve fix önerildi |
-| 7/10 | Baseline metrikleri alındı, before/after planı var |
-| 8/10 | AidatPanel bağlamıyla ilişkilendirildi, quick wins sıralandı |
-| 9/10 | Validation planı var, correctness korundu, test edildi |
+| Score | Criteria |
+|-------|----------|
+| 4/10 | Only general suggestions, bottlenecks not proven |
+| 5/10 | Bottlenecks identified, categories assigned |
+| 6/10 | ROI estimate and fix proposed for each finding |
+| 7/10 | Baseline metrics captured, before/after plan exists |
+| 8/10 | Tied to AidatPanel context, quick wins ranked |
+| 9/10 | Validation plan present, correctness preserved, tested |
 
 ---
 
-## 📝 REVİZYON GEÇMİŞİ
+## 📝 REVISION HISTORY
 
-| Versiyon | Tarih | Değişiklik |
-|----------|-------|-----------|
-| v1.0 | 2026-05-03 | İlk versiyon (7 boyut, 6 bölümlü format, 9 kategori checklist) |
-| v2.0 | 2026-05-04 | Operasyonel detay: AidatPanel context, monitoring setup, CI/CD regression testing, optimization workflow, quick wins template. Puan: 7.2 → 8.0/10 |
-| v3.0 | 2026-05-07 | Stale referanslar temizlendi: HATA_ANALIZ_RAPORU.md kaldırıldı, backend bölümleri "hazır olduğunda" notu aldı, baseline v0.1.0, code coverage hedefi güncellendi, skor rubriği eklendi |
+| Version | Date | Change |
+|---------|------|--------|
+| v1.0 | 2026-05-03 | Initial version (7 dimensions, 6-section format, 9-category checklist) |
+| v2.0 | 2026-05-04 | Operational detail: AidatPanel context, monitoring setup, CI/CD regression testing, optimization workflow, quick wins template. Score: 7.2 → 8.0/10 |
+| v3.0 | 2026-05-07 | Stale references cleaned: removed HATA_ANALIZ_RAPORU.md ref, backend sections marked "when ready", baseline updated to v0.1.0, code coverage target updated, score rubric added |
+| v3.1 | 2026-05-07 | Translated to English for better AI tool comprehension |
