@@ -1,21 +1,25 @@
-import 'user_data.dart';
-
 class RegisterResponse {
-  final String accessToken;
-  final String refreshToken;
-  final UserData user;
+  final String id;
+  final String name;
+  final String email;
+  final String? phone;
+  final String role;
 
   RegisterResponse({
-    required this.accessToken,
-    required this.refreshToken,
-    required this.user,
+    required this.id,
+    required this.name,
+    required this.email,
+    this.phone,
+    required this.role,
   });
 
   factory RegisterResponse.fromJson(Map<String, dynamic> json) {
     return RegisterResponse(
-      accessToken: json['accessToken'] as String,
-      refreshToken: json['refreshToken'] as String,
-      user: UserData.fromJson(json['user'] as Map<String, dynamic>),
+      id: json['user'] as String,
+      name: json['name'] as String,
+      email: json['email'] as String,
+      phone: json['phone'] as String?,
+      role: json['role'] as String,
     );
   }
 }

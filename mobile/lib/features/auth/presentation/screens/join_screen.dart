@@ -25,6 +25,7 @@ class JoinScreen extends ConsumerStatefulWidget {
 
 class _JoinScreenState extends ConsumerState<JoinScreen> {
   late TextEditingController _inviteCodeController;
+  late TextEditingController _emailController;
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
   late TextEditingController _passwordController;
@@ -45,6 +46,7 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
   void initState() {
     super.initState();
     _inviteCodeController = TextEditingController();
+    _emailController = TextEditingController();
     _nameController = TextEditingController();
     _phoneController = TextEditingController();
     _passwordController = TextEditingController();
@@ -57,6 +59,7 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
   @override
   void dispose() {
     _inviteCodeController.dispose();
+    _emailController.dispose();
     _nameController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
@@ -67,12 +70,13 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
 
   void _handleJoin(BuildContext context) {
     final inviteCode = _inviteCodeController.text.trim();
+    final email = _emailController.text.trim();
     final name = _nameController.text.trim();
     final phone = _phoneController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    if (inviteCode.isEmpty || name.isEmpty || password.isEmpty) {
+    if (inviteCode.isEmpty || email.isEmpty || name.isEmpty || password.isEmpty) {
       ref
           .read(toastProvider.notifier)
           .show(
@@ -135,7 +139,7 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
 
     ref
         .read(authStateProvider.notifier)
-        .join(inviteCode, password, name, phone.isEmpty ? null : phone);
+        .join(inviteCode, email, password, name, phone.isEmpty ? null : phone);
   }
 
   @override
@@ -208,6 +212,17 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
                           }
                         });
                       },
+                    ),
+                    const SizedBox(height: AppSizes.spacingM),
+                    TextField(
+                      controller: _emailController,
+                      enabled: !authState.isLoading,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: context.t.features.auth.email,
+                        hintText: context.t.features.auth.emailHint,
+                        prefixIcon: const Icon(Icons.email_outlined),
+                      ),
                     ),
                     const SizedBox(height: AppSizes.spacingM),
                     TextField(

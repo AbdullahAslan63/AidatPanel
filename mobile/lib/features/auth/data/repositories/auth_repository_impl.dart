@@ -19,6 +19,7 @@ abstract class AuthRepository {
   );
   Future<UserEntity> join(
     String inviteCode,
+    String email,
     String password,
     String name,
     String? phone,
@@ -67,23 +68,26 @@ class AuthRepositoryImpl implements AuthRepository {
     String? phone,
   ) async {
     try {
-      final request = RegisterRequest(
+      final registerRequest = RegisterRequest(
         email: email,
         password: password,
         name: name,
         phone: phone,
       );
-      final response = await _remoteDataSource.register(request);
+      await _remoteDataSource.register(registerRequest);
 
-      await _secureStorage.saveToken(response.accessToken);
-      await _secureStorage.saveRefreshToken(response.refreshToken);
-      // FIX: Tüm kullanıcı detaylarını JSON olarak sakla
-      await _secureStorage.saveUser(jsonEncode(response.user));
+      // Backend register token döndürmüyor — otomatik login yap
+      final loginRequest = LoginRequest(email: email, password: password);
+      final loginResponse = await _remoteDataSource.login(loginRequest);
+
+      await _secureStorage.saveToken(loginResponse.accessToken);
+      await _secureStorage.saveRefreshToken(loginResponse.refreshToken);
+      await _secureStorage.saveUser(jsonEncode(loginResponse.user));
       await _secureStorage.saveTokenExpiry(
         DateTime.now().add(const Duration(minutes: 15)),
       );
 
-      return response.user.toEntity();
+      return loginResponse.user.toEntity();
     } on ApiException {
       rethrow;
     } catch (e) {
@@ -94,6 +98,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<UserEntity> join(
     String inviteCode,
+    String email,
     String password,
     String name,
     String? phone,
@@ -101,6 +106,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final request = JoinRequest(
         inviteCode: inviteCode,
+        email: email,
         password: password,
         name: name,
         phone: phone,

@@ -24,7 +24,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       ApiConstants.login,
       data: request.toJson(),
     );
-    return LoginResponse.fromJson(response.data);
+    return LoginResponse.fromJson(response.data['data']);
   }
 
   @override
@@ -33,7 +33,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       ApiConstants.register,
       data: request.toJson(),
     );
-    return RegisterResponse.fromJson(response.data);
+    return RegisterResponse.fromJson(response.data['data']);
   }
 
   @override
@@ -42,6 +42,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       ApiConstants.join,
       data: request.toJson(),
     );
-    return JoinResponse.fromJson(response.data);
+    return JoinResponse.fromJson(response.data['data']);
   }
 }

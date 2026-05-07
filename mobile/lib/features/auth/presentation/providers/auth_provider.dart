@@ -96,6 +96,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> join(
     String inviteCode,
+    String email,
     String password,
     String name,
     String? phone,
@@ -104,6 +105,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       final user = await _authRepository.join(
         inviteCode,
+        email,
         password,
         name,
         phone,
