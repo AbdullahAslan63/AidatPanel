@@ -1,79 +1,102 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/strings.g.dart';
+import '../../../apartments/data/apartments_store.dart';
 import '../../../apartments/domain/entities/apartment_entity.dart';
 import '../../domain/entities/building_entity.dart';
 
-class BuildingResidentsScreen extends StatelessWidget {
+class BuildingResidentsScreen extends ConsumerWidget {
   final BuildingEntity building;
-  final List<ApartmentEntity> residents;
 
-  const BuildingResidentsScreen({
-    super.key,
-    required this.building,
-    required this.residents,
-  });
+  const BuildingResidentsScreen({super.key, required this.building});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final asyncApartments = ref.watch(apartmentsStoreProvider(building.id));
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(context.t.common.buildingDetail),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSizes.spacingL),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(),
-            const SizedBox(height: AppSizes.spacingL),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  context.t.common.residents,
-                  style: AppTypography.h3.copyWith(
-                    color: AppColors.textPrimary,
+      body: asyncApartments.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.error_outline, size: 48, color: AppColors.error),
+              const SizedBox(height: AppSizes.spacingM),
+              Text(
+                e.toString(),
+                style: AppTypography.body1
+                    .copyWith(color: AppColors.textSecondary),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSizes.spacingM),
+              ElevatedButton(
+                onPressed: () => ref
+                    .read(apartmentsStoreProvider(building.id).notifier)
+                    .loadApartments(),
+                child: const Text('Tekrar Dene'),
+              ),
+            ],
+          ),
+        ),
+        data: (residents) => SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSizes.spacingL),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildHeader(building),
+              const SizedBox(height: AppSizes.spacingL),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    context.t.common.residents,
+                    style: AppTypography.h3
+                        .copyWith(color: AppColors.textPrimary),
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSizes.spacingM,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryLight,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '${residents.length} ${context.t.common.apartmentsBadge}',
-                    style: AppTypography.caption.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSizes.spacingM,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryLight,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '${residents.length} ${context.t.common.apartmentsBadge}',
+                      style: AppTypography.caption.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSizes.spacingM),
-            if (residents.isEmpty)
-              _buildEmptyState(context)
-            else
-              ...residents.asMap().entries.map(
-                (entry) =>
-                    _buildResidentCard(context, entry.key + 1, entry.value),
+                ],
               ),
-          ],
+              const SizedBox(height: AppSizes.spacingM),
+              if (residents.isEmpty)
+                _buildEmptyState(context)
+              else
+                ...residents.asMap().entries.map(
+                      (entry) => _buildResidentCard(
+                          context, entry.key + 1, entry.value),
+                    ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildingEntity building) {
     return Container(
       padding: const EdgeInsets.all(AppSizes.spacingL),
       decoration: BoxDecoration(
@@ -96,11 +119,8 @@ class BuildingResidentsScreen extends StatelessWidget {
                   color: Colors.white24,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
-                  Icons.apartment,
-                  color: Colors.white,
-                  size: 28,
-                ),
+                child: const Icon(Icons.apartment,
+                    color: Colors.white, size: 28),
               ),
               const SizedBox(width: AppSizes.spacingM),
               Expanded(
@@ -118,11 +138,8 @@ class BuildingResidentsScreen extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(
-                Icons.location_on_outlined,
-                size: 18,
-                color: Colors.white70,
-              ),
+              const Icon(Icons.location_on_outlined,
+                  size: 18, color: Colors.white70),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
@@ -138,10 +155,7 @@ class BuildingResidentsScreen extends StatelessWidget {
   }
 
   Widget _buildResidentCard(
-    BuildContext context,
-    int index,
-    ApartmentEntity apt,
-  ) {
+      BuildContext context, int index, ApartmentEntity apt) {
     final isOccupied = apt.phone != null;
     final statusInfo = _getStatusInfo(context, apt.paymentStatus);
 
@@ -159,7 +173,6 @@ class BuildingResidentsScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                // Sıra numarası avatar
                 Container(
                   width: 44,
                   height: 44,
@@ -209,9 +222,7 @@ class BuildingResidentsScreen extends StatelessWidget {
                 if (isOccupied)
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
+                        horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: statusInfo.bgColor,
                       borderRadius: BorderRadius.circular(20),
@@ -232,11 +243,8 @@ class BuildingResidentsScreen extends StatelessWidget {
               const SizedBox(height: AppSizes.spacingM),
               Row(
                 children: [
-                  Icon(
-                    Icons.phone_outlined,
-                    size: 18,
-                    color: AppColors.primary,
-                  ),
+                  Icon(Icons.phone_outlined,
+                      size: 18, color: AppColors.primary),
                   const SizedBox(width: 8),
                   Text(
                     _formatPhone(apt.phone!),
@@ -248,9 +256,8 @@ class BuildingResidentsScreen extends StatelessWidget {
                   const Spacer(),
                   Text(
                     '₺${apt.monthlyDues.toStringAsFixed(0)}${context.t.common.perMonth}',
-                    style: AppTypography.body2.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                    style: AppTypography.body2
+                        .copyWith(color: AppColors.textSecondary),
                   ),
                 ],
               ),
@@ -271,11 +278,13 @@ class BuildingResidentsScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(Icons.people_outline, size: 56, color: AppColors.textSecondary),
+          Icon(Icons.people_outline,
+              size: 56, color: AppColors.textSecondary),
           const SizedBox(height: AppSizes.spacingM),
           Text(
             context.t.common.noApartmentsYet,
-            style: AppTypography.body1.copyWith(color: AppColors.textSecondary),
+            style:
+                AppTypography.body1.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -283,7 +292,8 @@ class BuildingResidentsScreen extends StatelessWidget {
   }
 
   String _formatApartmentLabel(BuildContext context, String apartmentNumber) {
-    final match = RegExp(r'(\d+)([A-Za-z]?)').firstMatch(apartmentNumber);
+    final match =
+        RegExp(r'(\d+)([A-Za-z]?)').firstMatch(apartmentNumber);
     if (match == null) return apartmentNumber;
     final floor = match.group(1);
     final letter = match.group(2);

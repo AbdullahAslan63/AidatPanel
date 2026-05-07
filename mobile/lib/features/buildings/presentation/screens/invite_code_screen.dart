@@ -9,6 +9,7 @@ import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/strings.g.dart';
 import '../../../../shared/widgets/toast_overlay.dart';
+import '../../../apartments/data/apartments_store.dart';
 import '../../../apartments/domain/entities/apartment_entity.dart';
 import '../../data/invite_code_store.dart';
 import '../../domain/entities/building_entity.dart';
@@ -21,12 +22,10 @@ import '../widgets/invite_step_indicator.dart';
 /// Davet kodu üretme akışı (3 adım): Bina → Daire → Kod.
 class InviteCodeScreen extends ConsumerStatefulWidget {
   final List<BuildingEntity> buildings;
-  final List<ApartmentEntity> Function(String buildingId) apartmentsLoader;
 
   const InviteCodeScreen({
     super.key,
     required this.buildings,
-    required this.apartmentsLoader,
   });
 
   @override
@@ -34,8 +33,6 @@ class InviteCodeScreen extends ConsumerStatefulWidget {
 }
 
 class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
-  static const _validityDays = 7;
-
   int _step = 0;
   BuildingEntity? _selectedBuilding;
   ApartmentEntity? _selectedApartment;
@@ -77,12 +74,22 @@ class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
           onPick: _onBuildingPicked,
         );
       case 1:
-        return _ApartmentPickerStep(
-          key: const ValueKey('step-1'),
-          building: _selectedBuilding!,
-          apartments: widget.apartmentsLoader(_selectedBuilding!.id),
-          onPick: _onApartmentSelected,
-          activeCodes: ref.watch(inviteCodeStoreProvider),
+        final asyncApts =
+            ref.watch(apartmentsStoreProvider(_selectedBuilding!.id));
+        return asyncApts.when(
+          loading: () =>
+              const Center(key: ValueKey('step-1-loading'), child: CircularProgressIndicator()),
+          error: (e, _) => Center(
+            key: const ValueKey('step-1-error'),
+            child: Text(e.toString()),
+          ),
+          data: (apartments) => _ApartmentPickerStep(
+            key: const ValueKey('step-1'),
+            building: _selectedBuilding!,
+            apartments: apartments,
+            onPick: _onApartmentSelected,
+            activeCodes: ref.watch(inviteCodeStoreProvider),
+          ),
         );
       case 2:
         return InviteCodeResultView(
@@ -139,20 +146,22 @@ class _InviteCodeScreenState extends ConsumerState<InviteCodeScreen> {
     });
   }
 
-  void _generateAndShow(ApartmentEntity apt) {
-    final code = InviteCodeHelpers.generateCode(_selectedBuilding!, apt);
-    final now = DateTime.now();
-    final expires = now.add(const Duration(days: _validityDays));
-    ref
+  Future<void> _generateAndShow(ApartmentEntity apt) async {
+    final active = await ref
         .read(inviteCodeStoreProvider.notifier)
-        .save(
-          apt.id,
-          ActiveInviteCode(code: code, createdAt: now, expiresAt: expires),
-        );
+        .generateInviteCode(apt.id);
+    if (!mounted) return;
+    if (active == null) {
+      ref.read(toastProvider.notifier).show(
+            'Davet kodu oluşturulamadı',
+            type: ToastType.error,
+          );
+      return;
+    }
     setState(() {
       _selectedApartment = apt;
-      _generatedCode = code;
-      _activeExpiresAt = expires;
+      _generatedCode = active.code;
+      _activeExpiresAt = active.expiresAt;
       _step = 2;
     });
   }
@@ -458,8 +467,9 @@ class _StatusBadge extends StatelessWidget {
   }
 
   (String, Color) _resolveBadge(BuildContext context) {
-    if (hasActiveCode)
+    if (hasActiveCode) {
       return (context.t.common.activeCodeBadge, AppColors.accent);
+    }
     if (isOccupied) return (context.t.common.occupiedBadge, AppColors.warning);
     return (context.t.common.emptyBadge, AppColors.success);
   }

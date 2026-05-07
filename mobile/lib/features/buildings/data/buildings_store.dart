@@ -1,109 +1,110 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../features/auth/presentation/providers/auth_provider.dart';
 import '../domain/entities/building_entity.dart';
+import 'datasources/building_remote_datasource.dart';
+import 'repositories/building_repository.dart';
+import 'repositories/building_repository_impl.dart';
 
-/// Yöneticinin binalarını tutan optimized in-memory store.
-/// StateProvider pattern ile selective updates ve duplicate check.
-/// Üretim ortamında bu liste backend'den (GET /api/buildings) çekilecek.
-class BuildingsStore extends StateNotifier<List<BuildingEntity>> {
-  BuildingsStore() : super([]);
+final buildingRemoteDataSourceProvider = Provider<BuildingRemoteDataSource>((ref) {
+  return BuildingRemoteDataSourceImpl(
+    dioClient: ref.watch(dioClientProvider),
+  );
+});
 
-  /// Yeni bina ekler - optimized version
-  /// Duplicate check ve selective update ile performans iyileştirildi.
-  /// Backend bağlanınca POST /api/buildings çağrısına dönüşecek.
-  String addBuilding({
+final buildingRepositoryProvider = Provider<BuildingRepository>((ref) {
+  return BuildingRepositoryImpl(
+    remoteDataSource: ref.watch(buildingRemoteDataSourceProvider),
+  );
+});
+
+class BuildingsNotifier
+    extends StateNotifier<AsyncValue<List<BuildingEntity>>> {
+  final BuildingRepository _repository;
+
+  BuildingsNotifier(this._repository) : super(const AsyncValue.loading()) {
+    loadBuildings();
+  }
+
+  Future<void> loadBuildings() async {
+    state = const AsyncValue.loading();
+    try {
+      final buildings = await _repository.fetchBuildings();
+      state = AsyncValue.data(buildings);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<String?> addBuilding({
     required String name,
     required String address,
-    int totalApartments = 0,
-    double monthlyDuesPerApartment = 0,
-  }) {
-    final id = DateTime.now().millisecondsSinceEpoch.toString();
-    final newBuilding = BuildingEntity(
-      id: id,
-      name: name,
-      address: address,
-      totalApartments: totalApartments,
-      occupiedApartments: 0,
-      totalMonthlyDues: totalApartments * monthlyDuesPerApartment,
-      collectedDues: 0,
-    );
-
-    // OPTIMIZATION: Duplicate check - aynı ID'li bina varsa ekleme
-    if (state.any((building) => building.id == id)) {
-      return id; // Zaten varsa return et
-    }
-
-    // OPTIMIZATION: Selective update - sadece yeni bina ekle
-    state = [...state, newBuilding];
-    return id;
-  }
-
-  /// Bina güncelle - optimized version
-  /// Sadece değişen binayı günceller, tüm listeyi yeniden oluşturmaz.
-  void updateBuilding(BuildingEntity updatedBuilding) {
-    final index = state.indexWhere(
-      (building) => building.id == updatedBuilding.id,
-    );
-    if (index != -1) {
-      // OPTIMIZATION: Sadece değişen elementi güncelle
-      final updatedList = [...state];
-      updatedList[index] = updatedBuilding;
-      state = updatedList;
-    }
-  }
-
-  /// Bina sil - optimized version
-  /// Sadece silinen binayı listeden çıkarır.
-  void removeBuilding(String buildingId) {
-    // OPTIMIZATION: Filter ile sadece silme işlemi
-    state = state.where((building) => building.id != buildingId).toList();
-  }
-
-  /// Aidat toplamını güncelle - optimized version
-  /// Sadece ilgili binanın aidat bilgisini günceller.
-  void updateBuildingDues({
-    required String buildingId,
-    required double newCollectedDues,
-  }) {
-    final index = state.indexWhere((building) => building.id == buildingId);
-    if (index != -1) {
-      final updatedBuilding = state[index].copyWith(
-        collectedDues: newCollectedDues,
+    required String city,
+    int? totalFloors,
+    int? apartmentsPerFloor,
+  }) async {
+    try {
+      final building = await _repository.createBuilding(
+        name: name,
+        address: address,
+        city: city,
+        totalFloors: totalFloors,
+        apartmentsPerFloor: apartmentsPerFloor,
       );
-      updateBuilding(updatedBuilding);
+      final current = state.value ?? [];
+      state = AsyncValue.data([...current, building]);
+      return building.id;
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+      return null;
     }
   }
 
-  /// Bina sayısını güncelle - optimized version
-  void updateBuildingOccupancy({
-    required String buildingId,
-    required int newOccupiedApartments,
-  }) {
-    final index = state.indexWhere((building) => building.id == buildingId);
-    if (index != -1) {
-      final updatedBuilding = state[index].copyWith(
-        occupiedApartments: newOccupiedApartments,
+  Future<void> removeBuilding(String buildingId) async {
+    try {
+      await _repository.deleteBuilding(buildingId);
+      final current = state.value ?? [];
+      state = AsyncValue.data(
+        current.where((b) => b.id != buildingId).toList(),
       );
-      updateBuilding(updatedBuilding);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> updateBuilding({
+    required String id,
+    String? name,
+    String? address,
+    String? city,
+  }) async {
+    try {
+      final updated = await _repository.updateBuilding(
+        id: id,
+        name: name,
+        address: address,
+        city: city,
+      );
+      final current = state.value ?? [];
+      state = AsyncValue.data(
+        current.map((b) => b.id == id ? updated : b).toList(),
+      );
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
     }
   }
 }
 
-// OPTIMIZED: StateProvider pattern ile daha efficient provider
-final buildingsStoreProvider =
-    StateNotifierProvider<BuildingsStore, List<BuildingEntity>>(
-      (ref) => BuildingsStore(),
-    );
+final buildingsStoreProvider = StateNotifierProvider<BuildingsNotifier,
+    AsyncValue<List<BuildingEntity>>>(
+  (ref) => BuildingsNotifier(ref.watch(buildingRepositoryProvider)),
+);
 
-// ADDITIONAL: Convenience provider'lar for specific operations
 final buildingsCountProvider = Provider<int>((ref) {
-  return ref.watch(buildingsStoreProvider).length;
+  return ref.watch(buildingsStoreProvider).value?.length ?? 0;
 });
 
 final totalBuildingsDuesProvider = Provider<double>((ref) {
-  final buildings = ref.watch(buildingsStoreProvider);
-  return buildings.fold<double>(
-    0,
-    (sum, building) => sum + building.collectedDues,
-  );
+  final buildings = ref.watch(buildingsStoreProvider).value ?? [];
+  return buildings.fold<double>(0, (sum, b) => sum + b.collectedDues);
 });

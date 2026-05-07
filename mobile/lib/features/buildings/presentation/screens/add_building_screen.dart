@@ -8,7 +8,6 @@ import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/strings.g.dart';
 import '../../../../shared/widgets/toast_overlay.dart';
-import '../../../apartments/data/apartments_store.dart';
 import '../../data/buildings_store.dart';
 import '../../data/cities_data.dart';
 
@@ -236,7 +235,7 @@ class _AddBuildingScreenState extends ConsumerState<AddBuildingScreen> {
       ),
       validator: required
           ? (v) => (v == null || v.trim().isEmpty)
-                ? '${context.t.common.fieldRequired}'
+                ? context.t.common.fieldRequired
                 : null
           : null,
     );
@@ -359,7 +358,7 @@ class _AddBuildingScreenState extends ConsumerState<AddBuildingScreen> {
     );
   }
 
-  void _onSubmit() {
+  Future<void> _onSubmit() async {
     final formValid = _formKey.currentState?.validate() ?? false;
     if (!formValid) {
       ref
@@ -374,43 +373,37 @@ class _AddBuildingScreenState extends ConsumerState<AddBuildingScreen> {
       return;
     }
 
-    final fullAddress =
-        '${_addressController.text.trim()}, $_selectedDistrict, $_selectedCity';
     final floors = int.tryParse(_floorsController.text.trim()) ?? 0;
     final apartmentsPerFloor =
         int.tryParse(_apartmentsPerFloorController.text.trim()) ?? 0;
-    final totalApartments = floors * apartmentsPerFloor;
-    final monthlyDues =
-        double.tryParse(_monthlyDuesController.text.trim()) ?? 0;
 
     if (floors <= 0 || apartmentsPerFloor <= 0) {
-      ref
-          .read(toastProvider.notifier)
-          .show(
+      ref.read(toastProvider.notifier).show(
             context.t.common.floorApartmentMustBePositive,
             type: ToastType.error,
           );
       return;
     }
 
-    final newBuildingId = ref
-        .read(buildingsStoreProvider.notifier)
-        .addBuilding(
+    final address =
+        '${_addressController.text.trim()}, $_selectedDistrict';
+
+    final id = await ref.read(buildingsStoreProvider.notifier).addBuilding(
           name: _nameController.text.trim(),
-          address: fullAddress,
-          totalApartments: totalApartments,
-          monthlyDuesPerApartment: monthlyDues,
+          address: address,
+          city: _selectedCity!,
+          totalFloors: floors,
+          apartmentsPerFloor: apartmentsPerFloor,
         );
 
-    // Daireleri otomatik üret (kat × daire/kat)
-    ref
-        .read(apartmentsStoreProvider.notifier)
-        .generateApartmentsForBuilding(
-          buildingId: newBuildingId,
-          floors: floors,
-          apartmentsPerFloor: apartmentsPerFloor,
-          monthlyDues: monthlyDues,
-        );
+    if (!mounted) return;
+    if (id == null) {
+      ref.read(toastProvider.notifier).show(
+            'Bina eklenemedi. Lütfen tekrar deneyin.',
+            type: ToastType.error,
+          );
+      return;
+    }
 
     ref
         .read(toastProvider.notifier)

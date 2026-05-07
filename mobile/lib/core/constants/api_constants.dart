@@ -35,6 +35,8 @@ class ApiConstants {
       '$apiVersion/apartments/$apartmentId/resident';
   static String apartmentDues(String apartmentId) =>
       '$apiVersion/apartments/$apartmentId/dues';
+  static String apartmentInviteCode(String apartmentId) =>
+      '$apiVersion/apartments/$apartmentId/invite-code';
   static const String inviteCode = '$apiVersion/apartments';
 
   // Dues endpoints

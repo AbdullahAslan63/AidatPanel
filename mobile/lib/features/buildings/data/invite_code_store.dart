@@ -1,8 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Aktif davet kodlarını daire (apartmentId) bazlı tutan basit bellek deposu.
-/// Üretim ortamında bunun yerine backend'in InviteCode tablosu kullanılacak.
-/// Bir daire için aktif kod varsa (süresi dolmamışsa), yeni kod üretilmesine izin verilmez.
+import '../../../features/auth/presentation/providers/auth_provider.dart';
+import 'datasources/invite_code_remote_datasource.dart';
+import 'models/invite_code_model.dart';
+import 'repositories/invite_code_repository.dart';
+import 'repositories/invite_code_repository_impl.dart';
+
 class ActiveInviteCode {
   final String code;
   final DateTime createdAt;
@@ -19,35 +22,64 @@ class ActiveInviteCode {
   Duration get remaining => expiresAt.difference(DateTime.now());
 }
 
-class InviteCodeStore extends StateNotifier<Map<String, ActiveInviteCode>> {
-  InviteCodeStore() : super(const {});
+final inviteCodeRemoteDataSourceProvider =
+    Provider<InviteCodeRemoteDataSource>((ref) {
+  return InviteCodeRemoteDataSourceImpl(
+    dioClient: ref.watch(dioClientProvider),
+  );
+});
 
-  /// Daire için aktif (süresi dolmamış) kodu döndürür, yoksa null.
+final inviteCodeRepositoryProvider = Provider<InviteCodeRepository>((ref) {
+  return InviteCodeRepositoryImpl(
+    remoteDataSource: ref.watch(inviteCodeRemoteDataSourceProvider),
+  );
+});
+
+class InviteCodeNotifier
+    extends StateNotifier<Map<String, ActiveInviteCode>> {
+  final InviteCodeRepository _repository;
+
+  InviteCodeNotifier(this._repository) : super(const {});
+
   ActiveInviteCode? activeFor(String apartmentId) {
     final entry = state[apartmentId];
     if (entry == null) return null;
     if (entry.isExpired) {
-      // Süresi dolmuş — temizle
-      final next = Map<String, ActiveInviteCode>.from(state)..remove(apartmentId);
+      final next = Map<String, ActiveInviteCode>.from(state)
+        ..remove(apartmentId);
       state = next;
       return null;
     }
     return entry;
   }
 
-  /// Yeni kod kaydeder.
-  void save(String apartmentId, ActiveInviteCode entry) {
-    state = {...state, apartmentId: entry};
+  Future<ActiveInviteCode?> generateInviteCode(String apartmentId) async {
+    try {
+      final model = await _repository.generateInviteCode(apartmentId);
+      final entry = _modelToActive(model);
+      state = {...state, apartmentId: entry};
+      return entry;
+    } catch (_) {
+      return null;
+    }
   }
 
-  /// Daire için aktif kodu iptal eder (manager isterse).
   void revoke(String apartmentId) {
-    final next = Map<String, ActiveInviteCode>.from(state)..remove(apartmentId);
+    final next = Map<String, ActiveInviteCode>.from(state)
+      ..remove(apartmentId);
     state = next;
+  }
+
+  ActiveInviteCode _modelToActive(InviteCodeModel model) {
+    return ActiveInviteCode(
+      code: model.code,
+      createdAt: DateTime.now(),
+      expiresAt: model.expiresAt,
+    );
   }
 }
 
 final inviteCodeStoreProvider =
-    StateNotifierProvider<InviteCodeStore, Map<String, ActiveInviteCode>>(
-  (ref) => InviteCodeStore(),
+    StateNotifierProvider<InviteCodeNotifier, Map<String, ActiveInviteCode>>(
+  (ref) => InviteCodeNotifier(ref.watch(inviteCodeRepositoryProvider)),
 );

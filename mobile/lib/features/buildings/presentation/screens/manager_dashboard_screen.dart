@@ -5,8 +5,6 @@ import '../../../../core/theme/app_sizes.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../l10n/strings.g.dart';
 import '../../../../shared/widgets/settings_tab.dart';
-import '../../../apartments/data/apartments_store.dart';
-import '../../../apartments/domain/entities/apartment_entity.dart';
 import '../../data/buildings_store.dart';
 import '../../domain/entities/building_entity.dart';
 import 'add_building_screen.dart';
@@ -87,7 +85,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   Widget _buildHomeTab() {
-    final buildings = ref.watch(buildingsStoreProvider);
+    final buildings = ref.watch(buildingsStoreProvider).value ?? [];
     final authState = ref.watch(authStateProvider);
     final userName = authState.user?.name ?? context.t.common.user;
     return SingleChildScrollView(
@@ -122,7 +120,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   Widget _buildBuildingsTab() {
-    final buildings = ref.watch(buildingsStoreProvider);
+    final buildings = ref.watch(buildingsStoreProvider).value ?? [];
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSizes.spacingL),
@@ -363,8 +361,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
       context,
       MaterialPageRoute(
         builder: (_) => InviteCodeScreen(
-          buildings: ref.read(buildingsStoreProvider),
-          apartmentsLoader: _getDummyApartments,
+          buildings: ref.read(buildingsStoreProvider).value ?? [],
         ),
       ),
     );
@@ -374,16 +371,9 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
     Navigator.push<void>(
       context,
       MaterialPageRoute(
-        builder: (_) => BuildingResidentsScreen(
-          building: building,
-          residents: _getDummyApartments(building.id),
-        ),
+        builder: (_) => BuildingResidentsScreen(building: building),
       ),
     );
-  }
-
-  List<ApartmentEntity> _getDummyApartments(String buildingId) {
-    return ref.read(apartmentsStoreProvider.notifier).apartmentsFor(buildingId);
   }
 
   Widget _buildDuesTab() {
@@ -400,7 +390,7 @@ class _ManagerDashboardScreenState extends ConsumerState<ManagerDashboardScreen>
   }
 
   Widget _buildStatsRow(BuildContext context) {
-    final buildings = ref.watch(buildingsStoreProvider);
+    final buildings = ref.watch(buildingsStoreProvider).value ?? [];
 
     // Toplam daire ve dolu daire hesapla
     int totalApartments = 0;
