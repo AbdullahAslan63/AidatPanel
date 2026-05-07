@@ -9,12 +9,18 @@ class InputValidators {
   );
 
   static final phoneRegex = RegExp(r'^[0-9]{10}$');
+  static final _phoneStripRegex = RegExp(r'[^0-9]');
 
   static final nameRegex = RegExp(r'^[a-zA-ZçğıöşüÇĞİÖŞÜ\s]{2,50}$');
 
   static final passwordRegex = RegExp(
     r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
   );
+
+  static final _pwUpperRegex = RegExp(r'[A-Z]');
+  static final _pwLowerRegex = RegExp(r'[a-z]');
+  static final _pwDigitRegex = RegExp(r'[0-9]');
+  static final _pwSpecialRegex = RegExp(r'[@$!%*?&]');
 
   /// Email validation - returns error keys for localization
   static String? validateEmail(String? value) {
@@ -39,7 +45,7 @@ class InputValidators {
       return 'phone_required';
     }
 
-    final cleanPhone = value.replaceAll(RegExp(r'[^0-9]'), '');
+    final cleanPhone = value.replaceAll(_phoneStripRegex, '');
 
     if (!phoneRegex.hasMatch(cleanPhone)) {
       return 'phone_invalid';
@@ -62,19 +68,19 @@ class InputValidators {
       return 'password_too_long';
     }
 
-    if (!value.contains(RegExp(r'[A-Z]'))) {
+    if (!value.contains(_pwUpperRegex)) {
       return 'password_uppercase_required';
     }
 
-    if (!value.contains(RegExp(r'[a-z]'))) {
+    if (!value.contains(_pwLowerRegex)) {
       return 'password_lowercase_required';
     }
 
-    if (!value.contains(RegExp(r'[0-9]'))) {
+    if (!value.contains(_pwDigitRegex)) {
       return 'password_number_required';
     }
 
-    if (!value.contains(RegExp(r'[@$!%*?&]'))) {
+    if (!value.contains(_pwSpecialRegex)) {
       return 'password_special_char_required';
     }
 
@@ -207,10 +213,10 @@ class InputValidators {
     int strength = 0;
 
     if (password.length >= 8) strength++;
-    if (password.contains(RegExp(r'[A-Z]'))) strength++;
-    if (password.contains(RegExp(r'[a-z]'))) strength++;
-    if (password.contains(RegExp(r'[0-9]'))) strength++;
-    if (password.contains(RegExp(r'[@$!%*?&]'))) strength++;
+    if (password.contains(_pwUpperRegex)) strength++;
+    if (password.contains(_pwLowerRegex)) strength++;
+    if (password.contains(_pwDigitRegex)) strength++;
+    if (password.contains(_pwSpecialRegex)) strength++;
 
     return strength;
   }

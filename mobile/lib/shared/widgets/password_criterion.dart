@@ -10,25 +10,20 @@ class PasswordCriterion extends StatelessWidget {
     required this.isMet,
   });
 
+  static const _metIcon = Icon(Icons.check_circle, color: Colors.green, size: 16);
+  static const _unmetIcon = Icon(Icons.cancel, color: Colors.red, size: 16);
+  static const _metStyle = TextStyle(color: Colors.green, fontSize: 12);
+  static const _unmetStyle = TextStyle(color: Colors.red, fontSize: 12);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 4),
       child: Row(
         children: [
-          Icon(
-            isMet ? Icons.check_circle : Icons.cancel,
-            color: isMet ? Colors.green : Colors.red,
-            size: 16,
-          ),
+          isMet ? _metIcon : _unmetIcon,
           const SizedBox(width: 8),
-          Text(
-            text,
-            style: TextStyle(
-              color: isMet ? Colors.green : Colors.red,
-              fontSize: 12,
-            ),
-          ),
+          Text(text, style: isMet ? _metStyle : _unmetStyle),
         ],
       ),
     );

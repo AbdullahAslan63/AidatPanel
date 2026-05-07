@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../constants/api_constants.dart';
 import '../constants/app_constants.dart';
 import '../storage/secure_storage.dart';
@@ -32,16 +35,18 @@ class DioClient {
       ),
     );
 
-    _dio.interceptors.add(
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        requestHeader: false,
-        responseHeader: false,
-        error: true,
-        logPrint: (o) => print('[DIO] $o'),
-      ),
-    );
+    if (kDebugMode) {
+      _dio.interceptors.add(
+        LogInterceptor(
+          requestBody: true,
+          responseBody: true,
+          requestHeader: false,
+          responseHeader: false,
+          error: true,
+          logPrint: (o) => debugPrint('[DIO] $o'),
+        ),
+      );
+    }
 
     // Ayrı Dio instance: refresh token için (interceptor'sız)
     // Sonsuz döngü riskini önler
@@ -110,12 +115,14 @@ class DioClient {
             data: {'refreshToken': refreshToken},
           );
 
-          final newToken = response.data['accessToken'];
+          final responseData = response.data is Map && response.data['data'] != null
+              ? response.data['data'] as Map<String, dynamic>
+              : response.data as Map<String, dynamic>;
+          final newToken = responseData['accessToken'] as String;
           await _secureStorage.saveToken(newToken);
-
-          // Token expiry güncelle (15 dakika)
           await _secureStorage.saveTokenExpiry(
-            DateTime.now().add(const Duration(minutes: 15)),
+            _parseJwtExpiry(newToken) ??
+                DateTime.now().add(const Duration(minutes: 15)),
           );
 
           final opts = error.requestOptions;
@@ -129,7 +136,7 @@ class DioClient {
           return handler.resolve(retryResponse);
         } on DioException {
           // Refresh başarısız - token'ları temizle ve logout yap
-          await _secureStorage.clearAll();
+          await _secureStorage.clearAuth();
           return handler.reject(
             DioException(
               requestOptions: error.requestOptions,
@@ -138,7 +145,7 @@ class DioClient {
             ),
           );
         } catch (e) {
-          await _secureStorage.clearAll();
+          await _secureStorage.clearAuth();
           return handler.reject(error);
         }
       }
@@ -231,6 +238,21 @@ class DioClient {
       );
     } on DioException catch (e) {
       throw _handleException(e);
+    }
+  }
+
+  DateTime? _parseJwtExpiry(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return null;
+      final payload = base64Url.normalize(parts[1]);
+      final decoded = utf8.decode(base64Url.decode(payload));
+      final data = jsonDecode(decoded) as Map<String, dynamic>;
+      final exp = data['exp'] as int?;
+      if (exp == null) return null;
+      return DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+    } catch (_) {
+      return null;
     }
   }
 

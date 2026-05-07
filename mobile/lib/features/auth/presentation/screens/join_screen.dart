@@ -24,6 +24,10 @@ class JoinScreen extends ConsumerStatefulWidget {
 }
 
 class _JoinScreenState extends ConsumerState<JoinScreen> {
+  static final _upperRegex = RegExp(r'[A-Z]');
+  static final _lowerRegex = RegExp(r'[a-z]');
+  static final _digitRegex = RegExp(r'\d');
+  static final _specialRegex = RegExp(r'[@$!%*?&]');
   late TextEditingController _inviteCodeController;
   late TextEditingController _emailController;
   late TextEditingController _nameController;
@@ -96,6 +100,17 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
       return;
     }
 
+    final emailError = InputValidators.validateEmail(email);
+    if (emailError != null) {
+      final errorMessage = emailError == 'email_required'
+          ? context.t.validation.emailRequired
+          : emailError == 'email_invalid'
+          ? context.t.validation.emailInvalid
+          : context.t.validation.emailTooLong;
+      ref.read(toastProvider.notifier).show(errorMessage, type: ToastType.error);
+      return;
+    }
+
     if (phone.isNotEmpty && !AuthValidators.isValidPhone(phone)) {
       ref
           .read(toastProvider.notifier)
@@ -153,7 +168,7 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
         } else {
           context.go('/resident-dashboard');
         }
-      } else if (next.error != null) {
+      } else if (next.error != null && next.error != previous?.error) {
         ref
             .read(toastProvider.notifier)
             .show(
@@ -274,12 +289,10 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
                       onChanged: (value) {
                         setState(() {
                           _hasMinLength = value.length >= 8;
-                          _hasUpperCase = RegExp(r'[A-Z]').hasMatch(value);
-                          _hasLowerCase = RegExp(r'[a-z]').hasMatch(value);
-                          _hasNumber = RegExp(r'\d').hasMatch(value);
-                          _hasSpecialChar = RegExp(
-                            r'[@$!%*?&]',
-                          ).hasMatch(value);
+                          _hasUpperCase = _upperRegex.hasMatch(value);
+                          _hasLowerCase = _lowerRegex.hasMatch(value);
+                          _hasNumber = _digitRegex.hasMatch(value);
+                          _hasSpecialChar = _specialRegex.hasMatch(value);
                         });
                       },
                       focusNode: _passwordFocusNode,

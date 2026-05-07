@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/network/api_exception.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/storage/secure_storage.dart';
 import '../../data/datasources/auth_remote_datasource.dart';
@@ -65,6 +66,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   AuthNotifier(this._authRepository) : super(AuthState());
 
+  String _errorMessage(Object e) =>
+      e is ApiException ? e.message : 'Bir hata oluştu';
+
   Future<void> login(String email, String password) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
@@ -75,7 +79,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         isAuthenticated: true,
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: _errorMessage(e));
     }
   }
 
@@ -90,7 +94,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       await _authRepository.register(email, password, name, phone);
       state = state.copyWith(isLoading: false, registrationSuccess: true);
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: _errorMessage(e));
     }
   }
 
@@ -116,7 +120,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         isAuthenticated: true,
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: _errorMessage(e));
     }
   }
 
@@ -127,7 +131,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       await Future.delayed(const Duration(milliseconds: 500));
       state = AuthState();
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: _errorMessage(e));
     }
   }
 }

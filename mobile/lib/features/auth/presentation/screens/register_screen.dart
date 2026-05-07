@@ -22,6 +22,10 @@ class RegisterScreen extends ConsumerStatefulWidget {
 }
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+  static final _upperRegex = RegExp(r'[A-Z]');
+  static final _lowerRegex = RegExp(r'[a-z]');
+  static final _digitRegex = RegExp(r'\d');
+  static final _specialRegex = RegExp(r'[@$!%*?&]');
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
@@ -295,12 +299,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       onChanged: (value) {
                         setState(() {
                           _hasMinLength = value.length >= 8;
-                          _hasUpperCase = RegExp(r'[A-Z]').hasMatch(value);
-                          _hasLowerCase = RegExp(r'[a-z]').hasMatch(value);
-                          _hasNumber = RegExp(r'\d').hasMatch(value);
-                          _hasSpecialChar = RegExp(
-                            r'[@$!%*?&]',
-                          ).hasMatch(value);
+                          _hasUpperCase = _upperRegex.hasMatch(value);
+                          _hasLowerCase = _lowerRegex.hasMatch(value);
+                          _hasNumber = _digitRegex.hasMatch(value);
+                          _hasSpecialChar = _specialRegex.hasMatch(value);
                         });
                       },
                       focusNode: _passwordFocusNode,

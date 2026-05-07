@@ -9,6 +9,21 @@ import '../models/register_request.dart';
 import '../models/join_request.dart';
 import '../models/user_data.dart';
 
+DateTime _parseJwtExpiry(String token) {
+  try {
+    final parts = token.split('.');
+    if (parts.length != 3) return DateTime.now().add(const Duration(minutes: 15));
+    final payload = base64Url.normalize(parts[1]);
+    final decoded = utf8.decode(base64Url.decode(payload));
+    final data = jsonDecode(decoded) as Map<String, dynamic>;
+    final exp = data['exp'] as int?;
+    if (exp == null) return DateTime.now().add(const Duration(minutes: 15));
+    return DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+  } catch (_) {
+    return DateTime.now().add(const Duration(minutes: 15));
+  }
+}
+
 abstract class AuthRepository {
   Future<UserEntity> login(String email, String password);
   Future<void> register(
@@ -46,17 +61,14 @@ class AuthRepositoryImpl implements AuthRepository {
 
       await _secureStorage.saveToken(response.accessToken);
       await _secureStorage.saveRefreshToken(response.refreshToken);
-      // FIX: Tüm kullanıcı detaylarını JSON olarak sakla
       await _secureStorage.saveUser(jsonEncode(response.user.toJson()));
-      await _secureStorage.saveTokenExpiry(
-        DateTime.now().add(const Duration(minutes: 15)),
-      );
+      await _secureStorage.saveTokenExpiry(_parseJwtExpiry(response.accessToken));
 
       return response.user.toEntity();
     } on ApiException {
       rethrow;
-    } catch (e) {
-      throw ApiException(message: 'Giriş sırasında bir hata oluştu: $e');
+    } catch (_) {
+      throw ApiException(message: 'Giriş sırasında bir hata oluştu');
     }
   }
 
@@ -77,8 +89,8 @@ class AuthRepositoryImpl implements AuthRepository {
       await _remoteDataSource.register(request);
     } on ApiException {
       rethrow;
-    } catch (e) {
-      throw ApiException(message: 'Kayıt sırasında bir hata oluştu: $e');
+    } catch (_) {
+      throw ApiException(message: 'Kayıt sırasında bir hata oluştu');
     }
   }
 
@@ -102,23 +114,20 @@ class AuthRepositoryImpl implements AuthRepository {
 
       await _secureStorage.saveToken(response.accessToken);
       await _secureStorage.saveRefreshToken(response.refreshToken);
-      // FIX: Tüm kullanıcı detaylarını JSON olarak sakla
       await _secureStorage.saveUser(jsonEncode(response.user.toJson()));
-      await _secureStorage.saveTokenExpiry(
-        DateTime.now().add(const Duration(minutes: 15)),
-      );
+      await _secureStorage.saveTokenExpiry(_parseJwtExpiry(response.accessToken));
 
       return response.user.toEntity();
     } on ApiException {
       rethrow;
-    } catch (e) {
-      throw ApiException(message: 'Katılım sırasında bir hata oluştu: $e');
+    } catch (_) {
+      throw ApiException(message: 'Katılım sırasında bir hata oluştu');
     }
   }
 
   @override
   Future<void> logout() async {
-    await _secureStorage.clearAll();
+    await _secureStorage.clearAuth();
   }
 
   @override
@@ -127,11 +136,9 @@ class AuthRepositoryImpl implements AuthRepository {
     if (userJson == null) return null;
 
     try {
-      // FIX: JSON'dan tüm kullanıcı detaylarını parse et
       final userData = UserData.fromJson(jsonDecode(userJson));
       return userData.toEntity();
-    } catch (e) {
-      // Eski format (sadece ID) varsa temizle
+    } catch (_) {
       await _secureStorage.clearAll();
       return null;
     }

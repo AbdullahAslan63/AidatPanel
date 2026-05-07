@@ -2,7 +2,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../constants/app_constants.dart';
 
 class SecureStorage {
-  static const _storage = FlutterSecureStorage();
+  static const _storage = FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
 
   Future<void> saveToken(String token) async {
     await _storage.write(key: AppConstants.tokenKey, value: token);
@@ -61,6 +63,12 @@ class SecureStorage {
     final expiry = await getTokenExpiry();
     if (expiry == null) return true;
     return DateTime.now().isAfter(expiry);
+  }
+
+  Future<void> clearAuth() async {
+    final language = await getLanguage();
+    await _storage.deleteAll();
+    if (language != null) await saveLanguage(language);
   }
 
   Future<void> clearAll() async {

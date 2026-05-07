@@ -116,7 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         } else {
           context.go('/resident-dashboard');
         }
-      } else if (next.error != null) {
+      } else if (next.error != null && next.error != previous?.error) {
         ref
             .read(toastProvider.notifier)
             .show(
