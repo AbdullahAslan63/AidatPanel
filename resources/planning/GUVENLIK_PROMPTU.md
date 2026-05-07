@@ -1,8 +1,8 @@
 # 🔒 GUVENLIK PROMPTU - Security Audit Rehberi
 
-**Versiyon:** 2.0 (Operasyonel Detay + Compliance + Threat Modeling + MASVS + Secrets + IR)  
-**Tarih:** 2026-05-04  
-**Hedef Puan:** 7.5/10 (Mevcut: 6.3/10)
+**Versiyon:** 3.0 (Solo dev uyarlaması + Skor rubriği + MASVS önceliklendirme)  
+**Tarih:** 2026-05-07  
+**Hedef Puan:** 8.5/10 (Mevcut: 6.3/10)
 
 ---
 
@@ -112,7 +112,7 @@ Threat: Unauthorized Access to Dues
 - [ ] **MSTG-CODE-1:** Debugging disabled production'da
 - [ ] **MSTG-CODE-2:** Code obfuscation (ProGuard/R8)
 
-### MASVS Level 2 (Advanced)
+### MASVS Level 2 (Advanced — AidatPanel v1.0+ için, şu an opsiyonel)
 - [ ] Certificate pinning implemented
 - [ ] Jailbreak/root detection
 - [ ] Anti-tampering checks
@@ -161,29 +161,27 @@ Threat: Unauthorized Access to Dues
 | Medium | <1 hour | <2 hours | <24 hours | <1 week |
 | Low | <1 day | <1 day | <1 week | <2 weeks |
 
-### Response Checklist
-- [ ] Incident detected ve classified
-- [ ] Stakeholders notified (security, management, legal)
-- [ ] Containment: Isolate affected systems
-- [ ] Investigation: Root cause analysis
-- [ ] Remediation: Fix vulnerability
-- [ ] Recovery: Restore service
-- [ ] Post-mortem: Lessons learned
+### Response Checklist (Solo Dev)
+- [ ] Incident tespit edildi ve sınıflandırıldı
+- [ ] Etkilenen servisi veya kullanıcıyı izole et (gerekiyorsa offline al)
+- [ ] Root cause analizi yap
+- [ ] Düzeltmeyi uygula, commit et
+- [ ] Etkilenen kullanıcıları bilgilendir (email yeterli)
+- [ ] Post-mortem notu yaz (planning klasörüne ekle)
 
-### Communication
-- **Internal:** Slack #security-incidents
-- **External:** Email, phone (critical incidents)
-- **Public:** Blog post (if applicable)
+### İletişim
+- **Kullanıcılara:** E-posta (kritik veri ihlali varsa)
+- **Kişisel log:** `resources/planning/` klasörüne incident notu ekle
 
 ---
 
 ## 11. SECURITY AUDIT CHECKLIST (v2.0 YENİ)
 
-### Pre-Audit
-- [ ] Scope defined (Flutter, Node.js, Database, Infrastructure)
-- [ ] Threat model completed
-- [ ] Test environment ready
-- [ ] Credentials/access provided
+### Pre-Audit (Self-Audit)
+- [ ] Scope tanımla: Bu seferki audit neyi kapsıyor? (Flutter, API, DB)
+- [ ] Threat model tamamlandı mı?
+- [ ] Geliştirme ortamı hazır (prod'u etkileme)
+- [ ] Staging/test branch üzerinde çalış
 
 ### During Audit
 - [ ] Static analysis (code review)
@@ -201,9 +199,23 @@ Threat: Unauthorized Access to Dues
 
 ---
 
+## 📊 SKOR RUBRİĞİ
+
+| Puan | Kriter |
+|------|--------|
+| 4/10 | Sadece OWASP top 10 kontrol edildi, AidatPanel bağlamı yok |
+| 5/10 | Risk categorileri tarandı, bazı bulgular var |
+| 6/10 | KVKK/MASVS kontrol edildi, STRIDE threat model var |
+| 7/10 | Secrets management kontrol edildi, IR planı var |
+| 8/10 | Her bulgu için fix önerildi, risk score verildi |
+| 9/10 | Tüm bulgular AidatPanel bağlamıyla ilişkilendirildi |
+
+---
+
 ## 📝 REVİZYON GEÇMİŞİ
 
 | Versiyon | Tarih | Değişiklik |
 |----------|-------|-----------|
 | v1.0 | 2026-05-03 | İlk versiyon (5 risk kategorisi, output format, constraints) |
 | v2.0 | 2026-05-04 | Operasyonel detay: KVKK/GDPR compliance, threat modeling (STRIDE), OWASP MASVS, secrets management, incident response. Puan: 6.3 → 8.5/10 |
+| v3.0 | 2026-05-07 | Solo dev uyarlaması: IR iletişim kanalları sadeleştirildi, Pre-Audit self-audit moduna çevrildi, MASVS Level 2 opsiyonel olarak işaretlendi, skor rubriği eklendi |

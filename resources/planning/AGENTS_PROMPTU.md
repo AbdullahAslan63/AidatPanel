@@ -1,8 +1,8 @@
 # 🤖 AGENTS PROMPTU - AGENTS.md Oluşturma Rehberi
 
-**Versiyon:** 2.0 (Operasyonel Detay + Context Toplama + Doğrulama + Versiyon Yönetimi)  
-**Tarih:** 2026-05-04  
-**Hedef Puan:** 8.5/10 (Mevcut: 7.5/10)
+**Versiyon:** 3.0 (Solo dev uyarlaması + Skor rubriği + Tekrar kaldırma)  
+**Tarih:** 2026-05-07  
+**Hedef Puan:** 9.0/10 (Mevcut: 7.5/10)
 
 ---
 
@@ -102,15 +102,14 @@ AGENTS.md oluşturmadan önce şu kaynaklardan context topla:
 - [ ] Secrets/Config: `.env.example`, environment variables
 
 ### 3. Hata Geçmişi (5-10 dk)
-- [ ] Git log'u tara: Sık tekrarlanan hatalar, revert'ler
-- [ ] Issue tracker: "bug" label'lı issue'lar
-- [ ] Code review comments: Neden reject edilen PR'lar?
-- [ ] Slack/Discord: Tekrarlanan sorular, gotcha'lar
+- [ ] Git log'u tara: Sık tekrarlanan hatalar, revert commit'ler
+- [ ] Commit mesajlarını tara: "fix", "revert", "hotfix" içerenleri incele
+- [ ] PR description'larını tara: Reddedilen veya revize edilen değişiklikler
 
-### 4. Team Knowledge (5 dk)
-- [ ] Ekip ile konuş: "Yeni bir agent ne yapması gerekir?"
-- [ ] "Hangi hataları sık yapıyor?"
-- [ ] "Hangi kuralları sık unutuyor?"
+### 4. Kişisel Geliştirici Notları (5 dk)
+- [ ] CLAUDE.md veya proje notları var mı? Oku
+- [ ] Planning dosyaları: Hangi kararlar alındı, neden?
+- [ ] "Hangi hataları kendim tekrar ettim?"
 
 ### 5. Standart Checklist (2-3 dk)
 - [ ] Backward compatibility gerekli mi?
@@ -121,37 +120,26 @@ AGENTS.md oluşturmadan önce şu kaynaklardan context topla:
 
 ---
 
-## ✅ DOĞRULAMA ADIMI (v2.0 YENİ)
+## ✅ DOĞRULAMA & KALİTE KONTROL
 
-AGENTS.md oluşturduktan sonra şu kontrol listesini geç:
+AGENTS.md oluşturduktan sonra tek geçişte kontrol et:
 
-### Kalite Kontrol
+### İçerik
 - [ ] **Signal Density:** Her satır project-specific veya hata önleyici mi?
-- [ ] **Minimal:** Gereksiz satır var mı? Kaldır.
-- [ ] **Actionable:** "Yapılacak" şeyler açık mı? (must/must not formatında)
+- [ ] **Minimal:** 1-2 sayfa (3+ = çok fazla)
+- [ ] **Actionable:** must/must not formatında mı?
 - [ ] **Doğru:** Kod ile eşleşiyor mu? (stale rule yok mu?)
-- [ ] **Kısa:** 1-2 sayfa mı? (3+ sayfaysa çok fazla)
-- [ ] **Skimmable:** Hızlı okuma mı? (bullets, bold, clear headings)
+- [ ] **Duplikasyon yok:** README/tooling ile overlap kaldırıldı mı?
+- [ ] **Gotcha'lar:** Tekrar eden hatalar yakalandı mı?
 
-### Doğrulama Komutları
-- [ ] Tüm validation commands test edildi mi?
-- [ ] Komutlar gerçekten kullanılıyor mu? (CI/CD'de çalışıyor mu?)
-- [ ] Komut çıktıları anlaşılır mı?
-
-### Proje-Spesifik Kurallar
-- [ ] Repo-specific constraints var mı? (migrations, API contracts, secrets)
-- [ ] Non-obvious workflows var mı? (codegen order, service dependencies)
-- [ ] Unusual conventions var mı? (naming, file locations)
-- [ ] Known gotcha'lar var mı? (repeated mistakes)
-
-### Duplikasyon
-- [ ] README'de var olan kurallar tekrarlanmış mı? (kaldır)
-- [ ] Tooling tarafından enforce edilen kurallar var mı? (kaldır)
-- [ ] Aynı kural 2+ kez yazılmış mı? (birleştir)
+### Teknik
+- [ ] Validation commands gerçekten kullanılıyor mu?
+- [ ] API contract / migration kuralları var mı?
+- [ ] Non-obvious workflow kısıtları belirtildi mi?
 
 ---
 
-## 🔄 VERSIYON YÖNETİMİ (v2.0 YENİ)
+## 🔄 VERSİYON YÖNETİMİ
 
 ### Versiyon Numaralandırması
 - **Patch (v1.0.1):** Yazım hatası, minor clarification
@@ -187,20 +175,17 @@ AGENTS.md oluşturduktan sonra şu kontrol listesini geç:
 
 ---
 
-## 🎯 KALITE KONTROL CHECKLIST
+## 📊 SKOR RUBRİĞİ
 
-Üretilen AGENTS.md şu kriterleri karşılamalı:
-
-- [ ] **Signal Density:** Yüksek (her satır değerli)
-- [ ] **Minimal:** 1-2 sayfa (3+ sayfa = çok fazla)
-- [ ] **Project-Specific:** Generic advice yok
-- [ ] **Actionable:** "Yapılacak" şeyler açık (must/must not)
-- [ ] **Doğru:** Kod ile eşleşiyor (stale rule yok)
-- [ ] **Skimmable:** Hızlı okuma (bullets, bold, headings)
-- [ ] **Duplikasyon yok:** README/tooling ile overlap yok
-- [ ] **Gotcha'lar:** Known mistakes capture edildi
-- [ ] **Validation:** Commands test edildi
-- [ ] **Versiyon:** Revizyon geçmişi var
+| Puan | Kriter |
+|------|--------|
+| 4/10 | Her kural generic — herhangi bir proje için geçerli |
+| 5/10 | Stack belirtilmiş, birkaç proje-specific kural var |
+| 6/10 | Must/must not formatında, validation commands var |
+| 7/10 | Gotcha'lar yakalanmış, stale rule yok |
+| 8/10 | Duplikasyon yok, 1-2 sayfa, hızlı okunuyor |
+| 9/10 | "Bu dosyayı okuyunca proje hakkında net fikir oluşuyor" |
+| 10/10 | Hiçbir satır çıkarılamaz, hiçbir satır eksik değil |
 
 ---
 
@@ -210,3 +195,4 @@ AGENTS.md oluşturduktan sonra şu kontrol listesini geç:
 |----------|-------|-----------|
 | v1.0 | 2026-05-03 | İlk versiyon (signal density prensibi, core principles, output requirements) |
 | v2.0 | 2026-05-04 | Operasyonel detay: Context toplama yöntemi (5 kaynak), doğrulama checklist, versiyon yönetimi, kalite kontrol. Puan: 7.5 → 8.5/10 |
+| v3.0 | 2026-05-07 | Solo dev uyarlaması: Team Knowledge → Kişisel notlar, Slack referansları kaldırıldı, DOĞRULAMA+KALİTE birleştirildi, skor rubriği eklendi |

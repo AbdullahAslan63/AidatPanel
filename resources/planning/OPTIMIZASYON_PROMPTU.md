@@ -1,8 +1,8 @@
 # ⚡ OPTIMIZASYON PROMPTU - Optimization Audit Rehberi
 
-**Versiyon:** 2.0 (Operasyonel Detay + AidatPanel Context + Monitoring + CI/CD)  
-**Tarih:** 2026-05-04  
-**Hedef Puan:** 8.0/10 (Mevcut: 7.2/10)
+**Versiyon:** 3.0 (Stale referanslar temizlendi + Backend durumu güncellendi + Skor rubriği)  
+**Tarih:** 2026-05-07  
+**Hedef Puan:** 8.5/10 (Mevcut: 7.2/10)
 
 ---
 
@@ -216,11 +216,11 @@ Be concise, technical, and actionable. Avoid generic advice.
 - **Resident:** Login → Apartment select → Dues view
 - **Notifications:** FCM push → In-app display
 
-### Known Bottlenecks (from HATA_ANALIZ_RAPORU.md)
+### Known Bottlenecks
 1. **ListView Performance:** `ListView(children: [...])` → `ListView.builder` (50+ daire)
-2. **Dummy Data:** Hardcoded buildings/apartments (backend API hazır)
-3. **N+1 Queries:** Prisma eager loading eksik
-4. **JWT Caching:** Validation her request'te (Redis candidate)
+2. **Dummy Data:** Hardcoded buildings/apartments (backend API entegre edildi — v0.1.0)
+3. **N+1 Queries:** Prisma eager loading eksik (backend aktif olduğunda)
+4. **JWT Caching:** Validation her request'te (Redis candidate, backend hazır olduğunda)
 5. **Image Caching:** `cached_network_image` optimize gerekli
 
 ### Optimization Priorities (ROI-based)
@@ -242,7 +242,7 @@ Be concise, technical, and actionable. Avoid generic advice.
   - API latency (target: <200ms p95)
   - Image cache hit rate
 
-### Node.js Profiling
+### Node.js Profiling (Backend hazır olduğunda aktifleştir)
 - **clinic.js:** CPU, memory, I/O profiling
 - **Command:** `clinic doctor -- npm start`
 - **Metrics to Track:**
@@ -270,7 +270,7 @@ Be concise, technical, and actionable. Avoid generic advice.
 
 ### Automated Checks
 - **Bundle Size:** `flutter build apk --analyze-size` (target: <50MB)
-- **Code Coverage:** `flutter test --coverage` (target: >60%)
+- **Code Coverage:** `flutter test --coverage` (target: >30% — başlangıç hedefi, test eklendikçe artır)
 - **Lint:** `flutter analyze` (no warnings)
 - **Performance Tests:** Custom benchmarks
 
@@ -306,7 +306,7 @@ autocannon({
 ```
 
 ### Regression Detection
-- **Baseline:** First commit (v0.0.8)
+- **Baseline:** v0.1.0 (mevcut kararlı sürüm)
 - **Threshold:** +10% latency = warning, +20% = failure
 - **Action:** Revert or optimize before merge
 
@@ -352,7 +352,7 @@ For AidatPanel, prioritize:
 - [ ] Remove debug banners: `debugShowCheckedModeBanner: false`
 - [ ] Analyze APK size: `flutter build apk --analyze-size`
 
-### Node.js Quick Wins
+### Node.js Quick Wins (Backend hazır olduğunda)
 - [ ] Add Prisma `include` for N+1 prevention
 - [ ] Implement pagination (default limit: 50)
 - [ ] Cache JWT validation (Redis, 5 min TTL)
@@ -367,9 +367,23 @@ For AidatPanel, prioritize:
 
 ---
 
+## 📊 SKOR RUBRİĞİ
+
+| Puan | Kriter |
+|------|--------|
+| 4/10 | Sadece genel öneriler, bottleneck kanıtlanmamış |
+| 5/10 | Bottleneck'lar tespit edildi, kategori verildi |
+| 6/10 | Her bulgu için ROI tahmini ve fix önerildi |
+| 7/10 | Baseline metrikleri alındı, before/after planı var |
+| 8/10 | AidatPanel bağlamıyla ilişkilendirildi, quick wins sıralandı |
+| 9/10 | Validation planı var, correctness korundu, test edildi |
+
+---
+
 ## 📝 REVİZYON GEÇMİŞİ
 
 | Versiyon | Tarih | Değişiklik |
 |----------|-------|-----------|
 | v1.0 | 2026-05-03 | İlk versiyon (7 boyut, 6 bölümlü format, 9 kategori checklist) |
 | v2.0 | 2026-05-04 | Operasyonel detay: AidatPanel context, monitoring setup, CI/CD regression testing, optimization workflow, quick wins template. Puan: 7.2 → 8.0/10 |
+| v3.0 | 2026-05-07 | Stale referanslar temizlendi: HATA_ANALIZ_RAPORU.md kaldırıldı, backend bölümleri "hazır olduğunda" notu aldı, baseline v0.1.0, code coverage hedefi güncellendi, skor rubriği eklendi |
