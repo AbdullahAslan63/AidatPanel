@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 422 (211 per locale)
+/// Strings: 424 (212 per locale)
 ///
-/// Built on 2026-05-06 at 14:50 UTC
+/// Built on 2026-05-07 at 11:51 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -383,6 +383,7 @@ class _StringsFeaturesAuthEn {
 	String get join => 'Join';
 	String get passwordRequired => 'Password required';
 	String get errorOccurred => 'An error occurred';
+	String get registrationSuccess => 'Account created. You can now log in.';
 	String get appTitle => 'AidatPanel';
 	String get appSubtitle => 'Apartment Management System';
 	String get phone => 'Phone';
@@ -690,6 +691,7 @@ class _StringsFeaturesAuthTr implements _StringsFeaturesAuthEn {
 	@override String get join => 'Katıl';
 	@override String get passwordRequired => 'Şifre gerekli';
 	@override String get errorOccurred => 'Bir hata oluştu';
+	@override String get registrationSuccess => 'Hesabınız oluşturuldu. Giriş yapabilirsiniz.';
 	@override String get appTitle => 'AidatPanel';
 	@override String get appSubtitle => 'Apartman Yönetim Sistemi';
 	@override String get phone => 'Telefon';
@@ -913,6 +915,7 @@ extension on Translations {
 			case 'features.auth.join': return 'Join';
 			case 'features.auth.passwordRequired': return 'Password required';
 			case 'features.auth.errorOccurred': return 'An error occurred';
+			case 'features.auth.registrationSuccess': return 'Account created. You can now log in.';
 			case 'features.auth.appTitle': return 'AidatPanel';
 			case 'features.auth.appSubtitle': return 'Apartment Management System';
 			case 'features.auth.phone': return 'Phone';
@@ -1132,6 +1135,7 @@ extension on _StringsTr {
 			case 'features.auth.join': return 'Katıl';
 			case 'features.auth.passwordRequired': return 'Şifre gerekli';
 			case 'features.auth.errorOccurred': return 'Bir hata oluştu';
+			case 'features.auth.registrationSuccess': return 'Hesabınız oluşturuldu. Giriş yapabilirsiniz.';
 			case 'features.auth.appTitle': return 'AidatPanel';
 			case 'features.auth.appSubtitle': return 'Apartman Yönetim Sistemi';
 			case 'features.auth.phone': return 'Telefon';

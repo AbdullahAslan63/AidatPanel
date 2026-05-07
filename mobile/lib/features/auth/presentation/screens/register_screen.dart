@@ -13,7 +13,6 @@ import '../../../../shared/widgets/password_field.dart';
 import '../../../../shared/widgets/password_criterion.dart';
 import '../../../../shared/widgets/toast_overlay.dart';
 import '../providers/auth_provider.dart';
-import '../../domain/entities/user_entity.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -141,13 +140,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final authState = ref.watch(authStateProvider);
 
     ref.listen(authStateProvider, (previous, next) {
-      if (next.isAuthenticated) {
-        if (next.user?.role == UserRole.manager) {
-          context.go('/manager-dashboard');
-        } else {
-          context.go('/resident-dashboard');
-        }
-      } else if (next.error != null) {
+      if (next.registrationSuccess && !(previous?.registrationSuccess ?? false)) {
+        ref
+            .read(toastProvider.notifier)
+            .show(
+              context.t.features.auth.registrationSuccess,
+              type: ToastType.success,
+            );
+        context.go('/login');
+      } else if (next.error != null && next.error != previous?.error) {
         ref
             .read(toastProvider.notifier)
             .show(

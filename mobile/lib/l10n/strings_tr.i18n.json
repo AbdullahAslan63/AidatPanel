@@ -177,6 +177,7 @@
       "join": "Katıl",
       "passwordRequired": "Şifre gerekli",
       "errorOccurred": "Bir hata oluştu",
+      "registrationSuccess": "Hesabınız oluşturuldu. Giriş yapabilirsiniz.",
       "appTitle": "AidatPanel",
       "appSubtitle": "Apartman Yönetim Sistemi",
       "phone": "Telefon",

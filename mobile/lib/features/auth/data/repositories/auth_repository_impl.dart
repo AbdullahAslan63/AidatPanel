@@ -11,7 +11,7 @@ import '../models/user_data.dart';
 
 abstract class AuthRepository {
   Future<UserEntity> login(String email, String password);
-  Future<UserEntity> register(
+  Future<void> register(
     String email,
     String password,
     String name,
@@ -61,33 +61,20 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<UserEntity> register(
+  Future<void> register(
     String email,
     String password,
     String name,
     String? phone,
   ) async {
     try {
-      final registerRequest = RegisterRequest(
+      final request = RegisterRequest(
         email: email,
         password: password,
         name: name,
         phone: phone,
       );
-      await _remoteDataSource.register(registerRequest);
-
-      // Backend register token döndürmüyor — otomatik login yap
-      final loginRequest = LoginRequest(email: email, password: password);
-      final loginResponse = await _remoteDataSource.login(loginRequest);
-
-      await _secureStorage.saveToken(loginResponse.accessToken);
-      await _secureStorage.saveRefreshToken(loginResponse.refreshToken);
-      await _secureStorage.saveUser(jsonEncode(loginResponse.user.toJson()));
-      await _secureStorage.saveTokenExpiry(
-        DateTime.now().add(const Duration(minutes: 15)),
-      );
-
-      return loginResponse.user.toEntity();
+      await _remoteDataSource.register(request);
     } on ApiException {
       rethrow;
     } catch (e) {

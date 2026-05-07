@@ -31,12 +31,14 @@ class AuthState {
   final UserEntity? user;
   final String? error;
   final bool isAuthenticated;
+  final bool registrationSuccess;
 
   AuthState({
     this.isLoading = false,
     this.user,
     this.error,
     this.isAuthenticated = false,
+    this.registrationSuccess = false,
   });
 
   AuthState copyWith({
@@ -44,6 +46,7 @@ class AuthState {
     UserEntity? user,
     String? error,
     bool? isAuthenticated,
+    bool? registrationSuccess,
     bool clearUser = false,
     bool clearError = false,
   }) {
@@ -52,6 +55,7 @@ class AuthState {
       user: clearUser ? null : (user ?? this.user),
       error: clearError ? null : (error ?? this.error),
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
+      registrationSuccess: registrationSuccess ?? this.registrationSuccess,
     );
   }
 }
@@ -83,12 +87,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   ) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      final user = await _authRepository.register(email, password, name, phone);
-      state = state.copyWith(
-        isLoading: false,
-        user: user,
-        isAuthenticated: true,
-      );
+      await _authRepository.register(email, password, name, phone);
+      state = state.copyWith(isLoading: false, registrationSuccess: true);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }

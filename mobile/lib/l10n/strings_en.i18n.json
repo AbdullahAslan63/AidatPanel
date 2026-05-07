@@ -177,6 +177,7 @@
       "join": "Join",
       "passwordRequired": "Password required",
       "errorOccurred": "An error occurred",
+      "registrationSuccess": "Account created. You can now log in.",
       "appTitle": "AidatPanel",
       "appSubtitle": "Apartment Management System",
       "phone": "Phone",
