@@ -32,6 +32,17 @@ class DioClient {
       ),
     );
 
+    _dio.interceptors.add(
+      LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        requestHeader: false,
+        responseHeader: false,
+        error: true,
+        logPrint: (o) => print('[DIO] $o'),
+      ),
+    );
+
     // Ayrı Dio instance: refresh token için (interceptor'sız)
     // Sonsuz döngü riskini önler
     _refreshDio = Dio(
@@ -44,27 +55,37 @@ class DioClient {
     );
   }
 
+  static const _publicPaths = {
+    ApiConstants.login,
+    ApiConstants.register,
+    ApiConstants.join,
+    ApiConstants.refresh,
+    ApiConstants.forgotPassword,
+    ApiConstants.resetPassword,
+  };
+
   Future<void> _onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Check if token is expired before making request
-    final isExpired = await _secureStorage.isTokenExpired();
-    if (isExpired) {
-      // Token expired - reject request to trigger logout flow
-      return handler.reject(
-        DioException(
-          requestOptions: options,
-          error: 'Oturum süreniz doldu. Lütfen tekrar giriş yapın.',
-          type: DioExceptionType.cancel,
-        ),
-      );
-    }
+    final isPublic = _publicPaths.any((p) => options.path.endsWith(p));
+    if (isPublic) return handler.next(options);
 
     final token = await _secureStorage.getToken();
     if (token != null) {
+      final isExpired = await _secureStorage.isTokenExpired();
+      if (isExpired) {
+        return handler.reject(
+          DioException(
+            requestOptions: options,
+            error: 'Oturum süreniz doldu. Lütfen tekrar giriş yapın.',
+            type: DioExceptionType.cancel,
+          ),
+        );
+      }
       options.headers['Authorization'] = 'Bearer $token';
     }
+
     return handler.next(options);
   }
 

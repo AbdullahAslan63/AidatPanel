@@ -47,7 +47,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _secureStorage.saveToken(response.accessToken);
       await _secureStorage.saveRefreshToken(response.refreshToken);
       // FIX: Tüm kullanıcı detaylarını JSON olarak sakla
-      await _secureStorage.saveUser(jsonEncode(response.user));
+      await _secureStorage.saveUser(jsonEncode(response.user.toJson()));
       await _secureStorage.saveTokenExpiry(
         DateTime.now().add(const Duration(minutes: 15)),
       );
@@ -82,7 +82,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
       await _secureStorage.saveToken(loginResponse.accessToken);
       await _secureStorage.saveRefreshToken(loginResponse.refreshToken);
-      await _secureStorage.saveUser(jsonEncode(loginResponse.user));
+      await _secureStorage.saveUser(jsonEncode(loginResponse.user.toJson()));
       await _secureStorage.saveTokenExpiry(
         DateTime.now().add(const Duration(minutes: 15)),
       );
@@ -116,7 +116,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _secureStorage.saveToken(response.accessToken);
       await _secureStorage.saveRefreshToken(response.refreshToken);
       // FIX: Tüm kullanıcı detaylarını JSON olarak sakla
-      await _secureStorage.saveUser(jsonEncode(response.user));
+      await _secureStorage.saveUser(jsonEncode(response.user.toJson()));
       await _secureStorage.saveTokenExpiry(
         DateTime.now().add(const Duration(minutes: 15)),
       );

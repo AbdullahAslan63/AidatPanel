@@ -28,6 +28,17 @@ class UserData {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'email': email,
+      'name': name,
+      'phone': phone,
+      'role': role,
+      'language': language,
+    };
+  }
+
   UserEntity toEntity() {
     return UserEntity(
       id: id,
